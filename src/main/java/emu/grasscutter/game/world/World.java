@@ -2,7 +2,6 @@ package emu.grasscutter.game.world;
 
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.DungeonData;
-import emu.grasscutter.data.excels.SceneData;
 import emu.grasscutter.game.entity.EntityTeam;
 import emu.grasscutter.game.entity.EntityWorld;
 import emu.grasscutter.game.player.Player;
@@ -10,7 +9,6 @@ import emu.grasscutter.game.player.Player.SceneLoadState;
 import emu.grasscutter.game.props.EnterReason;
 import emu.grasscutter.game.props.EntityIdType;
 import emu.grasscutter.game.props.PlayerProperty;
-import emu.grasscutter.game.props.SceneType;
 import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.game.world.data.TeleportProperties;
 import emu.grasscutter.net.packet.BasePacket;
@@ -22,6 +20,7 @@ import emu.grasscutter.utils.Position;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import org.anime_game_servers.game_data_models.data.scene.SceneType;
 import lombok.*;
 import org.anime_game_servers.multi_proto.gi.messages.scene.EnterType;
 
@@ -126,7 +125,7 @@ public class World implements Iterable<Player> {
         }
 
         // Create scene from scene data if it doesn't exist
-        SceneData sceneData = GameData.getSceneDataMap().get(sceneId);
+        val sceneData = GameData.getSceneDataMap().get(sceneId);
         if (sceneData != null) {
             scene = new Scene(this, sceneData);
             this.registerScene(scene);
@@ -274,7 +273,7 @@ public class World implements Iterable<Player> {
                 .enterReason(EnterReason.DungeonEnter);
         } else if (player.getSceneId() == sceneId) {
             teleportProps.enterType(EnterType.ENTER_GOTO);
-        } else if (sceneData!= null && sceneData.getSceneType() == SceneType.SCENE_HOME_WORLD) {
+        } else if (sceneData!= null && sceneData.getType() == SceneType.SCENE_HOME_WORLD) {
             // Home
             teleportProps.enterType(EnterType.ENTER_SELF_HOME)
                 .enterReason(EnterReason.EnterHome);

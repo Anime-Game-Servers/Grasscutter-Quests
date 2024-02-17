@@ -2,8 +2,6 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.game.activity.musicgame.MusicGameActivityHandler;
 import emu.grasscutter.game.activity.musicgame.MusicGamePlayerData;
-import emu.grasscutter.game.props.ActivityType;
-import emu.grasscutter.game.props.WatcherTriggerType;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketActivityInfoNotify;
@@ -11,6 +9,8 @@ import emu.grasscutter.server.packet.send.PacketMusicGameSettleRsp;
 import lombok.val;
 import org.anime_game_servers.multi_proto.gi.messages.activity.music_game.MusicGameSettleReq;
 import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.game_data_models.data.activity.ActivityType;
+import org.anime_game_servers.game_data_models.data.watcher.WatcherTriggerType;
 
 public class HandlerMusicGameSettleReq extends TypedPacketHandler<MusicGameSettleReq> {
 

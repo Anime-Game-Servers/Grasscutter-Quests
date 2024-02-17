@@ -21,9 +21,10 @@ import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.TowerTeam;
 import emu.grasscutter.server.packet.send.*;
 import lombok.val;
 import org.anime_game_servers.multi_proto.gi.messages.scene.EnterType;
+import org.anime_game_servers.game_data_models.data.rewards.TowerRewardData;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * TODO record tower combat record, the highest burst count, highest atk etc
@@ -350,22 +351,19 @@ public class TowerManager extends BasePlayerManager {
             .map(integer -> GameData.getTowerLevelDataMap().get(integer.intValue()))
             .filter(Objects::nonNull).map(TowerLevelData::getLevelIndex)
             .map(levelIndex -> GameData.getTowerRewardData(levelIndex, floorData.getFloorIndex()))
-            .filter(Objects::nonNull).map(rewardData -> rewardData.getStarRewardsByStarCount(recordInfo.getStarCount()))
+            .filter(Objects::nonNull).map(rewardData -> getStarRewardsByStarCount(rewardData, recordInfo.getStarCount()))
             .flatMap(List::stream).filter(rewardId -> !recordInfo.getReceivedStarBounty().contains(rewardId)).distinct().toList();
 
-        val rewardItems = rewardIds.stream().parallel().map(rewardId -> GameData.getRewardDataMap().get(rewardId.intValue()))
-            .filter(Objects::nonNull).map(RewardData::getRewardItemList).flatMap(List::stream)
-            .collect(Collectors.toMap(ItemParamData::getItemId, ItemParamData::getItemCount, Integer::sum))
-            .entrySet().stream().map(e -> new GameItem(e.getKey(), e.getValue()))
-            .sorted(Comparator.comparing(GameItem::getItemId)).toList();
+        val rewards = rewardIds.stream().parallel().map(rewardId -> GameData.getRewardDataMap().get(rewardId.intValue()))
+            .filter(Objects::nonNull).toList();
 
-        if (!rewardItems.isEmpty()) {
+        if (!rewards.isEmpty()) {
             recordInfo.onGetReward(rewardIds);
             notifyFloorChange(recordInfo);
-            this.player.getInventory().addItems(rewardItems, ActionReason.TowerFloorStarReward);
+            this.player.getInventory().addRewardData(rewards, ActionReason.TowerFloorStarReward);
         }
 
-        return !rewardItems.isEmpty();
+        return !rewards.isEmpty();
     }
 
     /**
@@ -374,20 +372,28 @@ public class TowerManager extends BasePlayerManager {
     public List<GameItem> giveFirstPassReward(DungeonManager manager) {
         if (!manager.isFinishedSuccessfully() || getCurLevelRecordInfo().isReceivedFirstPassReward()) return List.of();
 
-        val rewardItems = Optional.ofNullable(getCurFloorData()).map(TowerFloorData::getFloorIndex)
+        val rewards = Optional.ofNullable(getCurFloorData()).map(TowerFloorData::getFloorIndex)
             .map(floorIndex -> GameData.getTowerRewardData(getCurrentLevelIndex(), floorIndex))
-            .map(rewardData -> rewardData.getFirstPassRewardByStarCount(getCurFloorRecordInfo().getStarCount()))
+            .map(rewardData -> getFirstPassRewardByStarCount(rewardData, getCurFloorRecordInfo().getStarCount()))
             .stream().flatMap(List::stream).distinct().map(rewardId -> GameData.getRewardDataMap().get(rewardId.intValue()))
-            .filter(Objects::nonNull).map(RewardData::getRewardItemList).flatMap(List::stream)
-            .collect(Collectors.toMap(ItemParamData::getItemId, ItemParamData::getItemCount, Integer::sum))
-            .entrySet().stream().map(e -> new GameItem(e.getKey(), e.getValue()))
-            .sorted(Comparator.comparing(GameItem::getItemId)).toList();
+            .filter(Objects::nonNull).toList();
 
-        if (!rewardItems.isEmpty()) {
+        if (!rewards.isEmpty()) {
             getCurLevelRecordInfo().setReceivedFirstPassReward(true);
-            this.player.getInventory().addItems(rewardItems, ActionReason.TowerFirstPassReward);
+            return this.player.getInventory().addRewardData(rewards, ActionReason.TowerFirstPassReward);
         }
 
-        return rewardItems;
+        return Collections.emptyList();
+    }
+
+    public List<Integer> getStarRewardsByStarCount(TowerRewardData data, int starCount) {
+        val fullStarRewards = List.of(data.getThreeStarReward(), data.getSixStarReward(), data.getNineStarReward());
+        return IntStream.rangeClosed(0, starCount).map(i -> (int) Math.floor((float) i / 3) - 1).filter(i -> i >= 0)
+            .distinct().mapToObj(fullStarRewards::get).toList();
+    }
+
+    public List<Integer> getFirstPassRewardByStarCount(TowerRewardData data, int starCount) {
+        return IntStream.rangeClosed(0, starCount).map(i -> (int) Math.floor((float) i / 3) - 1).filter(i -> i >= 0)
+            .distinct().mapToObj(data.getChamberRewards()::get).toList();
     }
 }

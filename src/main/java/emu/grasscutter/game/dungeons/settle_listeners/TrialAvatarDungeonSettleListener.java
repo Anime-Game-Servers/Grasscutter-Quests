@@ -7,10 +7,7 @@ import emu.grasscutter.game.dungeons.dungeon_results.BaseDungeonResult;
 import emu.grasscutter.game.dungeons.dungeon_results.TrialAvatarDungeonResult;
 import emu.grasscutter.server.packet.send.PacketDungeonSettleNotify;
 import lombok.val;
-
-import java.util.Optional;
-
-import static emu.grasscutter.game.props.ActivityType.NEW_ACTIVITY_TRIAL_AVATAR;
+import org.anime_game_servers.game_data_models.data.activity.ActivityType;
 
 public class TrialAvatarDungeonSettleListener implements DungeonSettleListener{
     @Override
@@ -24,7 +21,7 @@ public class TrialAvatarDungeonSettleListener implements DungeonSettleListener{
             .setDungeonStats(new DungeonEndStats(scene.getKilledMonsterCount(), time, 0, endReason))
             .setPlayer(hostPlayer)
             .setTrialCharacterIndexId(hostPlayer.getActivityManager()
-                .getActivityHandlerAs(NEW_ACTIVITY_TRIAL_AVATAR, TrialAvatarActivityHandler.class)
+                .getActivityHandlerAs(ActivityType.NEW_ACTIVITY_TRIAL_AVATAR, TrialAvatarActivityHandler.class)
                 .map(TrialAvatarActivityHandler::getSelectedTrialAvatarIndex).orElse(0))
             .build()));
     }

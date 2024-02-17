@@ -1,6 +1,6 @@
 package emu.grasscutter.game.activity;
 
-import emu.grasscutter.game.props.WatcherTriggerType;
+import org.anime_game_servers.game_data_models.data.watcher.WatcherTriggerType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

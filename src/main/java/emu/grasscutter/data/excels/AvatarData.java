@@ -162,7 +162,7 @@ public class AvatarData extends GameResource {
         if (split.length > 0) {
             this.name = split[split.length - 1];
 
-            AbilityEmbryoEntry info = GameData.getAbilityEmbryoInfo().get(this.name);
+            AbilityEmbryoEntry info = GameData.getAbilityEmbryo(this.name);
             if (info != null) {
                 this.abilities = new IntArrayList(info.getAbilities().length);
                 for (String ability : info.getAbilities()) {

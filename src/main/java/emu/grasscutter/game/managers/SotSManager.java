@@ -2,7 +2,6 @@ package emu.grasscutter.game.managers;
 
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
-import emu.grasscutter.data.excels.CityData;
 import emu.grasscutter.game.city.CityInfoData;
 import emu.grasscutter.game.entity.EntityAvatar;
 import emu.grasscutter.game.player.BasePlayerManager;
@@ -20,14 +19,17 @@ import emu.grasscutter.server.packet.send.PacketSceneForceUnlockNotify;
 import lombok.val;
 import emu.grasscutter.server.packet.send.PacketLevelupCityRsp;
 
+import org.anime_game_servers.game_data_models.data.city.CityData;
+import org.anime_game_servers.game_data_models.data.city.CityLevelUpData;
+import org.anime_game_servers.gi_lua.models.ScriptArgs;
+import org.anime_game_servers.gi_lua.models.constants.EventType;
 import org.slf4j.Logger;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
-// Statue of the Seven Manager
+/*
+ * Manages the Statue of the Seven and CityLevel
+ */
 public class SotSManager extends BasePlayerManager {
 
     // NOTE: Spring volume balance *1  = fight prop HP *100
@@ -200,9 +202,11 @@ public class SotSManager extends BasePlayerManager {
         }
     }
 
+    // City/Statue level handling
+
     public CityData getCityByAreaId(int areaId) {
         return GameData.getCityDataMap().values().stream()
-                .filter(city -> city.getAreaIdVec().contains(areaId))
+                .filter(city -> city.getAreaIds().contains(areaId))
                 .findFirst()
                 .orElse(null);
     }
@@ -228,62 +232,107 @@ public class SotSManager extends BasePlayerManager {
 
         // search city by areaId
         var city = this.getCityByAreaId(areaId);
-        if (city == null) return;
+        if (city == null) return; // TODO return error to allow sending packet with error
         var cityId = city.getCityId();
 
         // check data level up
         var cityInfo = this.getCityInfo(cityId);
-        var nextStatuePromoteData = GameData.getStatuePromoteData(cityId, cityInfo.getLevel() + 1);
-        if (nextStatuePromoteData == null) return;
-        var nextLevelCrystal = nextStatuePromoteData.getCostItems()[0].getCount();
 
-        // delete item from inventory
-        var itemNumrequired = Math.min(itemNum, nextLevelCrystal - cityInfo.getNumCrystal());
-        player
-                .getInventory()
-                .removeItemById(nextStatuePromoteData.getCostItems()[0].getId(), itemNumrequired);
-
-        // update number oculi
-        cityInfo.setNumCrystal(cityInfo.getNumCrystal() + itemNumrequired);
-
-        // hanble quest
-        if (itemNumrequired >= 1)
-            player.getQuestManager().queueEvent(QuestContent.QUEST_CONTENT_CITY_LEVEL_UP, cityId, areaId);
-
-        // handle oculi overflow
-        if (cityInfo.getNumCrystal() >= nextLevelCrystal) {
-            cityInfo.setNumCrystal(cityInfo.getNumCrystal() - nextLevelCrystal);
-            cityInfo.setLevel(cityInfo.getLevel() + 1);
-
-            // update max stamina and notify client
-            player.setProperty(
-                    PlayerProperty.PROP_MAX_STAMINA,
-                    player.getProperty(PlayerProperty.PROP_MAX_STAMINA)
-                            + nextStatuePromoteData.getStamina() * 100,
-                    true);
-
-            // Add items to inventory
-            if (nextStatuePromoteData.getRewardIdList() != null) {
-                for (var rewardId : nextStatuePromoteData.getRewardIdList()) {
-                    val rewardData = GameData.getRewardDataMap().get(rewardId);
-                    if (rewardData == null) continue;
-
-                    player
-                        .getInventory()
-                        .addItemParamDatas(rewardData.getRewardItemList(), ActionReason.CityLevelupReward);
-                }
+        val completedLevels = new ArrayList<CityLevelUpData>();
+        var level = cityInfo.getLevel();
+        var prevCrystalProgress = cityInfo.getNumCrystal();
+        var itemCountLeft = itemNum;
+        var crystalProgress = 0;
+        while(level<10 && itemCountLeft > 0){
+            val nextLevelUpData = GameData.getCityLevelUpData(cityId, level + 1);
+            if(nextLevelUpData == null || nextLevelUpData.getConsumeItem() == null){
+                break;
             }
 
-            // unlock forcescene
-            player.sendPacket(new PacketSceneForceUnlockNotify(1, true));
+            val cost = nextLevelUpData.getConsumeItem().getCount() - prevCrystalProgress;
+
+            // TODO properly include already added oculi for the cost calculations
+            // player might not want to level up all he can
+            if(cost > itemCountLeft){
+                // pay the rest the payer wanted to offer
+                if(getPlayer().getInventory().payItem(nextLevelUpData.getConsumeItem().getItemId(), itemCountLeft)){
+                    crystalProgress = itemCountLeft + prevCrystalProgress;
+                    itemCountLeft = 0;
+                }
+                break;
+            }
+
+
+            if(getPlayer().getInventory().payItem(nextLevelUpData.getConsumeItem().getItemId(), cost)){
+                completedLevels.add(nextLevelUpData);
+                level++;
+                itemCountLeft -= cost;
+                prevCrystalProgress = 0;
+            } else {
+                break;
+            }
         }
+
+        // update number oculi
+        cityInfo.setNumCrystal(crystalProgress);
+        cityInfo.setLevel(level);
+
+        completedLevels.forEach(levelData -> {
+            // update player properties
+            val reward = GameData.getRewardDataMap().get(levelData.getRewardId());
+            if(reward != null){
+                getPlayer().getInventory().addRewardData(reward, ActionReason.CityLevelupReward);
+            }
+            if(levelData.getActions()!=null) {
+                handleLevelUpActions(levelData.getActions());
+            }
+        });
 
         // update data
         this.addCityInfo(cityInfo);
 
+
+        handleLevelUpEvents(cityId, level);
+
         // Packets
         player.sendPacket(
                 new PacketLevelupCityRsp(
-                        sceneId, cityInfo.getLevel(), cityId, cityInfo.getNumCrystal(), areaId, Retcode.RET_SUCC));
+                        sceneId, level, cityId, crystalProgress, areaId, Retcode.RET_SUCC));
+    }
+
+    private void handleLevelUpActions(List<CityLevelUpData.CityLevelUpAction> actions){
+        actions.forEach(action -> {
+            if(action.getType() == null) return;
+            switch (action.getType()) {
+                case WORLD_AREA_ACTION_IMPROVE_STAMINA -> {
+                    if (action.getParam1() == null || action.getParam1().isEmpty()) {
+                        break;
+                    }
+                    // update max stamina and notify client
+                    getPlayer().setProperty(
+                        PlayerProperty.PROP_MAX_STAMINA,
+                        getPlayer().getProperty(PlayerProperty.PROP_MAX_STAMINA)
+                            + action.getParam1().get(0) * 100,
+                        true);
+                }
+                case WORLD_AREA_ACTION_UNLOCK_FORCE -> {
+                    if (action.getParam1() == null || action.getParam1().isEmpty()) {
+                        break;
+                    }
+                    // this might need to be persisted
+                    getPlayer().getScene().unlockForce(action.getParam1().get(0));
+                }
+                case WORLD_AREA_ACTION_ACTIVATE_ITEM -> {
+                    // TODO: implement
+                }
+                default -> {
+                }
+            }
+        });
+    }
+
+    private void handleLevelUpEvents(int cityId, int level) {
+        player.getQuestManager().queueEvent(QuestContent.QUEST_CONTENT_CITY_LEVEL_UP, cityId, level);
+        player.getScene().getScriptManager().callEvent(new ScriptArgs(0, EventType.EVENT_CITY_LEVELUP, cityId, level));
     }
 }

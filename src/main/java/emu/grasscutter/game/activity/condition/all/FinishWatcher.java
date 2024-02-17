@@ -2,16 +2,19 @@ package emu.grasscutter.game.activity.condition.all;
 
 import emu.grasscutter.game.activity.ActivityConfigItem;
 import emu.grasscutter.game.activity.PlayerActivityData;
-import emu.grasscutter.game.activity.condition.ActivityCondition;
+import emu.grasscutter.game.activity.condition.ActivityConditionHandler;
 import emu.grasscutter.game.activity.condition.ActivityConditionBaseHandler;
-import emu.grasscutter.game.activity.condition.ActivityConditions;
 import lombok.val;
 
-@ActivityCondition(ActivityConditions.NEW_ACTIVITY_COND_FINISH_WATCHER)
+import java.util.List;
+
+import static org.anime_game_servers.game_data_models.data.activity.ActivityCondition.NEW_ACTIVITY_COND_FINISH_WATCHER;
+
+@ActivityConditionHandler(NEW_ACTIVITY_COND_FINISH_WATCHER)
 public class FinishWatcher extends ActivityConditionBaseHandler {
 
     @Override
-    public boolean execute(PlayerActivityData activityData, ActivityConfigItem activityConfig, int... params) {
+    public boolean execute(PlayerActivityData activityData, ActivityConfigItem activityConfig, List<Integer> params) {
         val watcherMap = activityData.getWatcherInfoMap();
         for (int param : params) {
             val watcher = watcherMap.get(param);
