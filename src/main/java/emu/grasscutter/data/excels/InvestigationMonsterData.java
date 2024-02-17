@@ -6,7 +6,9 @@ import emu.grasscutter.data.ResourceType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
+import org.anime_game_servers.game_data_models.data.city.CityData;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 @ResourceType(name = "InvestigationMonsterConfigData.json", loadPriority = ResourceType.LoadPriority.LOW)
@@ -22,10 +24,8 @@ public class InvestigationMonsterData extends GameResource {
     String mapMarkCreateType;
     String monsterCategory;
 
-    CityData cityData;
-
-    @Override
-    public void onLoad() {
-        this.cityData = GameData.getCityDataMap().get(cityId);
+    @Nullable
+    public CityData getCityData(){
+        return GameData.getCityDataMap().get(cityId);
     }
 }

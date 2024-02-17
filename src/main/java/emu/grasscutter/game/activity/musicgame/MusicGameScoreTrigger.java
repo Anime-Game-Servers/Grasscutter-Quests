@@ -2,9 +2,9 @@ package emu.grasscutter.game.activity.musicgame;
 
 import emu.grasscutter.game.activity.ActivityWatcher;
 import emu.grasscutter.game.activity.ActivityWatcherType;
-import emu.grasscutter.game.props.WatcherTriggerType;
+import static org.anime_game_servers.game_data_models.data.watcher.WatcherTriggerType.TRIGGER_FLEUR_FAIR_MUSIC_GAME_REACH_SCORE;
 
-@ActivityWatcherType(WatcherTriggerType.TRIGGER_FLEUR_FAIR_MUSIC_GAME_REACH_SCORE)
+@ActivityWatcherType(TRIGGER_FLEUR_FAIR_MUSIC_GAME_REACH_SCORE)
 public class MusicGameScoreTrigger extends ActivityWatcher {
     @Override
     protected boolean isMeet(String... param) {

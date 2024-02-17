@@ -4,12 +4,12 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.DataLoader;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.ItemParamData;
-import emu.grasscutter.data.excels.ShopGoodsData;
 import emu.grasscutter.server.game.BaseGameSystem;
 import emu.grasscutter.server.game.GameServer;
 import emu.grasscutter.utils.Utils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import lombok.val;
 
 import static emu.grasscutter.config.Configuration.*;
 
@@ -66,8 +66,8 @@ public class ShopSystem extends BaseGameSystem {
                 GameData.getShopGoodsDataEntries().forEach((k, v) -> {
                     if (!getShopData().containsKey(k.intValue()))
                         getShopData().put(k.intValue(), new ArrayList<>());
-                    for (ShopGoodsData sgd : v) {
-                        var shopInfo = new ShopInfo(sgd);
+                    for (val sgd : v) {
+                        val shopInfo = new ShopInfo(sgd);
                         getShopData().get(k.intValue()).add(shopInfo);
                     }
                 });

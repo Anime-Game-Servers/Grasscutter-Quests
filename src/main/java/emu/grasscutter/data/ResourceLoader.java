@@ -3,6 +3,7 @@ package emu.grasscutter.data;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Loggers;
 import emu.grasscutter.data.binout.*;
 import emu.grasscutter.data.binout.AbilityModifier.AbilityModifierAction;
@@ -41,17 +42,27 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
+import kotlin.Unit;
+import kotlinx.serialization.json.Json;
+import kotlinx.serialization.json.JsonKt;
 import lombok.val;
 
+import org.anime_game_servers.core.base.interfaces.IntKey;
 import org.anime_game_servers.gi_lua.models.loader.SceneReplacementScriptLoadParams;
 import org.anime_game_servers.gi_lua.models.loader.ShardQuestScriptLoadParams;
 import org.anime_game_servers.gi_lua.models.quest.QuestData;
 import org.anime_game_servers.gi_lua.models.quest.RewindData;
 import org.anime_game_servers.gi_lua.models.scene.SceneGroupReplacement;
-import org.reflections.Reflections;
-import org.slf4j.Logger;
 
 import java.io.*;
+import org.anime_game_servers.game_data_models.loader.DataFile;
+import org.anime_game_servers.game_data_models.loader.FileType;
+import org.anime_game_servers.game_data_models.loader.JsonDataLoader;
+import org.slf4j.Logger;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -74,8 +85,7 @@ public class ResourceLoader {
 
     // Get a list of all resource classes, sorted by loadPriority
     public static List<Class<?>> getResourceDefClasses() {
-        Reflections reflections = new Reflections(ResourceLoader.class.getPackage().getName());
-        Set<?> classes = reflections.getSubTypesOf(GameResource.class);
+        Set<?> classes = Grasscutter.reflector.getSubTypesOf(GameResource.class);
 
         List<Class<?>> classList = new ArrayList<>(classes.size());
         classes.forEach(o -> {
@@ -92,8 +102,7 @@ public class ResourceLoader {
 
     // Get a list containing sets of all resource classes, sorted by loadPriority
     protected static List<Set<Class<?>>> getResourceDefClassesPrioritySets() {
-        val reflections = new Reflections(ResourceLoader.class.getPackage().getName());
-        val classes = reflections.getSubTypesOf(GameResource.class);
+        val classes = Grasscutter.reflector.getSubTypesOf(GameResource.class);
         val priorities = ResourceType.LoadPriority.getInOrder();
         logger.debug("Priorities are {}", priorities);
         val map = new LinkedHashMap<ResourceType.LoadPriority, Set<Class<?>>>(priorities.size());
@@ -122,6 +131,7 @@ public class ResourceLoader {
         loadAbilityModifiers();
         // Load resources
         loadResources(true);
+        loadExcel();
         // Process into depots
         GameDepot.load();
         // Load spawn data and quests
@@ -152,6 +162,122 @@ public class ResourceLoader {
         EntityControllerScriptManager.load();
         logger.info(translate("messages.status.resources.finish"));
         loadedAll = true;
+    }
+
+    static JsonDataLoader jsonDataLoader;
+
+    public static void loadExcel() {
+        val json = JsonKt.Json(Json.Default, (jsonBuilder -> {
+            jsonBuilder.setIgnoreUnknownKeys(true);
+            jsonBuilder.setLenient(true);
+            return Unit.INSTANCE;
+        }));
+
+        jsonDataLoader = new JsonDataLoader(json);
+        getAnimeGameModelsMaps();
+        initExcelCaches();
+    }
+
+    public static void getAnimeGameModelsMaps() {
+        val fields = GameData.class.getDeclaredFields();
+        Arrays.stream(fields).parallel()
+            .filter(field -> field.getAnnotation(AutoResource.class) != null && field.getAnnotation(QuickAccessCache.class) == null)
+            .forEach(field -> {
+                try {
+                    val type = field.getType();
+                    if (type.equals(Int2ObjectMap.class)) {
+                        loadInt2ObjectMap(field);
+                    } else if (Map.class.isAssignableFrom(type)) {
+                        loadGenericMap(field);
+                    } else {
+                        logger.info("Field {} is not a map", field.getName());
+                    }
+                } catch (Exception e) {
+                    logger.error("Error loading field {}", field.getName(), e);
+                }
+            });
+    }
+
+    private static void loadInt2ObjectMap(Field field) throws IllegalAccessException {
+        val arguments = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
+        if (arguments.length != 1)
+            throw new RuntimeException("expected 1 generic type argument for Int2ObjectMap");
+        val type = arguments[0];
+        if (!(type instanceof Class<?>)) {
+            return;
+        }
+        if (!(IntKey.class.isAssignableFrom((Class<?>) type))) {
+            return;
+        }
+
+        val targetClass = (Class<? extends IntKey>) arguments[0];
+
+        val annotations = targetClass.getAnnotations();
+        for (Annotation annotation : annotations) {
+            if (annotation instanceof DataFile.Container) {
+                field.setAccessible(true);
+                val map = (Int2ObjectMap<Object>) field.get(null);
+                field.setAccessible(false);
+                loadExcelList(targetClass, map);
+                logger.error("loaded {} entries for {}", map.size(), targetClass.getName());
+                return;
+            }
+        }
+    }
+
+    private static void loadGenericMap(Field field){
+        val genericType = field.getGenericType();
+        if(!(genericType instanceof ParameterizedType)){
+            return;
+        }
+        val arguments = ((ParameterizedType) genericType).getActualTypeArguments();
+        if (arguments.length != 2)
+            throw new RuntimeException("expected 2 generic type arguments for Map");
+        val keyType = arguments[0];
+        val valueType = arguments[1];
+
+        if (!(keyType instanceof Class<?>)) {
+            return;
+        }
+        if (!(valueType instanceof Class<?>)) {
+            return;
+        }
+        if(((Class<?>)valueType).getPackage().getName().contains("grasscutter")){
+            return;
+        }
+        if(keyType.equals(String.class)){
+            //TODO handle StringKey
+        }
+    }
+
+
+    public static void loadExcelList(Class<? extends IntKey> objectClass, Int2ObjectMap<Object> targetMap){
+        val serializer = jsonDataLoader.getSerializer(objectClass);
+        if(serializer == null){
+            Grasscutter.getLogger().error("unable to load serializer for {}", objectClass.getName());
+            return;
+        }
+        val annotations = objectClass.getAnnotations();
+        for (Annotation annotation : annotations) {
+            if(annotation instanceof DataFile.Container dataFiles){
+                for (DataFile dataFile : dataFiles.value()) {
+                    // only json is supported for now
+                    if(dataFile.fileType() != FileType.JSON){
+                        continue;
+                    }
+                    val path = getResourcePath(dataFile.filePath());
+                    if(!Files.exists(path)){
+                        continue;
+                    }
+                    val data = jsonDataLoader.loadFileListJvm(path.toString(), serializer);
+                    data.forEach(value -> targetMap.put(value.getIntKey(), value));
+                }
+            }
+        }
+    }
+
+    public static void initExcelCaches(){
+        GameData.getTriggerExcelConfigDataMap().values().forEach(GameData::putQuestTriggerDataCache);
     }
 
     public static void loadResources() {
@@ -408,7 +534,7 @@ public class ResourceLoader {
         }
 
         for (AbilityEmbryoEntry entry : embryoList) {
-            GameData.getAbilityEmbryoInfo().put(entry.getName(), entry);
+            GameData.getAbilityEmbryos().put(entry.getName(), entry);
         }
     }
 
@@ -679,10 +805,10 @@ public class ResourceLoader {
                     }
 
                     data.setIndex(SceneIndexManager.buildIndex(3, data.getBornPosList(), item -> item.getPos().toPoint()));
-                    GameData.getSceneNpcBornData().put(data.getSceneId(), data);
+                    GameData.getNpcBornData().put(data.getSceneId(), data);
                 } catch (IOException ignored) {}
             });
-            logger.debug("Loaded {} SceneNpcBornDatas.", GameData.getSceneNpcBornData().size());
+            logger.debug("Loaded {} SceneNpcBornDatas.", GameData.getNpcBornData().size());
         } catch (IOException e) {
             logger.error("Failed to load SceneNpcBorn folder.");
         }

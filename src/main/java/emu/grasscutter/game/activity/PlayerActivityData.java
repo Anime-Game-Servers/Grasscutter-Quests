@@ -4,10 +4,7 @@ import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Transient;
 import emu.grasscutter.data.GameData;
-import emu.grasscutter.data.common.ItemParamData;
-import emu.grasscutter.data.excels.ActivityWatcherData;
 import emu.grasscutter.database.DatabaseHelper;
-import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.server.packet.send.PacketActivityUpdateWatcherNotify;
@@ -18,8 +15,8 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import messages.activity.ActivityWatcherInfo;
+import org.anime_game_servers.game_data_models.data.watcher.ActivityWatcherData;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -78,21 +75,16 @@ public class PlayerActivityData {
             return;
         }
 
-        var reward = Optional.of(watcher)
+        val reward = Optional.of(watcher)
             .map(WatcherInfo::getMetadata)
-            .map(ActivityWatcherData::getRewardID)
+            .map(ActivityWatcherData::getRewardId)
             .map(id -> GameData.getRewardDataMap().get(id.intValue()));
 
         if (reward.isEmpty()) {
             return;
         }
 
-        List<GameItem> rewards = new ArrayList<>();
-        for (ItemParamData param : reward.get().getRewardItemList()) {
-            rewards.add(new GameItem(param.getId(), Math.max(param.getCount(), 1)));
-        }
-
-        player.getInventory().addItems(rewards, ActionReason.ActivityWatcher);
+        player.getInventory().addRewardData(reward.get(), ActionReason.ActivityWatcher);
         watcher.setTakenReward(true);
         save();
     }

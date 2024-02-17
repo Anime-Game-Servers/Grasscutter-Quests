@@ -14,6 +14,7 @@ import emu.grasscutter.net.packet.PacketOpcodes;
 import emu.grasscutter.net.proto.TakePlayerLevelRewardReqOuterClass.TakePlayerLevelRewardReq;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketTakePlayerLevelRewardRsp;
+import lombok.val;
 
 @Opcodes(PacketOpcodes.TakePlayerLevelRewardReq)
 public class HandlerTakePlayerLevelRewardReq extends PacketHandler {
@@ -26,9 +27,9 @@ public class HandlerTakePlayerLevelRewardReq extends PacketHandler {
             Set<Integer> rewardedLevels = session.getPlayer().getRewardedLevels();
             if (!rewardedLevels.contains(level)) {// No duplicated reward
                 int rewardId = GameData.getPlayerLevelDataMap().get(level).getRewardId();
-                if (rewardId != 0) {
-                    List<ItemParamData> rewardItems = GameData.getRewardDataMap().get(rewardId).getRewardItemList();
-                    pl.getInventory().addItemParamDatas(rewardItems, ActionReason.PlayerUpgradeReward);
+                val rewardData = GameData.getRewardDataMap().get(rewardId);
+                if (rewardData != null) {
+                    pl.getInventory().addRewardData(rewardData, ActionReason.PlayerUpgradeReward);
                     rewardedLevels.add(level);
                     pl.setRewardedLevels(rewardedLevels);
                     pl.save();
