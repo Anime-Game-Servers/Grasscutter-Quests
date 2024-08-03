@@ -13,8 +13,8 @@ import emu.grasscutter.net.proto.BlossomScheduleInfoOuterClass.BlossomScheduleIn
 import emu.grasscutter.scripts.ScriptSystem;
 import emu.grasscutter.utils.Position;
 import lombok.*;
-import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup;
-import org.anime_game_servers.core.gi.models.Vector;
+import org.anime_game_servers.game_data_models.data.city.CityData;
+import org.anime_game_servers.game_data_models.data.world.WorldLevelData;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;

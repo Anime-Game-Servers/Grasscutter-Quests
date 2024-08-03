@@ -8,7 +8,6 @@ import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.AvatarData;
 import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.data.excels.MonsterData;
-import emu.grasscutter.data.excels.SceneData;
 import emu.grasscutter.utils.FileUtils;
 import emu.grasscutter.utils.Language;
 import io.javalin.http.ContentType;
@@ -18,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import org.anime_game_servers.game_data_models.data.scene.SceneData;
 
 final class HandbookRequestHandler implements DocumentationHandler {
     private List<String> handbookHtmls;

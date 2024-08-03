@@ -46,7 +46,10 @@ import org.anime_game_servers.gi_lua.models.scene.block.SceneGroupInfo;
 import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup;
 import org.anime_game_servers.gi_lua.models.scene.group.SceneInitConfig;
 import org.anime_game_servers.gi_lua.utils.GroupUtils;
+import org.anime_game_servers.game_data_models.data.world.WorldLevelData;
 import org.jetbrains.annotations.NotNull;
+import org.anime_game_servers.game_data_models.data.scene.SceneData;
+import org.anime_game_servers.game_data_models.data.scene.SceneType;
 
 import javax.annotation.Nullable;
 
@@ -119,7 +122,7 @@ public class Scene {
     }
 
     public SceneType getSceneType() {
-        return this.sceneData.getSceneType();
+        return this.sceneData.getType();
     }
 
     public int getPlayerCount() {
@@ -902,7 +905,7 @@ public class Scene {
 
     private List<SceneNpcBornEntry> loadNpcForPlayer(Player player) {
         val pos = player.getPosition();
-        val data = GameData.getSceneNpcBornData().get(getId());
+        val data = GameData.getSceneNpcBornData(getId());
         if (data == null) return List.of();
 
         val npcList = SceneIndexManager.queryNeighbors(data.getIndex(), pos.toDoubleArray(),

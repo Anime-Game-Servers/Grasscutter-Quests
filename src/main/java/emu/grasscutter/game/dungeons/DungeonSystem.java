@@ -15,13 +15,13 @@ import emu.grasscutter.game.dungeons.pass_condition.BaseCondition;
 import emu.grasscutter.game.dungeons.settle_listeners.BasicDungeonSettleListener;
 import emu.grasscutter.game.dungeons.settle_listeners.DungeonSettleListener;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.game.props.SceneType;
 import emu.grasscutter.server.game.BaseGameSystem;
 import emu.grasscutter.server.game.GameServer;
 import emu.grasscutter.utils.Position;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.val;
+import org.anime_game_servers.game_data_models.data.scene.SceneType;
 import org.reflections.Reflections;
 
 import java.util.Optional;

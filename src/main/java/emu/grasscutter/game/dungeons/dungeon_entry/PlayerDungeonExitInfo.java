@@ -1,14 +1,13 @@
 package emu.grasscutter.game.dungeons.dungeon_entry;
 
-import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.PointData;
-import emu.grasscutter.data.excels.SceneData;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.game.props.SceneType;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.utils.Position;
 import lombok.*;
+import org.anime_game_servers.game_data_models.data.scene.SceneData;
+import org.anime_game_servers.game_data_models.data.scene.SceneType;
 
 import java.util.Optional;
 
@@ -27,7 +26,7 @@ public class PlayerDungeonExitInfo {
     }
 
     public void setAll(Player player, int dungeonId, int pointId) {
-        val fromBigWorld = Optional.ofNullable(player.getScene()).map(Scene::getSceneData).map(SceneData::getSceneType)
+        val fromBigWorld = Optional.ofNullable(player.getScene()).map(Scene::getSceneData).map(SceneData::getType)
             .filter(sceneType -> sceneType == SceneType.SCENE_WORLD);
         if (fromBigWorld.isEmpty()) return; // only set player exits location if player comes in from big world
 

@@ -1,7 +1,7 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.game.activity.trialavatar.TrialAvatarActivityHandler;
-import emu.grasscutter.game.props.ActivityType;
+import org.anime_game_servers.game_data_models.data.activity.ActivityType;
 import emu.grasscutter.net.packet.Opcodes;
 import emu.grasscutter.net.packet.PacketOpcodes;
 import emu.grasscutter.net.packet.PacketHandler;

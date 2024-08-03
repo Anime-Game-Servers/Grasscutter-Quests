@@ -7,7 +7,6 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Loggers;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.MonsterData;
-import emu.grasscutter.data.excels.WorldLevelData;
 import emu.grasscutter.data.server.Grid;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.entity.*;
@@ -897,7 +896,7 @@ public class SceneScriptManager {
         if (getScene().getDungeonManager() != null) {
             level = getScene().getDungeonManager().getLevelForMonster(monster.getConfigId());
         } else if (getScene().getWorld().getWorldLevel() > 0) {
-            WorldLevelData worldLevelData = GameData.getWorldLevelDataMap().get(getScene().getWorld().getWorldLevel());
+            val worldLevelData = GameData.getWorldLevelDataMap().get(getScene().getWorld().getWorldLevel());
 
             if (worldLevelData != null) {
                 level = worldLevelData.getMonsterLevel();

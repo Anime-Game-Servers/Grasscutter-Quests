@@ -86,6 +86,7 @@ import messages.scene.PlayerLocationInfo;
 import messages.scene.PlayerWorldLocationInfo;
 import messages.scene.entity.MpSettingType;
 import messages.scene.entity.OnlinePlayerInfo;
+import org.anime_game_servers.game_data_models.data.scene.SceneTagConfigData;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.DayOfWeek;
@@ -401,11 +402,11 @@ public class Player {
     }
 
     public void visitScene(int sceneId) {
-        val sceneTagData = GameData.getSceneTagDataMap().values();
+        val sceneTagData = GameData.getSceneTagConfigDataMap().values();
         val tags = this.sceneTags.computeIfAbsent(sceneId, k -> new HashMap<>());
         sceneTagData.stream()
                 .filter(tagData -> tagData.getSceneId() == sceneId && tagData.isDefaultValid())
-                .map(SceneTagData::getId)
+                .map(SceneTagConfigData::getId)
                 .forEach(k -> tags.putIfAbsent(k, true));
     }
 
