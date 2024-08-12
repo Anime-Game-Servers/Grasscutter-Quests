@@ -101,7 +101,7 @@ public class QuestSystem extends BaseGameSystem {
     }
 
     public boolean initialCheckContent(GameQuest quest, int[] curProgress,
-                                          List<QuestContentCondition> conditions, LogicType logicType){
+                                       List<QuestContentCondition> conditions, LogicType logicType, boolean shouldReset) {
         val owner = quest.getOwner();
         var changed = false;
         int[] finished = new int[conditions.size()];
@@ -112,17 +112,18 @@ public class QuestSystem extends BaseGameSystem {
 
             val startingProgress = curProgress[i];
             int result = handler.initialCheck(quest, quest.getQuestData(), condition);
-            curProgress[i] = result;
+            if (shouldReset) curProgress[i] = result;
             if (startingProgress != result) {
                 changed = true;
             }
             finished[i] = handler.checkProgress(quest, condition, result) ? 1 : 0;
         }
-        if(changed) {
+        if (changed) {
             owner.getSession().send(new PacketQuestProgressUpdateNotify(quest));
         }
         return LogicType.calculate(logicType, finished);
     }
+
     public boolean checkAndUpdateContent(GameQuest quest, int[] curProgress,
                                           List<QuestContentCondition> conditions, LogicType logicType,
                                           QuestContent condType, String paramStr, int... params){
@@ -146,6 +147,7 @@ public class QuestSystem extends BaseGameSystem {
         }
         if(changed) {
             owner.getSession().send(new PacketQuestProgressUpdateNotify(quest));
+            quest.save();
         }
         return LogicType.calculate(logicType, finished);
     }

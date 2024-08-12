@@ -4,6 +4,7 @@ import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Indexed;
 import dev.morphia.annotations.Transient;
+import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Loggers;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.quest.MainQuestData;
@@ -253,7 +254,7 @@ public class GameMainQuest {
         return null;
     }
 
-    public GameQuest getRewindTarget(){
+    public GameQuest getHighestActiveQuest() {
         var activeQuests = getChildQuests().values().stream()
             .filter(p -> (p.getState() == QuestState.QUEST_STATE_UNFINISHED || p.getState() == QuestState.QUEST_STATE_FINISHED)).toList();
         var highestActiveQuest = activeQuests.stream()
@@ -265,7 +266,7 @@ public class GameMainQuest {
             var firstUnstarted = getChildQuests().values().stream()
                 .filter(q -> q.getQuestData() != null && q.getState().getValue() != QuestState.QUEST_STATE_FINISHED.getValue())
                 .min(Comparator.comparingInt(a -> a.getQuestData().getOrder()));
-            if(firstUnstarted.isEmpty()){
+            if (firstUnstarted.isEmpty()) {
                 // all quests are probably finished, do don't rewind and maybe also set the mainquest to finished?
                 return null;
             }
@@ -273,14 +274,20 @@ public class GameMainQuest {
             //todo maybe try to accept quests if there is no active quest and no rewind target?
             //tryAcceptSubQuests(QuestTrigger.QUEST_COND_NONE, "", 0);
         }
+        return highestActiveQuest;
+    }
+
+    public GameQuest getRewindTarget(){
+        var highestActiveQuest = getHighestActiveQuest();
 
         var highestOrder = highestActiveQuest.getQuestData().getOrder();
         var rewindTarget = getChildQuests().values().stream()
             .filter(q -> q.getQuestData() != null)
             .filter(q -> q.getQuestData().isRewind() && q.getQuestData().getOrder() <= highestOrder)
             .max(Comparator.comparingInt(a -> a.getQuestData().getOrder()))
-            .orElse(highestActiveQuest);
+            .orElse(null);
 
+        Grasscutter.getLogger().trace("For quest {}, the rewindTarget is {}", this.getParentQuestId(), rewindTarget);
         return rewindTarget;
     }
 
@@ -353,10 +360,10 @@ public class GameMainQuest {
         return true;
     }
 
-    public void checkProgress(){
+    public void checkProgress(boolean shouldReset) {
         for (var quest : getChildQuests().values()){
             if(quest.getState() == QuestState.QUEST_STATE_UNFINISHED) {
-                questManager.checkQuestAlreadyFullfilled(quest);
+                questManager.checkQuestAlreadyFulfilled(quest, shouldReset);
             }
         }
     }

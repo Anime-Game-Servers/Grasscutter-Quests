@@ -1,20 +1,18 @@
 package emu.grasscutter.game.quest;
 
-import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.quest.SubQuestData;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.player.BasePlayerManager;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.game.quest.enums.*;
+import emu.grasscutter.game.quest.enums.LogicType;
+import emu.grasscutter.game.quest.enums.ParentQuestState;
+import emu.grasscutter.game.quest.enums.QuestCond;
+import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.game.world.World;
-import emu.grasscutter.server.packet.send.*;
+import emu.grasscutter.server.packet.send.PacketFinishedParentQuestUpdateNotify;
+import emu.grasscutter.server.packet.send.PacketQuestGlobalVarNotify;
 import emu.grasscutter.utils.Position;
 import io.netty.util.concurrent.FastThreadLocalThread;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -24,6 +22,12 @@ import lombok.val;
 import org.anime_game_servers.core.gi.enums.QuestState;
 
 import javax.annotation.Nonnull;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 public class QuestManager extends BasePlayerManager {
 
@@ -106,18 +110,20 @@ public class QuestManager extends BasePlayerManager {
     public void onLogin() {
         List<GameMainQuest> activeQuests = getActiveMainQuests();
         for (GameMainQuest quest : activeQuests) {
-            val rewindTarget = quest.getRewindTarget();
+            var rewindTarget = quest.getRewindTarget();
+            if (rewindTarget == null) rewindTarget = quest.getHighestActiveQuest();
+            val finalRewindTarget = rewindTarget;
             List<Position> rewindPos = quest.rewind(); // <pos, rotation>
             if (rewindPos != null) {
                 getPlayer().getPosition().set(rewindPos.get(0));
                 getPlayer().getRotation().set(rewindPos.get(1));
             }
             //execute all the beginExec before the rewind target on UNFINISHED quests on login only
-            quest.getChildQuests().values().stream().filter(p -> p.getQuestData().getOrder() < rewindTarget.getQuestData().getOrder()
+            quest.getChildQuests().values().stream().filter(p -> p.getQuestData().getOrder() < finalRewindTarget.getQuestData().getOrder()
                     && p.getState().getValue() == QuestState.QUEST_STATE_UNFINISHED.getValue()).forEach(q -> {
                 q.getQuestData().getBeginExec().forEach(e -> getPlayer().getServer().getQuestSystem().triggerExec(q, e, e.getParam()));
             });
-            quest.checkProgress();
+            quest.checkProgress(false);
         }
         player.getActivityManager().triggerActivityConditions();
     }
@@ -301,7 +307,7 @@ public class QuestManager extends BasePlayerManager {
 
         // Forcefully start
         quest.start();
-        checkQuestAlreadyFullfilled(quest);
+        checkQuestAlreadyFulfilled(quest, true);
 
         return quest;
     }
@@ -406,7 +412,7 @@ public class QuestManager extends BasePlayerManager {
      * TODO move content checks to use static informations where possible to allow direct already fulfilled checking
      * @param quest
      */
-    public void checkQuestAlreadyFullfilled(GameQuest quest){
+    public void checkQuestAlreadyFulfilled(GameQuest quest, boolean shouldReset) {
         Grasscutter.getGameServer().getScheduler().scheduleDelayedTask(() -> {
             val questSystem = getPlayer().getServer().getQuestSystem();
             val questData = quest.getQuestData();
@@ -415,13 +421,13 @@ public class QuestManager extends BasePlayerManager {
                 return;
             }
 
-            val shouldFinish = questSystem.initialCheckContent(quest, quest.getFinishProgressList(), questData.getFinishCond(), questData.getFinishCondComb());
+            val shouldFinish = questSystem.initialCheckContent(quest, quest.getFinishProgressList(), questData.getFinishCond(), questData.getFinishCondComb(), shouldReset);
             if (shouldFinish) {
                 quest.finish(false);
                 return;
             }
             if(!questData.getFailCond().isEmpty()) {
-                val shouldFail = questSystem.initialCheckContent(quest, quest.getFailProgressList(), questData.getFailCond(), questData.getFailCondComb());
+                val shouldFail = questSystem.initialCheckContent(quest, quest.getFailProgressList(), questData.getFailCond(), questData.getFailCondComb(), shouldReset);
                 if (shouldFail) {
                     quest.fail();
                 }

@@ -101,7 +101,7 @@ public class GameQuest {
         triggerStateEvents();
 
         getQuestData().getBeginExec().forEach(e -> getOwner().getServer().getQuestSystem().triggerExec(this, e, e.getParam()));
-        getOwner().getQuestManager().checkQuestAlreadyFullfilled(this);
+        getOwner().getQuestManager().checkQuestAlreadyFulfilled(this, true);
         getOwner().getDungeonEntryManager().checkQuestForDungeonEntryUpdate(this);
 
         Grasscutter.getLogger().debug("Quest {} is started", subQuestId);
