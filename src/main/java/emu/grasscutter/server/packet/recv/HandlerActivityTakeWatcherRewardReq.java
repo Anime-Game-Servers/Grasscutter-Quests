@@ -3,7 +3,7 @@ package emu.grasscutter.server.packet.recv;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketActivityTakeWatcherRewardRsp;
-import messages.activity.ActivityTakeWatcherRewardReq;
+import org.anime_game_servers.multi_proto.gi.messages.activity.general.ActivityTakeWatcherRewardReq;
 
 import java.util.Optional;
 

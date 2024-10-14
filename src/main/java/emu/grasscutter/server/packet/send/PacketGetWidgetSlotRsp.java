@@ -1,41 +1,28 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.GetWidgetSlotRspOuterClass;
-import emu.grasscutter.net.proto.WidgetSlotDataOuterClass;
-import emu.grasscutter.net.proto.WidgetSlotTagOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.manage_slot.GetWidgetSlotRsp;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.manage_slot.WidgetSlotData;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.manage_slot.WidgetSlotTag;
 
 import java.util.List;
 
-public class PacketGetWidgetSlotRsp extends BasePacket {
-
+public class PacketGetWidgetSlotRsp extends BaseTypedPacket<GetWidgetSlotRsp> {
     public PacketGetWidgetSlotRsp(Player player) {
-        super(PacketOpcodes.GetWidgetSlotRsp);
-
-        GetWidgetSlotRspOuterClass.GetWidgetSlotRsp.Builder proto =
-                GetWidgetSlotRspOuterClass.GetWidgetSlotRsp.newBuilder();
-
+        super(new GetWidgetSlotRsp());
         if (player.getWidgetId() == 0) {  // TODO: check this logic later, it was null-checking an int before which made it dead code
-            proto.addAllSlotList(List.of());
+            proto.setSlotList(List.of());
         } else {
-            proto.addSlotList(
-                    WidgetSlotDataOuterClass.WidgetSlotData.newBuilder()
-                            .setIsActive(true)
-                            .setMaterialId(player.getWidgetId())
-                            .build()
-            );
+            val widgetSlotDataFirst = new WidgetSlotData();
+            widgetSlotDataFirst.setActive(true);
+            widgetSlotDataFirst.setMaterialId(player.getWidgetId());
 
-            proto.addSlotList(
-                    WidgetSlotDataOuterClass.WidgetSlotData.newBuilder()
-                            .setTag(WidgetSlotTagOuterClass.WidgetSlotTag.WIDGET_SLOT_TAG_ATTACH_AVATAR)
-                            .build()
-            );
+            val widgetSlotDataSecond = new WidgetSlotData();
+            widgetSlotDataSecond.setTag(WidgetSlotTag.WIDGET_SLOT_ATTACH_AVATAR);
+
+            proto.setSlotList(List.of(widgetSlotDataFirst, widgetSlotDataSecond));
         }
-
-        GetWidgetSlotRspOuterClass.GetWidgetSlotRsp protoData = proto.build();
-
-        this.setData(protoData);
     }
 }

@@ -9,7 +9,7 @@ import emu.grasscutter.server.packet.send.PacketPrivateChatNotify;
 import emu.grasscutter.server.packet.send.PacketPullPrivateChatRsp;
 import emu.grasscutter.server.packet.send.PacketPullRecentChatRsp;
 import emu.grasscutter.utils.Utils;
-import messages.chat.ChatInfo;
+import org.anime_game_servers.multi_proto.gi.messages.community.chat.ChatInfo;
 
 import java.util.regex.Pattern;
 

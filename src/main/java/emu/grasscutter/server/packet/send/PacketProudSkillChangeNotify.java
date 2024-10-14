@@ -1,22 +1,15 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.avatar.Avatar;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ProudSkillChangeNotifyOuterClass.ProudSkillChangeNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.team.skill.ProudSkillChangeNotify;
 
-public class PacketProudSkillChangeNotify extends BasePacket {
-	
+public class PacketProudSkillChangeNotify extends BaseTypedPacket<ProudSkillChangeNotify> {
 	public PacketProudSkillChangeNotify(Avatar avatar) {
-		super(PacketOpcodes.ProudSkillChangeNotify);
-		
-		ProudSkillChangeNotify proto = ProudSkillChangeNotify.newBuilder()
-				.setAvatarGuid(avatar.getGuid())
-				.setEntityId(avatar.getEntityId())
-				.setSkillDepotId(avatar.getSkillDepotId())
-				.addAllProudSkillList(avatar.getProudSkillList())
-				.build();
-		
-		this.setData(proto);
+        super(new ProudSkillChangeNotify());
+        proto.setAvatarGuid(avatar.getGuid());
+        proto.setEntityId(avatar.getEntityId());
+        proto.setSkillDepotId(avatar.getSkillDepotId());
+        proto.setProudSkillList(avatar.getProudSkillList().stream().toList());
 	}
 }

@@ -21,7 +21,7 @@ import emu.grasscutter.utils.JsonUtils;
 
 import java.util.*;
 import lombok.*;
-import messages.activity.ActivityInfo;
+import org.anime_game_servers.multi_proto.gi.messages.activity.general.ActivityInfo;
 
 @GameActivity(ActivityType.NEW_ACTIVITY_TRIAL_AVATAR)
 public class TrialAvatarActivityHandler extends ActivityHandler {

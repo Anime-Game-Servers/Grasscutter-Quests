@@ -7,13 +7,13 @@ import emu.grasscutter.game.entity.EntityAvatar;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.inventory.ItemType;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.proto.DungeonSettleNotifyOuterClass.DungeonSettleNotify;
-import emu.grasscutter.net.proto.ParamListOuterClass.ParamList;
-import emu.grasscutter.net.proto.StrengthenPointDataOuterClass.StrengthenPointData;
 import emu.grasscutter.utils.Utils;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.StrengthenPointData;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.progression.DungeonSettleNotify;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.progression.ParamList;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,72 +38,90 @@ public class BaseDungeonResult {
     /**
      * Could be different depending on dungeon types
      * */
-    protected void onProto(DungeonSettleNotify.Builder builder){
+    protected void onProto(DungeonSettleNotify builder) {
     }
 
     /**
      * Show player's area to improve, not completed
      * */
-    private void getStrengthenPointData(DungeonSettleNotify.Builder builder) {
+    private void getStrengthenPointData(DungeonSettleNotify builder) {
         if (this.dungeonStats.dungeonResult().isSuccess() ||
             this.dungeonData.getInvolveType() != INVOLVE_SINGLE_MULTIPLE) return;
 
         val playerActiveTeam = this.player.getTeamManager().getActiveTeam();
-        builder.putAllStrengthenPointDataMap(Arrays.stream(StrengthenPointType.values()).collect(
-            Collectors.toMap(StrengthenPointType::getValue, type -> switch (type){
-                case LEVEL -> StrengthenPointData.newBuilder()
-                    .setBasePoint(playerActiveTeam.size() * 90)
-                    .setCurPoint(playerActiveTeam.stream()
-                        .map(EntityAvatar::getAvatar).map(Avatar::getLevel)
-                        .reduce(0, Integer::sum))
-                    .build();
-                case WEAPON -> StrengthenPointData.newBuilder()
-                    .setBasePoint(playerActiveTeam.size() * 90)
-                    .setCurPoint(playerActiveTeam.stream()
-                        .map(EntityAvatar::getAvatar).map(Avatar::getEquips)
-                        .map(Map::values).flatMap(Collection::stream)
+        builder.setStrengthenPointDataMap(Arrays.stream(StrengthenPointType.values()).collect(
+            Collectors.toMap(StrengthenPointType::getValue, type -> switch (type) {
+                case LEVEL -> {
+                    val strengthenPointData = new StrengthenPointData();
+                    strengthenPointData.setBasePoint(playerActiveTeam.size() * 90);
+                    strengthenPointData.setCurPoint(playerActiveTeam.stream()
+                        .map(EntityAvatar::getAvatar)
+                        .map(Avatar::getLevel)
+                        .reduce(0, Integer::sum));
+                    yield strengthenPointData;
+                }
+                case WEAPON -> {
+                    val strengthenPointData = new StrengthenPointData();
+                    strengthenPointData.setBasePoint(playerActiveTeam.size() * 90);
+                    strengthenPointData.setCurPoint(playerActiveTeam.stream()
+                        .map(EntityAvatar::getAvatar)
+                        .map(Avatar::getEquips)
+                        .map(Map::values)
+                        .flatMap(Collection::stream)
                         .filter(item -> item.getItemType() == ItemType.ITEM_WEAPON)
                         .map(GameItem::getLevel)
-                        .reduce(0, Integer::sum))
-                    .build();
-                case TALENT -> StrengthenPointData.newBuilder()
-                    .setBasePoint(100000).setCurPoint(50000).build();
-                case ARTIFACT -> StrengthenPointData.newBuilder()
-                    .setBasePoint(playerActiveTeam.size() * 20)
-                    .setCurPoint(playerActiveTeam.stream()
-                        .map(EntityAvatar::getAvatar).map(Avatar::getEquips)
-                        .map(Map::values).flatMap(Collection::stream)
+                        .reduce(0, Integer::sum));
+                    yield strengthenPointData;
+                }
+                case TALENT -> {
+                    val strengthenPointData = new StrengthenPointData();
+                    strengthenPointData.setBasePoint(100000);
+                    strengthenPointData.setCurPoint(50000);
+                    yield strengthenPointData;
+                }
+                case ARTIFACT -> {
+                    val strengthenPointData = new StrengthenPointData();
+                    strengthenPointData.setBasePoint(playerActiveTeam.size() * 20);
+                    strengthenPointData.setCurPoint(playerActiveTeam.stream()
+                        .map(EntityAvatar::getAvatar)
+                        .map(Avatar::getEquips)
+                        .map(Map::values)
+                        .flatMap(Collection::stream)
                         .filter(item -> item.getItemType() == ItemType.ITEM_RELIQUARY)
                         .map(GameItem::getLevel)
-                        .reduce(0, Integer::sum))
-                    .build();
+                        .reduce(0, Integer::sum));
+                    yield strengthenPointData;
+                }
             })));
     }
 
-    public final DungeonSettleNotify.Builder getProto(){
+    public final DungeonSettleNotify getProto() {
         val success = this.dungeonStats.getDungeonResult().isSuccess();
-        val builder = DungeonSettleNotify.newBuilder()
-            .setUseTime(this.dungeonStats.getTimeTaken())
-            .setDungeonId(this.dungeonData.getId())
-            .setIsSuccess(success)
-            .setCloseTime(getCloseTime())
-            .setResult(success ? 1 : 3)
-            .setCreatePlayerUid(this.player.getUid());
+        val builder = new DungeonSettleNotify();
+        builder.setUseTime(this.dungeonStats.getTimeTaken());
+        builder.setDungeonId(this.dungeonData.getId());
+        builder.setSuccess(success);
+        builder.setCloseTime(getCloseTime());
+        builder.setResult(success ? 1 : 3);
+        builder.setCreatePlayerUid(this.player.getUid());
 
         // TODO check
-        val tempSettleMap = new HashMap<Integer, ParamList.Builder>();
+        val tempSettleMap = new HashMap<Integer, ParamList>();
         Optional.ofNullable(this.dungeonData.getSettleShows()).stream()
             .flatMap(List::stream)
-            .forEach(showType -> tempSettleMap.computeIfAbsent(showType.getId(), f -> ParamList.newBuilder())
-                .addParamList(switch (showType) {
-                    case SETTLE_SHOW_TIME_COST ->  this.dungeonStats.getTimeTaken();
+            .forEach(showType -> {
+                val paramList = tempSettleMap.computeIfAbsent(showType.getId(), f -> new ParamList());
+                val paramListList = new ArrayList<>(paramList.getParamList());
+                paramListList.add(switch (showType) {
+                    case SETTLE_SHOW_TIME_COST -> this.dungeonStats.getTimeTaken();
                     case SETTLE_SHOW_KILL_MONSTER_COUNT -> this.dungeonStats.getKilledMonsters();
                     case SETTLE_SHOW_OPEN_CHEST_COUNT -> this.dungeonStats.getOpenChestCount();
-                    default ->  0;
-                }));
-
-        builder.putAllSettleShow(tempSettleMap.entrySet().stream()
-            .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().build())));
+                    default -> 0;
+                });
+                paramList.setParamList(paramListList);
+                tempSettleMap.put(showType.getId(), paramList);
+            });
+        builder.setSettleShow(tempSettleMap);
 
         getStrengthenPointData(builder);
         onProto(builder);

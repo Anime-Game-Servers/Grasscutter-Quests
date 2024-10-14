@@ -1,19 +1,19 @@
 package emu.grasscutter.server.packet.send;
 
+import emu.grasscutter.game.expedition.ExpeditionInfo;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.expedition.AvatarExpeditionCallBackRsp;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.expedition.AvatarExpeditionInfo;
+
+import java.util.HashMap;
 import java.util.Map;
 
-import emu.grasscutter.game.expedition.ExpeditionInfo;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarExpeditionCallBackRspOuterClass.AvatarExpeditionCallBackRsp;
 
-public class PacketAvatarExpeditionCallBackRsp extends BasePacket {
+public class PacketAvatarExpeditionCallBackRsp extends BaseTypedPacket<AvatarExpeditionCallBackRsp> {
     public PacketAvatarExpeditionCallBackRsp(Map<Long, ExpeditionInfo> expeditionInfo) {
-        super(PacketOpcodes.AvatarExpeditionCallBackRsp);
-
-        AvatarExpeditionCallBackRsp.Builder proto = AvatarExpeditionCallBackRsp.newBuilder();
-        expeditionInfo.forEach((key, e) -> proto.putExpeditionInfoMap(key, e.toProto()));
-
-        this.setData(proto.build());
+        super(new AvatarExpeditionCallBackRsp());
+        Map<Long, AvatarExpeditionInfo> avatarExpeditionInfoMap = new HashMap<>();
+        expeditionInfo.forEach((key, e) -> avatarExpeditionInfoMap.put(key, e.toProto()));
+        proto.setExpeditionInfoMap(avatarExpeditionInfoMap);
     }
 }

@@ -1,19 +1,14 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.SetChatEmojiCollectionReqOuterClass;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketSetChatEmojiCollectionRsp;
+import org.anime_game_servers.multi_proto.gi.messages.community.chat.SetChatEmojiCollectionReq;
 
-@Opcodes(PacketOpcodes.SetChatEmojiCollectionReq)
-public class HandlerSetChatEmojiCollectionReq extends PacketHandler {
+public class HandlerSetChatEmojiCollectionReq extends TypedPacketHandler<SetChatEmojiCollectionReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        var req = SetChatEmojiCollectionReqOuterClass.SetChatEmojiCollectionReq.parseFrom(payload);
-
-        session.getPlayer().setChatEmojiIdList(req.getChatEmojiCollectionData().getEmojiIdListList());
+    public void handle(GameSession session, byte[] header, SetChatEmojiCollectionReq req) throws Exception {
+        session.getPlayer().setChatEmojiIdList(req.getChatEmojiCollectionData().getEmojiIdList());
         session.send(new PacketSetChatEmojiCollectionRsp());
     }
 }

@@ -1,18 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AskAddFriendRspOuterClass.AskAddFriendRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.management.AskAddFriendRsp;
 
-public class PacketAskAddFriendRsp extends BasePacket {
-	
+public class PacketAskAddFriendRsp extends BaseTypedPacket<AskAddFriendRsp> {
+
 	public PacketAskAddFriendRsp(int targetUid) {
-		super(PacketOpcodes.AskAddFriendRsp);
-		
-		AskAddFriendRsp proto = AskAddFriendRsp.newBuilder()
-				.setTargetUid(targetUid)
-				.build();
-		
-		this.setData(proto);
+        super(new AskAddFriendRsp());
+        proto.setTargetUid(targetUid);
 	}
 }

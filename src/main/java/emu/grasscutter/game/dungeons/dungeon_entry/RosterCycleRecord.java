@@ -2,14 +2,18 @@ package emu.grasscutter.game.dungeons.dungeon_entry;
 
 import dev.morphia.annotations.Entity;
 import emu.grasscutter.data.GameData;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Optional;
 
 @Entity
 @Builder(builderMethodName = "of")
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class RosterCycleRecord {
     private int rosterId;
     private int selectedPool;

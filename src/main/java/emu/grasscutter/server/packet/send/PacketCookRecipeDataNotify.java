@@ -1,28 +1,25 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.CookRecipeDataNotifyOuterClass.CookRecipeDataNotify;
-import emu.grasscutter.net.proto.CookRecipeDataOuterClass.CookRecipeData;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.item.cooking.CookRecipeData;
+import org.anime_game_servers.multi_proto.gi.messages.item.cooking.CookRecipeDataNotify;
 
-public class PacketCookRecipeDataNotify extends BasePacket {
+public class PacketCookRecipeDataNotify extends BaseTypedPacket<CookRecipeDataNotify> {
     public PacketCookRecipeDataNotify(CookRecipeData recipe) {
-        super(PacketOpcodes.CookRecipeDataNotify);
-
-        CookRecipeDataNotify proto = CookRecipeDataNotify.newBuilder()
-                .setRecipeData(recipe)
-                .build();
-        
-        this.setData(proto);
+        super(new CookRecipeDataNotify());
+        proto.setRecipeData(recipe);
     }
 
     public PacketCookRecipeDataNotify(int recipeId) {
-        super(PacketOpcodes.CookRecipeDataNotify);
+        this(recipeId, 0);
+    }
 
-        CookRecipeDataNotify proto = CookRecipeDataNotify.newBuilder()
-                .setRecipeData(CookRecipeData.newBuilder().setRecipeId(recipeId))
-                .build();
-        
-        this.setData(proto);
+    public PacketCookRecipeDataNotify(int recipeId, int proficiency) {
+        super(new CookRecipeDataNotify());
+        val cookRecipeData = new CookRecipeData();
+        cookRecipeData.setRecipeId(recipeId);
+        cookRecipeData.setProficiency(proficiency);
+        proto.setRecipeData(cookRecipeData);
     }
 }

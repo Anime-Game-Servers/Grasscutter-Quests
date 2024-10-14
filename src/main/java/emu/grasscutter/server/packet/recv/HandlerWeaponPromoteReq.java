@@ -1,20 +1,13 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.WeaponPromoteReqOuterClass.WeaponPromoteReq;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
+import org.anime_game_servers.multi_proto.gi.messages.item.upgrade.WeaponPromoteReq;
 
-@Opcodes(PacketOpcodes.WeaponPromoteReq)
-public class HandlerWeaponPromoteReq extends PacketHandler {
-
+public class HandlerWeaponPromoteReq extends TypedPacketHandler<WeaponPromoteReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        WeaponPromoteReq req = WeaponPromoteReq.parseFrom(payload);
-
+    public void handle(GameSession session, byte[] header, WeaponPromoteReq req) throws Exception {
         // Ascend weapon
         session.getServer().getInventorySystem().promoteWeapon(session.getPlayer(), req.getTargetWeaponGuid());
     }
-
 }

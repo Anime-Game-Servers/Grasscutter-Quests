@@ -2,17 +2,15 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.home.HomeSceneItem;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.HomeGetArrangementInfoRspOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.arangement.HomeGetArrangementInfoRsp;
 
 import java.util.List;
 
-public class PacketHomeGetArrangementInfoRsp extends BasePacket {
+public class PacketHomeGetArrangementInfoRsp extends BaseTypedPacket<HomeGetArrangementInfoRsp> {
 
 	public PacketHomeGetArrangementInfoRsp(Player player, List<Integer> sceneIdList) {
-		super(PacketOpcodes.HomeGetArrangementInfoRsp);
-
+        super(new HomeGetArrangementInfoRsp());
 		var home = player.getHome();
 
 		var homeScenes = sceneIdList.stream()
@@ -22,10 +20,6 @@ public class PacketHomeGetArrangementInfoRsp extends BasePacket {
 
 		home.save();
 
-		var proto = HomeGetArrangementInfoRspOuterClass.HomeGetArrangementInfoRsp.newBuilder();
-
-		proto.addAllSceneArrangementInfoList(homeScenes);
-
-		this.setData(proto);
+        proto.setSceneArrangementInfoList(homeScenes);
 	}
 }

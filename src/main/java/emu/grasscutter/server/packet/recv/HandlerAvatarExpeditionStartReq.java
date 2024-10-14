@@ -1,18 +1,14 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarExpeditionStartReqOuterClass.AvatarExpeditionStartReq;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketAvatarExpeditionStartRsp;
 import emu.grasscutter.utils.Utils;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.expedition.AvatarExpeditionStartReq;
 
-@Opcodes(PacketOpcodes.AvatarExpeditionStartReq)
-public class HandlerAvatarExpeditionStartReq extends PacketHandler {
+public class HandlerAvatarExpeditionStartReq extends TypedPacketHandler<AvatarExpeditionStartReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        AvatarExpeditionStartReq req = AvatarExpeditionStartReq.parseFrom(payload);
+    public void handle(GameSession session, byte[] header, AvatarExpeditionStartReq req) throws Exception {
         var player = session.getPlayer();
 
         int startTime = Utils.getCurrentSeconds();

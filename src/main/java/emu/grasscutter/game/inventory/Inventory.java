@@ -1,9 +1,5 @@
 package emu.grasscutter.game.inventory;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.ItemParamData;
@@ -18,20 +14,19 @@ import emu.grasscutter.game.props.ItemUseAction.UseItemParams;
 import emu.grasscutter.game.props.PlayerProperty;
 import emu.grasscutter.game.props.WatcherTriggerType;
 import emu.grasscutter.game.quest.enums.QuestContent;
-import emu.grasscutter.net.proto.ItemParamOuterClass.ItemParam;
-import emu.grasscutter.server.packet.send.PacketAddNoGachaAvatarCardNotify;
-import emu.grasscutter.server.packet.send.PacketAvatarEquipChangeNotify;
-import emu.grasscutter.server.packet.send.PacketItemAddHintNotify;
-import emu.grasscutter.server.packet.send.PacketStoreItemChangeNotify;
-import emu.grasscutter.server.packet.send.PacketStoreItemDelNotify;
+import emu.grasscutter.server.packet.send.*;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.general.item.ItemParam;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static emu.grasscutter.config.Configuration.INVENTORY_LIMITS;

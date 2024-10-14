@@ -1,24 +1,16 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.GetInvestigationMonsterReqOuterClass;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketGetInvestigationMonsterRsp;
+import org.anime_game_servers.multi_proto.gi.messages.world.investigation.GetInvestigationMonsterReq;
 
-@Opcodes(PacketOpcodes.GetInvestigationMonsterReq)
-public class HandlerGetInvestigationMonsterReq extends PacketHandler {
-
+public class HandlerGetInvestigationMonsterReq extends TypedPacketHandler<GetInvestigationMonsterReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        var req = GetInvestigationMonsterReqOuterClass.GetInvestigationMonsterReq.parseFrom(payload);
-
+    public void handle(GameSession session, byte[] header, GetInvestigationMonsterReq req) throws Exception {
         session.send(new PacketGetInvestigationMonsterRsp(
                 session.getPlayer(),
                 session.getServer().getWorldDataSystem(),
-                req.getCityIdListList()));
-
+            req.getCityIdList()));
     }
-
 }

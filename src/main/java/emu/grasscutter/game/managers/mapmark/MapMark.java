@@ -1,9 +1,9 @@
 package emu.grasscutter.game.managers.mapmark;
 
 import dev.morphia.annotations.Entity;
-import emu.grasscutter.net.proto.MapMarkFromTypeOuterClass.MapMarkFromType;
-import emu.grasscutter.net.proto.MapMarkPointOuterClass.MapMarkPoint;
-import emu.grasscutter.net.proto.MapMarkPointTypeOuterClass.MapMarkPointType;
+import org.anime_game_servers.multi_proto.gi.messages.scene.map.MapMarkFromType;
+import org.anime_game_servers.multi_proto.gi.messages.scene.map.MapMarkPoint;
+import org.anime_game_servers.multi_proto.gi.messages.scene.map.MapMarkPointType;
 import emu.grasscutter.utils.Position;
 
 @Entity
@@ -18,7 +18,7 @@ public class MapMark {
 
     @Deprecated // Morhpia
     public MapMark() {
-        this.mapMarkPointType = MapMarkPointType.MAP_MARK_POINT_TYPE_MONSTER;
+        this.mapMarkPointType = MapMarkPointType.MONSTER;
         this.mapMarkFromType = MapMarkFromType.MAP_MARK_FROM_TYPE_MONSTER;
     }
 

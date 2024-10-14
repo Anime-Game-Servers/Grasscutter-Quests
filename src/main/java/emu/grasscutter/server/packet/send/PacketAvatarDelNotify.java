@@ -1,20 +1,13 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarDelNotifyOuterClass.AvatarDelNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.team.AvatarDelNotify;
 
 import java.util.List;
 
-public class PacketAvatarDelNotify extends BasePacket {
-
+public class PacketAvatarDelNotify extends BaseTypedPacket<AvatarDelNotify> {
 	public PacketAvatarDelNotify(List<Long> avatarGuidList) {
-		super(PacketOpcodes.AvatarDelNotify);
-
-		AvatarDelNotify proto = AvatarDelNotify.newBuilder()
-				.addAllAvatarGuidList(avatarGuidList)
-				.build();
-
-		this.setData(proto);
+        super(new AvatarDelNotify());
+        proto.setAvatarGuidList(avatarGuidList);
 	}
 }

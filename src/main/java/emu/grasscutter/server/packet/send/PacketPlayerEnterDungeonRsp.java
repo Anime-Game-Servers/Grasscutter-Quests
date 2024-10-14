@@ -1,21 +1,16 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.PlayerEnterDungeonRspOuterClass.PlayerEnterDungeonRsp;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.PlayerEnterDungeonRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
-public class PacketPlayerEnterDungeonRsp extends BasePacket {
+public class PacketPlayerEnterDungeonRsp extends BaseTypedPacket<PlayerEnterDungeonRsp> {
 
 	public PacketPlayerEnterDungeonRsp(int pointId, int dungeonId, boolean success) {
-		super(PacketOpcodes.PlayerEnterDungeonRsp);
+        super(new PlayerEnterDungeonRsp());
+        proto.setPointId(pointId);
+        proto.setDungeonId(dungeonId);
+        proto.setRetcode(success ? Retcode.RET_SUCC : Retcode.RET_FAIL);
 
-		PlayerEnterDungeonRsp proto = PlayerEnterDungeonRsp.newBuilder()
-				.setPointId(pointId)
-				.setDungeonId(dungeonId)
-            .setRetcode(success ? RetcodeOuterClass.Retcode.RET_SUCC_VALUE : RetcodeOuterClass.Retcode.RET_FAIL_VALUE)
-				.build();
-
-		this.setData(proto);
 	}
 }

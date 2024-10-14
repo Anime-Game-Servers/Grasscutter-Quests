@@ -1,46 +1,28 @@
 package emu.grasscutter.server.packet.send;
 
+import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.item.cooking.CookRecipeData;
+import org.anime_game_servers.multi_proto.gi.messages.item.cooking.PlayerCookRsp;
+
 import java.util.List;
 
-import emu.grasscutter.game.inventory.GameItem;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.CookRecipeDataOuterClass.CookRecipeData;
-import emu.grasscutter.net.proto.ItemParamOuterClass.ItemParam;
-import emu.grasscutter.net.proto.PlayerCookRspOuterClass.PlayerCookRsp;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
-
-public class PacketPlayerCookRsp extends BasePacket {
+public class PacketPlayerCookRsp extends BaseTypedPacket<PlayerCookRsp> {
     public PacketPlayerCookRsp(Retcode retcode) {
-        super(PacketOpcodes.PlayerCookRsp);
-
-        PlayerCookRsp proto = PlayerCookRsp.newBuilder()
-            .setRetcode(retcode.getNumber())
-            .build();
-
-        this.setData(proto);
+        super(new PlayerCookRsp());
+        proto.setRetcode(retcode);
     }
 
     public PacketPlayerCookRsp(List<GameItem> output, int quality, int count, int recipeId, int proficiency) {
-        super(PacketOpcodes.PlayerCookRsp);
-
-        PlayerCookRsp.Builder proto = PlayerCookRsp.newBuilder()
-            .setRecipeData(
-                CookRecipeData.newBuilder()
-                    .setRecipeId(recipeId)
-                    .setProficiency(proficiency)    
-            )
-            .setQteQuality(quality)
-            .setCookCount(count);
-
-        for (var item : output) {
-            proto.addItemList(
-                ItemParam.newBuilder()
-                    .setItemId(item.getItemId())
-                    .setCount(item.getCount())
-            );
-        }
-
-        this.setData(proto);
+        super(new PlayerCookRsp());
+        val cookRecipeData = new CookRecipeData();
+        cookRecipeData.setRecipeId(recipeId);
+        cookRecipeData.setProficiency(proficiency);
+        proto.setRecipeData(cookRecipeData);
+        proto.setQteQuality(quality);
+        proto.setCookCount(count);
+        proto.setItemList(output.stream().map(GameItem::toItemParam).toList());
     }
 }

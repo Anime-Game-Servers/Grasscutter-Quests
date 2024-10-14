@@ -12,12 +12,9 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.server.packet.send.PacketActivityUpdateWatcherNotify;
 import emu.grasscutter.utils.JsonUtils;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
-import lombok.val;
-import messages.activity.ActivityWatcherInfo;
+import org.anime_game_servers.multi_proto.gi.messages.activity.general.ActivityWatcherInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +25,8 @@ import java.util.Optional;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "of")
+@AllArgsConstructor
+@NoArgsConstructor
 public class PlayerActivityData {
     @Id
     String id;
@@ -101,6 +100,8 @@ public class PlayerActivityData {
     @Data
     @FieldDefaults(level = AccessLevel.PRIVATE)
     @Builder(builderMethodName = "of")
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class WatcherInfo{
         int watcherId;
         int totalProgress;

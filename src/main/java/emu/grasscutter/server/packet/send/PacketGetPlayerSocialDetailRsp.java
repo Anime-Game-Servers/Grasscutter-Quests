@@ -1,9 +1,9 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.net.packet.BaseTypedPacket;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
-import messages.chat.GetPlayerSocialDetailRsp;
-import messages.chat.SocialDetail;
+import org.anime_game_servers.multi_proto.gi.messages.community.player_presentation.GetPlayerSocialDetailRsp;
+import org.anime_game_servers.multi_proto.gi.messages.community.player_presentation.SocialDetail;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
 public class PacketGetPlayerSocialDetailRsp extends BaseTypedPacket<GetPlayerSocialDetailRsp> {
 
@@ -13,7 +13,7 @@ public class PacketGetPlayerSocialDetailRsp extends BaseTypedPacket<GetPlayerSoc
 		if (detail != null) {
 			proto.setDetailData(detail);
 		} else {
-			proto.setRetCode(RetcodeOuterClass.Retcode.RET_SVR_ERROR_VALUE);
+			proto.setRetCode(Retcode.RET_SVR_ERROR);
 		}
 	}
 }

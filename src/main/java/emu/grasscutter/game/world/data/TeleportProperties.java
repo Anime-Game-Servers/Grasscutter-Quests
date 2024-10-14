@@ -5,7 +5,7 @@ import emu.grasscutter.server.event.player.PlayerTeleportEvent;
 import emu.grasscutter.utils.Position;
 import lombok.Builder;
 import lombok.Data;
-import messages.scene.EnterType;
+import org.anime_game_servers.multi_proto.gi.messages.scene.EnterType;
 
 @Data
 @Builder

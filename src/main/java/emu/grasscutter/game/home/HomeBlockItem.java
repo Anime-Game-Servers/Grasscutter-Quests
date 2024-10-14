@@ -3,12 +3,11 @@ package emu.grasscutter.game.home;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import emu.grasscutter.data.binout.HomeworldDefaultSaveData;
-import emu.grasscutter.net.proto.HomeBlockArrangementInfoOuterClass.HomeBlockArrangementInfo;
-import emu.grasscutter.utils.Position;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.arangement.HomeBlockArrangementInfo;
 
 import java.util.List;
 
@@ -28,19 +27,19 @@ public class HomeBlockItem {
     public void update(HomeBlockArrangementInfo homeBlockArrangementInfo) {
         this.blockId = homeBlockArrangementInfo.getBlockId();
 
-        this.deployFurnitureList = homeBlockArrangementInfo.getDeployFurniureListList().stream()
+        this.deployFurnitureList = homeBlockArrangementInfo.getDeployFurnitureList().stream()
                 .map(HomeFurnitureItem::parseFrom)
                 .toList();
 
-        this.persistentFurnitureList = homeBlockArrangementInfo.getPersistentFurnitureListList().stream()
+        this.persistentFurnitureList = homeBlockArrangementInfo.getPersistentFurnitureList().stream()
                 .map(HomeFurnitureItem::parseFrom)
                 .toList();
 
-        this.deployAnimalList = homeBlockArrangementInfo.getDeployAnimalListList().stream()
+        this.deployAnimalList = homeBlockArrangementInfo.getDeployAnimalList().stream()
                 .map(HomeAnimalItem::parseFrom)
                 .toList();
 
-        this.deployNPCList = homeBlockArrangementInfo.getDeployNpcListList().stream()
+        this.deployNPCList = homeBlockArrangementInfo.getDeployNpcList().stream()
                 .map(HomeNPCItem::parseFrom)
                 .toList();
     }
@@ -52,17 +51,17 @@ public class HomeBlockItem {
     }
 
     public HomeBlockArrangementInfo toProto() {
-        var proto = HomeBlockArrangementInfo.newBuilder()
-                .setBlockId(blockId)
-                .setIsUnlocked(unlocked)
-                .setComfortValue(calComfort());
+        var proto = new HomeBlockArrangementInfo();
+        proto.setBlockId(blockId);
+        proto.setUnlocked(unlocked);
+        proto.setComfortValue(calComfort());
 
-        this.deployFurnitureList.forEach(f -> proto.addDeployFurniureList(f.toProto()));
-        this.persistentFurnitureList.forEach(f -> proto.addPersistentFurnitureList(f.toProto()));
-        this.deployAnimalList.forEach(f -> proto.addDeployAnimalList(f.toProto()));
-        this.deployNPCList.forEach(f -> proto.addDeployNpcList(f.toProto()));
+        proto.setDeployFurnitureList(this.deployFurnitureList.stream().map(HomeFurnitureItem::toProto).toList());
+        proto.setPersistentFurnitureList(this.persistentFurnitureList.stream().map(HomeFurnitureItem::toProto).toList());
+        proto.setDeployAnimalList(this.deployAnimalList.stream().map(HomeAnimalItem::toProto).toList());
+        proto.setDeployNpcList(this.deployNPCList.stream().map(HomeNPCItem::toProto).toList());
 
-        return proto.build();
+        return proto;
     }
 
     public static HomeBlockItem parseFrom(HomeworldDefaultSaveData.HomeBlock homeBlock) {

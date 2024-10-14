@@ -5,14 +5,17 @@ import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketGetPlayerSocialDetailRsp;
 import emu.grasscutter.server.packet.send.PacketSetPlayerBirthdayRsp;
 import lombok.val;
-import messages.chat.SetPlayerBirthdayReq;
+import org.anime_game_servers.multi_proto.gi.messages.community.player_presentation.SetPlayerBirthdayReq;
+
+import static org.anime_game_servers.multi_proto.gi.messages.general.Retcode.RET_BIRTHDAY_CANNOT_BE_SET_TWICE;
+import static org.anime_game_servers.multi_proto.gi.messages.general.Retcode.RET_BIRTHDAY_FORMAT_ERROR;
 
 public class HandlerSetPlayerBirthdayReq extends TypedPacketHandler<SetPlayerBirthdayReq> {
 	@Override
 	public void handle(GameSession session, byte[] header, SetPlayerBirthdayReq req) throws Exception {
 		// RET_BIRTHDAY_CANNOT_BE_SET_TWICE = 7009
 		if (session.getPlayer().hasBirthday()) {
-			session.send(new PacketSetPlayerBirthdayRsp(7009));
+			session.send(new PacketSetPlayerBirthdayRsp(RET_BIRTHDAY_CANNOT_BE_SET_TWICE));
 			return;
 		}
 
@@ -21,7 +24,7 @@ public class HandlerSetPlayerBirthdayReq extends TypedPacketHandler<SetPlayerBir
 
 		// RET_BIRTHDAY_FORMAT_ERROR = 7022
 		if (!isValidBirthday(month, day)) {
-			session.send(new PacketSetPlayerBirthdayRsp(7022));
+			session.send(new PacketSetPlayerBirthdayRsp(RET_BIRTHDAY_FORMAT_ERROR));
 			return;
 		}
 

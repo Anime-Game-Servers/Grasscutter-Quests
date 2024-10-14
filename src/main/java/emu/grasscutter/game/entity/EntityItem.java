@@ -13,11 +13,11 @@ import emu.grasscutter.utils.ProtoHelper;
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
 import lombok.Getter;
 import lombok.val;
-import messages.gadget.GadgetInteractReq;
-import messages.gadget.InteractType;
-import messages.general.Vector;
-import messages.general.ability.AbilitySyncStateInfo;
-import messages.scene.entity.*;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.GadgetInteractReq;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.InteractType;
+import org.anime_game_servers.multi_proto.gi.messages.general.Vector;
+import org.anime_game_servers.multi_proto.gi.messages.general.ability.AbilitySyncStateInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.*;
 
 import java.util.List;
 

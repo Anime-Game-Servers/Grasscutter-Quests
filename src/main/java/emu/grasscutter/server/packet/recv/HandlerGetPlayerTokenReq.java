@@ -15,7 +15,8 @@ import emu.grasscutter.utils.ByteHelper;
 import emu.grasscutter.utils.Crypto;
 import emu.grasscutter.utils.Utils;
 import lombok.val;
-import messages.player.GetPlayerTokenReq;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.player.GetPlayerTokenReq;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -137,7 +138,7 @@ public class HandlerGetPlayerTokenReq extends TypedPacketHandler<GetPlayerTokenR
         // Checks if the player is banned
         if (isAccountBanned) {
             session.setState(SessionState.ACCOUNT_BANNED);
-            session.send(new PacketGetPlayerTokenRsp(session, 21, "FORBID_CHEATING_PLUGINS", session.getAccount().getBanEndTime()));
+            session.send(new PacketGetPlayerTokenRsp(session, Retcode.RET_BLACK_UID, "FORBID_CHEATING_PLUGINS", session.getAccount().getBanEndTime()));
             return;
         }
 

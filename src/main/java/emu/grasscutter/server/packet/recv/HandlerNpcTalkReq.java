@@ -8,7 +8,7 @@ import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketNpcTalkRsp;
 import lombok.val;
-import messages.npc.NpcTalkReq;
+import org.anime_game_servers.multi_proto.gi.messages.npc.NpcTalkReq;
 
 public class HandlerNpcTalkReq extends TypedPacketHandler<NpcTalkReq> {
     @Override

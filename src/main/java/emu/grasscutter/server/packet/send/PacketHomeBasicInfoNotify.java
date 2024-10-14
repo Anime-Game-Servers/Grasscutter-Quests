@@ -1,37 +1,28 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.HomeBasicInfoNotifyOuterClass;
-import emu.grasscutter.net.proto.HomeBasicInfoOuterClass;
-import emu.grasscutter.net.proto.HomeLimitedShopInfoOuterClass;
-import emu.grasscutter.net.proto.VectorOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.base_info.HomeBasicInfo;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.base_info.HomeBasicInfoNotify;
 
-public class PacketHomeBasicInfoNotify extends BasePacket {
+public class PacketHomeBasicInfoNotify extends BaseTypedPacket<HomeBasicInfoNotify> {
 
     public PacketHomeBasicInfoNotify(Player player, boolean editMode) {
-        super(PacketOpcodes.HomeBasicInfoNotify);
-
+        super(new HomeBasicInfoNotify());
         if (player.getCurrentRealmId() <= 0) {
             return;
         }
-
-        var proto = HomeBasicInfoNotifyOuterClass.HomeBasicInfoNotify.newBuilder();
-
         var sceneId = player.getCurrentRealmId() + 2000;
         var homeScene = player.getHome().getHomeSceneItem(sceneId);
-
-        proto.setBasicInfo(HomeBasicInfoOuterClass.HomeBasicInfo.newBuilder()
-                .setCurModuleId(player.getCurrentRealmId())
-                .setCurRoomSceneId(homeScene.getRoomSceneId())
-                .setIsInEditMode(editMode)
-                .setHomeOwnerUid(player.getUid())
-                .setLevel(player.getHome().getLevel())
-                .setOwnerNickName(player.getNickname())
+        val homeBasicInfo = new HomeBasicInfo();
+        homeBasicInfo.setCurModuleId(player.getCurrentRealmId());
+        homeBasicInfo.setCurRoomSceneId(homeScene.getRoomSceneId());
+        homeBasicInfo.setInEditMode(editMode);
+        homeBasicInfo.setHomeOwnerUid(player.getUid());
+        homeBasicInfo.setLevel(player.getHome().getLevel());
+        homeBasicInfo.setOwnerNickName(player.getNickname());
                 // TODO limit shop
-                .build());
-
-        this.setData(proto);
+        proto.setBasicInfo(homeBasicInfo);
     }
 }

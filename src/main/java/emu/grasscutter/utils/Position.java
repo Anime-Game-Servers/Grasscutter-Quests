@@ -6,10 +6,9 @@ import java.util.List;
 import com.google.gson.annotations.SerializedName;
 import com.github.davidmoten.rtreemulti.geometry.Point;
 import dev.morphia.annotations.Entity;
-import emu.grasscutter.net.proto.VectorOuterClass;
 import lombok.Getter;
 import lombok.Setter;
-import messages.general.Vector;
+import org.anime_game_servers.multi_proto.gi.messages.general.Vector;
 
 @Entity
 public class Position implements Serializable, org.anime_game_servers.gi_lua.models.Position {
@@ -25,11 +24,9 @@ public class Position implements Serializable, org.anime_game_servers.gi_lua.mod
     @Getter @Setter private float z;
 
     public Position() {}
-    public Position(org.anime_game_servers.core.gi.models.Vector luaPos) {
-        set(luaPos.getX(), luaPos.getY(), luaPos.getZ());
-    }
-    public Position(VectorOuterClass.Vector luaPos) {
-        set(luaPos.getX(), luaPos.getY(), luaPos.getZ());
+
+    public Position(org.anime_game_servers.core.gi.models.Vector pos) {
+        set(pos.getX(), pos.getY(), pos.getZ());
     }
 
     public Position(float x, float y) {
@@ -83,6 +80,7 @@ public class Position implements Serializable, org.anime_game_servers.gi_lua.mod
     public Position set(Position pos) {
         return this.set(pos.getX(), pos.getY(), pos.getZ());
     }
+
     public Position set(org.anime_game_servers.core.gi.models.Vector pos) {
         return this.set(pos.getX(), pos.getY(), pos.getZ());
     }
@@ -177,14 +175,7 @@ public class Position implements Serializable, org.anime_game_servers.gi_lua.mod
     public Vector toProto() {
         return new Vector(this.getX(), this.getY(), this.getZ());
     }
-    @Deprecated
-    public VectorOuterClass.Vector toProtoOld() {
-        return VectorOuterClass.Vector.newBuilder()
-            .setX(this.getX())
-            .setY(this.getY())
-            .setZ(this.getZ())
-            .build();
-    }
+
     public Point toPoint() {
         return Point.create(x,y,z);
     }

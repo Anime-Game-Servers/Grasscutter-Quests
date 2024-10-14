@@ -1,5 +1,6 @@
 package emu.grasscutter.game.managers.energy;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.DataLoader;
 import emu.grasscutter.data.GameData;
@@ -7,37 +8,31 @@ import emu.grasscutter.data.excels.AvatarSkillDepotData;
 import emu.grasscutter.data.excels.ItemData;
 import emu.grasscutter.data.excels.MonsterData.HpDrops;
 import emu.grasscutter.game.avatar.Avatar;
-import emu.grasscutter.game.entity.EntityAvatar;
-import emu.grasscutter.game.entity.EntityClientGadget;
-import emu.grasscutter.game.entity.EntityItem;
-import emu.grasscutter.game.entity.EntityMonster;
-import emu.grasscutter.game.entity.GameEntity;
+import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.player.BasePlayerManager;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ElementType;
 import emu.grasscutter.game.props.FightProperty;
 import emu.grasscutter.game.props.MonsterType;
 import emu.grasscutter.game.props.WeaponType;
-import emu.grasscutter.net.proto.ChangeEnergyReasonOuterClass.ChangeEnergyReason;
-import emu.grasscutter.net.proto.PropChangeReasonOuterClass.PropChangeReason;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.utils.Position;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.ability.AbilityInvokeEntry;
+import org.anime_game_servers.multi_proto.gi.messages.ability.action.AbilityActionGenerateElemBall;
+import org.anime_game_servers.multi_proto.gi.messages.battle.event.EvtBeingHitInfo;
+import org.anime_game_servers.multi_proto.gi.messages.general.PropChangeReason;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.ChangeEnergyReason;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
-
-import com.google.protobuf.InvalidProtocolBufferException;
-import lombok.val;
-import messages.ability.AbilityInvokeEntry;
-import messages.ability.action.AbilityActionGenerateElemBall;
-import messages.battle.EvtBeingHitInfo;
 
 public class EnergyManager extends BasePlayerManager {
     private final Object2IntMap<EntityAvatar> avatarNormalProbabilities;
@@ -202,7 +197,7 @@ public class EnergyManager extends BasePlayerManager {
 
         // If the player wins the roll, we increase the avatar's energy and reset the probability.
         if (roll < currentProbability) {
-            avatar.addEnergy(1.0f, PropChangeReason.PROP_CHANGE_REASON_ABILITY, true);
+            avatar.addEnergy(1.0f, PropChangeReason.PROP_CHANGE_ABILITY, true);
             this.avatarNormalProbabilities.put(avatar, weaponType.getEnergyGainInitialProbability());
         }
         // Otherwise, we increase the probability for the next hit.
@@ -263,7 +258,7 @@ public class EnergyManager extends BasePlayerManager {
 
         // If the cast skill was a burst, consume energy.
         if (avatar.getSkillDepot() != null && skillId == avatar.getSkillDepot().getEnergySkill()) {
-            avatar.getAsEntity().clearEnergy(ChangeEnergyReason.CHANGE_ENERGY_REASON_SKILL_START);
+            avatar.getAsEntity().clearEnergy(ChangeEnergyReason.CHANGE_ENERGY_SKILL_START);
         }
     }
 
@@ -390,7 +385,7 @@ public class EnergyManager extends BasePlayerManager {
     public void setEnergyUsage(boolean energyUsage) {
         this.energyUsage = energyUsage;
         if (!energyUsage) {  // Refill team energy if usage is disabled
-            refillTeamEnergy(PropChangeReason.PROP_CHANGE_REASON_GM, true);
+            refillTeamEnergy(PropChangeReason.PROP_CHANGE_GM, true);
         }
     }
 }

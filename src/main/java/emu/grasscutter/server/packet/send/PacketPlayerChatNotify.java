@@ -3,9 +3,9 @@ package emu.grasscutter.server.packet.send;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
-import messages.chat.ChatInfo;
-import messages.chat.PlayerChatNotify;
-import messages.chat.SystemHint;
+import org.anime_game_servers.multi_proto.gi.messages.community.chat.ChatInfo;
+import org.anime_game_servers.multi_proto.gi.messages.community.chat.PlayerChatNotify;
+import org.anime_game_servers.multi_proto.gi.messages.community.chat.SystemHint;
 
 public class PacketPlayerChatNotify extends BaseTypedPacket<PlayerChatNotify> {
 

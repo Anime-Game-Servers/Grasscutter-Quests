@@ -7,8 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import messages.activity.trial.TrialAvatarActivityDetailInfo;
-import messages.activity.trial.TrialAvatarActivityRewardDetailInfo;
+import org.anime_game_servers.multi_proto.gi.messages.activity.trial.TrialAvatarActivityDetailInfo;
+import org.anime_game_servers.multi_proto.gi.messages.activity.trial.TrialAvatarActivityRewardDetailInfo;
 
 import java.util.List;
 import java.util.stream.*;

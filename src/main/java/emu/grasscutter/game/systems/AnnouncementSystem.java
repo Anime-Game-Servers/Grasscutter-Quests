@@ -4,7 +4,6 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.DataLoader;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.world.World;
-import emu.grasscutter.net.proto.AnnounceDataOuterClass;
 import emu.grasscutter.server.game.BaseGameSystem;
 import emu.grasscutter.server.game.GameServer;
 import emu.grasscutter.server.packet.send.PacketServerAnnounceNotify;
@@ -14,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
+import org.anime_game_servers.multi_proto.gi.messages.activity.announce.AnnounceData;
 
 import java.util.*;
 
@@ -54,7 +54,6 @@ public class AnnouncementSystem extends BaseGameSystem {
 
         var list = tpl.stream()
             .map(AnnounceConfigItem::toProto)
-            .map(AnnounceDataOuterClass.AnnounceData.Builder::build)
             .toList();
 
         getOnlinePlayers().forEach(i -> i.sendPacket(new PacketServerAnnounceNotify(list)));
@@ -80,22 +79,20 @@ public class AnnouncementSystem extends BaseGameSystem {
         boolean tick;
         int interval;
 
-        public AnnounceDataOuterClass.AnnounceData.Builder toProto() {
-            var proto = AnnounceDataOuterClass.AnnounceData.newBuilder();
+        public AnnounceData toProto() {
+            var proto = new AnnounceData();
 
-            proto.setConfigId(templateId)
+            proto.setConfigId(templateId);
                 // I found the time here is useless
-                .setBeginTime(Utils.getCurrentSeconds() + 1)
-                .setEndTime(Utils.getCurrentSeconds() + 10);
+            proto.setBeginTime(Utils.getCurrentSeconds() + 1);
+            proto.setEndTime(Utils.getCurrentSeconds() + 10);
 
             if (type == AnnounceType.CENTER) {
-                proto.setCenterSystemText(content)
-                    .setCenterSystemFrequency(frequency)
-                ;
+                proto.setCenterSystemText(content);
+                proto.setCenterSystemFrequency(frequency);
             }else {
-                proto.setCountDownText(content)
-                    .setCountDownFrequency(frequency)
-                ;
+                proto.setCountDownText(content);
+                proto.setCountDownFrequency(frequency);
             }
 
             return proto;

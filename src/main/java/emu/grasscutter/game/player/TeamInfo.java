@@ -9,7 +9,7 @@ import java.util.List;
 import dev.morphia.annotations.Entity;
 import emu.grasscutter.game.avatar.Avatar;
 import lombok.val;
-import messages.team.AvatarTeam;
+import org.anime_game_servers.multi_proto.gi.messages.team.AvatarTeam;
 
 @Entity
 public class TeamInfo {

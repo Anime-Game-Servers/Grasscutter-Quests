@@ -2,25 +2,25 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.home.HomeBlockItem;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.HomeComfortInfoNotifyOuterClass;
-import emu.grasscutter.net.proto.HomeModuleComfortInfoOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.base_info.HomeComfortInfoNotify;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.module.HomeModuleComfortInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PacketHomeComfortInfoNotify extends BasePacket {
+public class PacketHomeComfortInfoNotify extends BaseTypedPacket<HomeComfortInfoNotify> {
 
     public PacketHomeComfortInfoNotify(Player player) {
-        super(PacketOpcodes.HomeComfortInfoNotify);
+        super(new HomeComfortInfoNotify());
 
         if (player.getRealmList() == null) {
             // Do not send
             return;
         }
 
-        List<HomeModuleComfortInfoOuterClass.HomeModuleComfortInfo> comfortInfoList = new ArrayList<>();
+        List<HomeModuleComfortInfo> comfortInfoList = new ArrayList<>();
 
         for (int moduleId : player.getRealmList()) {
             var homeScene = player.getHome().getHomeSceneItem(moduleId + 2000);
@@ -29,21 +29,13 @@ public class PacketHomeComfortInfoNotify extends BasePacket {
                     .toList();
             var homeRoomScene = player.getHome().getHomeSceneItem(homeScene.getRoomSceneId());
 
-            comfortInfoList.add(
-                    HomeModuleComfortInfoOuterClass.HomeModuleComfortInfo.newBuilder()
-                        .setModuleId(moduleId)
-                            .setRoomSceneComfortValue(homeRoomScene.calComfort())
-                            .addAllWorldSceneBlockComfortValueList(blockComfortList)
-                        .build()
-            );
+            val homeModuleComfortInfo = new HomeModuleComfortInfo();
+            homeModuleComfortInfo.setModuleId(moduleId);
+            homeModuleComfortInfo.setRoomSceneComfortValue(homeRoomScene.calComfort());
+            homeModuleComfortInfo.setWorldSceneBlockComfortValueList(blockComfortList);
+            comfortInfoList.add(homeModuleComfortInfo);
         }
 
-        HomeComfortInfoNotifyOuterClass.HomeComfortInfoNotify proto = HomeComfortInfoNotifyOuterClass.HomeComfortInfoNotify
-                .newBuilder()
-                .addAllModuleInfoList(comfortInfoList)
-                .build();
-
-
-        this.setData(proto);
+        proto.setModuleInfoList(comfortInfoList);
     }
 }

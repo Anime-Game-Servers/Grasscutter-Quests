@@ -5,8 +5,8 @@ import java.util.List;
 
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.net.packet.BaseTypedPacket;
-import messages.storage.StoreItemChangeNotify;
-import messages.storage.StoreType;
+import org.anime_game_servers.multi_proto.gi.messages.storage.StoreItemChangeNotify;
+import org.anime_game_servers.multi_proto.gi.messages.storage.StoreType;
 
 public class PacketStoreItemChangeNotify extends BaseTypedPacket<StoreItemChangeNotify> {
 

@@ -3,7 +3,7 @@ package emu.grasscutter.server.packet.recv;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import lombok.val;
-import messages.chat.PrivateChatReq;
+import org.anime_game_servers.multi_proto.gi.messages.community.chat.PrivateChatReq;
 
 public class HandlerPrivateChatReq extends TypedPacketHandler<PrivateChatReq> {
 

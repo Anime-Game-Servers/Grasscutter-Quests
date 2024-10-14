@@ -1,20 +1,14 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.PersonalSceneJumpRspOuterClass.PersonalSceneJumpRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
 import emu.grasscutter.utils.Position;
+import org.anime_game_servers.multi_proto.gi.messages.scene.PersonalSceneJumpRsp;
 
-public class PacketPersonalSceneJumpRsp extends BasePacket {
+public class PacketPersonalSceneJumpRsp extends BaseTypedPacket<PersonalSceneJumpRsp> {
 
 	public PacketPersonalSceneJumpRsp(int sceneId, Position pos) {
-		super(PacketOpcodes.PersonalSceneJumpRsp);
-
-		PersonalSceneJumpRsp proto = PersonalSceneJumpRsp.newBuilder()
-				.setDestSceneId(sceneId)
-				.setDestPos(pos.toProtoOld())
-				.build();
-
-		this.setData(proto);
+        super(new PersonalSceneJumpRsp());
+        proto.setDestSceneId(sceneId);
+        proto.setDestPos(pos.toProto());
 	}
 }

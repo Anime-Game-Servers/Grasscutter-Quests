@@ -1,26 +1,25 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ScenePointUnlockNotifyOuterClass.ScenePointUnlockNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.scene.ScenePointUnlockNotify;
 
-public class PacketScenePointUnlockNotify extends BasePacket {
+import java.util.ArrayList;
+import java.util.List;
+
+public class PacketScenePointUnlockNotify extends BaseTypedPacket<ScenePointUnlockNotify> {
     public PacketScenePointUnlockNotify(int sceneId, int pointId) {
         this(sceneId, pointId, false);
     }
 
     public PacketScenePointUnlockNotify(int sceneId, int pointId, boolean lock) {
-        super(PacketOpcodes.ScenePointUnlockNotify);
-
-        ScenePointUnlockNotify.Builder p = ScenePointUnlockNotify.newBuilder()
-                .setSceneId(sceneId)
-                .addPointList(pointId);
-        if(lock)
-            p.addLockedPointList(pointId);
-        else
-            p.addUnhidePointList(pointId);
-
-        this.setData(p);
+        super(new ScenePointUnlockNotify());
+        proto.setSceneId(sceneId);
+        proto.setPointList(List.of(pointId));
+        if (lock) {
+            proto.setLockedPointList(List.of(pointId));
+        } else {
+            proto.setUnhidePointList(List.of(pointId));
+        }
     }
 
     public PacketScenePointUnlockNotify(int sceneId, Iterable<Integer> pointIds) {
@@ -28,16 +27,15 @@ public class PacketScenePointUnlockNotify extends BasePacket {
     }
 
     public PacketScenePointUnlockNotify(int sceneId, Iterable<Integer> pointIds, boolean lock) {
-        super(PacketOpcodes.ScenePointUnlockNotify);
-
-        ScenePointUnlockNotify.Builder p = ScenePointUnlockNotify.newBuilder()
-                .setSceneId(sceneId)
-                .addAllPointList(pointIds);
-        if(lock)
-            p.addAllLockedPointList(pointIds);
-        else
-            p.addAllUnhidePointList(pointIds);
-
-        this.setData(p);
+        super(new ScenePointUnlockNotify());
+        proto.setSceneId(sceneId);
+        List<Integer> pointIdsList = new ArrayList<>();
+        pointIds.forEach(pointIdsList::add);
+        proto.setPointList(pointIdsList);
+        if (lock) {
+            proto.setLockedPointList(pointIdsList);
+        } else {
+            proto.setUnhidePointList(pointIdsList);
+        }
     }
 }

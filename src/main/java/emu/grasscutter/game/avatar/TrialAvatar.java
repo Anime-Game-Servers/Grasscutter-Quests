@@ -13,10 +13,10 @@ import emu.grasscutter.server.packet.send.PacketAvatarEquipChangeNotify;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import messages.general.avatar.AvatarInfo;
-import messages.general.avatar.GrantReason;
-import messages.general.avatar.TrialAvatarGrantRecord;
-import messages.general.avatar.TrialAvatarInfo;
+import org.anime_game_servers.multi_proto.gi.messages.general.avatar.AvatarInfo;
+import org.anime_game_servers.multi_proto.gi.messages.general.avatar.GrantReason;
+import org.anime_game_servers.multi_proto.gi.messages.general.avatar.TrialAvatarGrantRecord;
+import org.anime_game_servers.multi_proto.gi.messages.general.avatar.TrialAvatarInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;

@@ -1,26 +1,20 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.dungeons.challenge.WorldChallenge;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.DungeonChallengeFinishNotifyOuterClass.DungeonChallengeFinishNotify;
-import emu.grasscutter.net.proto.ChallengeFinishTypeOuterClass.ChallengeFinishType;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.challenge.ChallengeFinishType;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.challenge.DungeonChallengeFinishNotify;
 
-public class PacketDungeonChallengeFinishNotify extends BasePacket {
-
+public class PacketDungeonChallengeFinishNotify extends BaseTypedPacket<DungeonChallengeFinishNotify> {
     public PacketDungeonChallengeFinishNotify(WorldChallenge challenge) {
-        super(PacketOpcodes.DungeonChallengeFinishNotify, true);
+        super(new DungeonChallengeFinishNotify(), true);
 
-        DungeonChallengeFinishNotify proto = DungeonChallengeFinishNotify.newBuilder()
-            .setChallengeIndex(challenge.getInfo().getChallengeIndex())
-            .setIsSuccess(challenge.isSuccess())
-            .setTimeCost(challenge.getFinishedTime() - challenge.getStartedAt())
-            .setFinishType(challenge.isSuccess() ?
+        proto.setChallengeIndex(challenge.getInfo().getChallengeIndex());
+        proto.setSuccess(challenge.isSuccess());
+        proto.setTimeCost(challenge.getFinishedTime() - challenge.getStartedAt());
+        proto.setFinishType(challenge.isSuccess() ?
                 ChallengeFinishType.CHALLENGE_FINISH_TYPE_SUCC :
                 ChallengeFinishType.CHALLENGE_FINISH_TYPE_FAIL
-            )
-            .build();
-
-        this.setData(proto);
+        );
     }
 }

@@ -16,11 +16,11 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.props.EnterReason;
 import emu.grasscutter.game.world.data.TeleportProperties;
-import emu.grasscutter.net.proto.TowerCurLevelRecordOuterClass.TowerCurLevelRecord;
-import emu.grasscutter.net.proto.TowerTeamOuterClass.TowerTeam;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.rotation.TowerCurLevelRecord;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.TowerTeam;
 import emu.grasscutter.server.packet.send.*;
 import lombok.val;
-import messages.scene.EnterType;
+import org.anime_game_servers.multi_proto.gi.messages.scene.EnterType;
 
 import java.util.*;
 import java.util.stream.Collectors;

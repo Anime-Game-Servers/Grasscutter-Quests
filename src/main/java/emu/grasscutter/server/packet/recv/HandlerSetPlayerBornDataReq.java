@@ -1,32 +1,25 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.GameConstants;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.command.commands.SendMailCommand.MailBuilder;
 import emu.grasscutter.data.GameData;
-import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.mail.Mail;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.SetPlayerBornDataReqOuterClass.SetPlayerBornDataReq;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.server.event.game.PlayerCreationEvent;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
-import emu.grasscutter.server.game.GameSession.SessionState;
-
-import static emu.grasscutter.config.Configuration.*;
+import org.anime_game_servers.multi_proto.gi.messages.player.SetPlayerBornDataReq;
+import org.anime_game_servers.multi_proto.gi.messages.player.SetPlayerBornDataRsp;
 
 import java.util.Arrays;
 
-@Opcodes(PacketOpcodes.SetPlayerBornDataReq)
-public class HandlerSetPlayerBornDataReq extends PacketHandler {
+import static emu.grasscutter.config.Configuration.GAME_INFO;
+
+public class HandlerSetPlayerBornDataReq extends TypedPacketHandler<SetPlayerBornDataReq> {
 
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        SetPlayerBornDataReq req = SetPlayerBornDataReq.parseFrom(payload);
+    public void handle(GameSession session, byte[] header, SetPlayerBornDataReq req) throws Exception {
 
         // Sanity checks
         int avatarId = req.getAvatarId();
@@ -64,7 +57,7 @@ public class HandlerSetPlayerBornDataReq extends PacketHandler {
         session.getPlayer().onPlayerBorn();
 
         // Born resp packet
-        session.send(new BasePacket(session.getPackageIdProvider().getPacketId("SetPlayerBornDataRsp")));
+        session.send(new BaseTypedPacket<>(new SetPlayerBornDataRsp()) {});
 
         // Default mail
         var welcomeMail = GAME_INFO.joinOptions.welcomeMail;

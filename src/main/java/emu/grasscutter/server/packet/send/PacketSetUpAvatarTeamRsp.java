@@ -1,21 +1,17 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.SetUpAvatarTeamRspOuterClass.SetUpAvatarTeamRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.SetUpAvatarTeamRsp;
 
-import java.util.Collection;
+import java.util.List;
 
-public class PacketSetUpAvatarTeamRsp extends BasePacket {
-    public PacketSetUpAvatarTeamRsp(int teamId, long guid, Collection<Long> guidList, int retVal) {
-        super(PacketOpcodes.SetUpAvatarTeamRsp);
-
-        SetUpAvatarTeamRsp.Builder proto = SetUpAvatarTeamRsp.newBuilder()
-            .setTeamId(teamId)
-            .setCurAvatarGuid(guid)
-            .addAllAvatarTeamGuidList(guidList)
-            .setRetcode(retVal);
-
-        this.setData(proto);
+public class PacketSetUpAvatarTeamRsp extends BaseTypedPacket<SetUpAvatarTeamRsp> {
+    public PacketSetUpAvatarTeamRsp(int teamId, long guid, List<Long> guidList, Retcode retVal) {
+        super(new SetUpAvatarTeamRsp());
+        proto.setTeamId(teamId);
+        proto.setCurAvatarGuid(guid);
+        proto.setAvatarTeamGuidList(guidList);
+        proto.setRetcode(retVal);
     }
 }

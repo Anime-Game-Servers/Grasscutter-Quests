@@ -1,30 +1,21 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.SceneAudioNotifyOuterClass.SceneAudioNotify;
-import lombok.val;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.scene.SceneAudioNotify;
 
 import java.util.List;
 
-public class PacketSceneAudioNotify extends BasePacket {
-
+public class PacketSceneAudioNotify extends BaseTypedPacket<SceneAudioNotify> {
     public PacketSceneAudioNotify(SceneAudioNotify notify) {
-        super(PacketOpcodes.SceneAudioNotify);
-
-        this.setData(notify);
+        super(notify);
     }
 
-    public PacketSceneAudioNotify(int sourceUid, List<Float> param2, List<String> param3, int type, List<Integer> param1) {
-        super(PacketOpcodes.SceneAudioNotify);
-
-        val proto = SceneAudioNotify.newBuilder()
-            .setSourceUid(sourceUid)
-            .addAllParam2(param2)
-            .addAllParam3(param3)
-            .setType(type)
-            .addAllParam1(param1);
-
-        this.setData(proto);
+    public PacketSceneAudioNotify(List<Integer> param1, List<Float> param2, List<String> param3, int sourceUid, int type) {
+        super(new SceneAudioNotify());
+        proto.setParam1(param1);
+        proto.setParam2(param2);
+        proto.setParam3(param3);
+        proto.setSourceUid(sourceUid);
+        proto.setType(type);
     }
 }

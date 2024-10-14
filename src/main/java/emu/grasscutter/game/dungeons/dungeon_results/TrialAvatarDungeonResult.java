@@ -3,9 +3,10 @@ package emu.grasscutter.game.dungeons.dungeon_results;
 import emu.grasscutter.data.excels.DungeonData;
 import emu.grasscutter.game.dungeons.DungeonEndStats;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.proto.DungeonSettleNotifyOuterClass;
-import emu.grasscutter.net.proto.TrialAvatarFirstPassDungeonNotifyOuterClass.TrialAvatarFirstPassDungeonNotify;
 import lombok.Builder;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.activity.trial.TrialAvatarFirstPassDungeonNotify;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.progression.DungeonSettleNotify;
 
 public class TrialAvatarDungeonResult extends BaseDungeonResult {
     int trialCharacterIndexId;
@@ -17,10 +18,11 @@ public class TrialAvatarDungeonResult extends BaseDungeonResult {
     }
 
     @Override
-    protected void onProto(DungeonSettleNotifyOuterClass.DungeonSettleNotify.Builder builder) {
+    protected void onProto(DungeonSettleNotify builder) {
         if (getDungeonStats().dungeonResult() == DungeonEndReason.COMPLETED) { // TODO check if it's the first pass(?)
-            builder.setTrialAvatarFirstPassDungeonNotify(TrialAvatarFirstPassDungeonNotify.newBuilder()
-                .setTrialAvatarIndexId(this.trialCharacterIndexId));
+            val trialAvatarFirstPassDungeonNotify = new TrialAvatarFirstPassDungeonNotify();
+            trialAvatarFirstPassDungeonNotify.setTrialAvatarIndexId(this.trialCharacterIndexId);
+            builder.setDetail(new DungeonSettleNotify.Detail.TrialAvatarFirstPassDungeonNotify(trialAvatarFirstPassDungeonNotify));
         }
     }
 }

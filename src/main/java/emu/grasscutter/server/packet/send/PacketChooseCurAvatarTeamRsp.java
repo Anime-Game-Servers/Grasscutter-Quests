@@ -1,19 +1,13 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ChooseCurAvatarTeamRspOuterClass.ChooseCurAvatarTeamRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.team.ChooseCurAvatarTeamRsp;
 
-public class PacketChooseCurAvatarTeamRsp extends BasePacket {
-
-	public PacketChooseCurAvatarTeamRsp(int retVal, int teamId) {
-		super(PacketOpcodes.ChooseCurAvatarTeamRsp);
-
-		ChooseCurAvatarTeamRsp proto = ChooseCurAvatarTeamRsp.newBuilder()
-            .setCurTeamId(teamId)
-            .setRetcode(retVal)
-            .build();
-
-		this.setData(proto);
+public class PacketChooseCurAvatarTeamRsp extends BaseTypedPacket<ChooseCurAvatarTeamRsp> {
+	public PacketChooseCurAvatarTeamRsp(Retcode retVal, int teamId) {
+        super(new ChooseCurAvatarTeamRsp());
+        proto.setCurTeamId(teamId);
+        proto.setRetcode(retVal);
 	}
 }

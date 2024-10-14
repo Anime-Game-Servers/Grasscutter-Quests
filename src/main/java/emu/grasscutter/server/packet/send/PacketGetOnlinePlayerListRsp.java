@@ -4,7 +4,7 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
-import messages.chat.GetOnlinePlayerListRsp;
+import org.anime_game_servers.multi_proto.gi.messages.community.GetOnlinePlayerListRsp;
 
 
 public class PacketGetOnlinePlayerListRsp extends BaseTypedPacket<GetOnlinePlayerListRsp> {

@@ -1,21 +1,13 @@
 package emu.grasscutter.server.packet.send;
 
-import java.util.List;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.quest.child.QuestDelNotify;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.QuestDelNotifyOuterClass.QuestDelNotify;
-
-public class PacketDelQuestNotify extends BasePacket {
+public class PacketDelQuestNotify extends BaseTypedPacket<QuestDelNotify> {
 
 	public PacketDelQuestNotify(int questId) {
-		super(PacketOpcodes.QuestDelNotify);
-
-        QuestDelNotify proto = QuestDelNotify.newBuilder()
-				.setQuestId(questId)
-				.build();
-
-		this.setData(proto);
+        super(new QuestDelNotify());
+        proto.setQuestId(questId);
 	}
 
 }

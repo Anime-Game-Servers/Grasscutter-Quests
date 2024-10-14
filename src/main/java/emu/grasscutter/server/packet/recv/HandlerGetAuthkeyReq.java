@@ -1,17 +1,13 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketGetAuthkeyRsp;
+import org.anime_game_servers.multi_proto.gi.messages.mail.GetAuthkeyReq;
 
-@Opcodes(PacketOpcodes.GetAuthkeyReq)
-public class HandlerGetAuthkeyReq extends PacketHandler {
-	
+public class HandlerGetAuthkeyReq extends TypedPacketHandler<GetAuthkeyReq> {
 	@Override
-	public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
+    public void handle(GameSession session, byte[] header, GetAuthkeyReq req) throws Exception {
 		session.send(new PacketGetAuthkeyRsp());
 	}
-
 }

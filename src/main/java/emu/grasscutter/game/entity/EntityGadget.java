@@ -15,7 +15,6 @@ import emu.grasscutter.game.props.EntityIdType;
 import emu.grasscutter.game.props.PlayerProperty;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.game.world.SceneGroupInstance;
-import emu.grasscutter.net.proto.VisionTypeOuterClass;
 import emu.grasscutter.scripts.EntityControllerScriptManager;
 import emu.grasscutter.server.packet.send.PacketGadgetStateNotify;
 import emu.grasscutter.server.packet.send.PacketPlatformStartRouteNotify;
@@ -29,12 +28,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
-import messages.gadget.GadgetInteractReq;
-import messages.general.ability.AbilitySyncStateInfo;
-import messages.scene.entity.*;
 import org.anime_game_servers.gi_lua.models.ScriptArgs;
 import org.anime_game_servers.gi_lua.models.constants.EventType;
 import org.anime_game_servers.gi_lua.models.scene.group.SceneGadget;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.GadgetInteractReq;
+import org.anime_game_servers.multi_proto.gi.messages.general.ability.AbilitySyncStateInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.VisionType;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -201,7 +201,7 @@ public class EntityGadget extends EntityBaseGadget implements ConfigAbilityDataA
     public void onRemoved() {
         super.onRemoved();
         if(!children.isEmpty()) {
-            getScene().removeEntities(children, VisionTypeOuterClass.VisionType.VISION_TYPE_REMOVE);
+            getScene().removeEntities(children, VisionType.VISION_REMOVE);
             children.clear();
         }
     }
@@ -299,7 +299,7 @@ public class EntityGadget extends EntityBaseGadget implements ConfigAbilityDataA
             new SceneEntityAiInfo(true, protoBornPos), protoBornPos);
 
         val entityInfo = new SceneEntityInfo(ProtEntityType.PROT_ENTITY_GADGET, getId());
-        entityInfo.setMotionInfo(new MotionInfo(protoCurPos, protoCurRot, new messages.general.Vector()));
+        entityInfo.setMotionInfo(new MotionInfo(protoCurPos, protoCurRot, new org.anime_game_servers.multi_proto.gi.messages.general.Vector()));
         entityInfo.setAnimatorParaList(List.of(new AnimatorParameterValueInfoPair()));
         entityInfo.setEntityClientData(new EntityClientData());
         entityInfo.setEntityAuthorityInfo(authority);

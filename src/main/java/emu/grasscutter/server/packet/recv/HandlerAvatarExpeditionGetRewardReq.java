@@ -4,22 +4,18 @@ import emu.grasscutter.game.expedition.ExpeditionInfo;
 import emu.grasscutter.game.expedition.ExpeditionRewardDataList;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.props.ActionReason;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarExpeditionGetRewardReqOuterClass.AvatarExpeditionGetRewardReq;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketAvatarExpeditionGetRewardRsp;
 import emu.grasscutter.server.packet.send.PacketItemAddHintNotify;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.expedition.AvatarExpeditionGetRewardReq;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Opcodes(PacketOpcodes.AvatarExpeditionGetRewardReq)
-public class HandlerAvatarExpeditionGetRewardReq extends PacketHandler {
+public class HandlerAvatarExpeditionGetRewardReq extends TypedPacketHandler<AvatarExpeditionGetRewardReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        AvatarExpeditionGetRewardReq req = AvatarExpeditionGetRewardReq.parseFrom(payload);
+    public void handle(GameSession session, byte[] header, AvatarExpeditionGetRewardReq req) throws Exception {
         var player = session.getPlayer();
 
         ExpeditionInfo expInfo = player.getExpeditionInfo(req.getAvatarGuid());

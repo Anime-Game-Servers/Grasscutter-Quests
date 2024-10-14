@@ -4,7 +4,7 @@ import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketEnterScenePeerNotify;
 import emu.grasscutter.server.packet.send.PacketEnterSceneReadyRsp;
-import messages.scene.EnterSceneReadyReq;
+import org.anime_game_servers.multi_proto.gi.messages.scene.EnterSceneReadyReq;
 
 public class HandlerEnterSceneReadyReq extends TypedPacketHandler<EnterSceneReadyReq> {
 

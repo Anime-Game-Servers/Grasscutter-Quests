@@ -7,8 +7,8 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
-import messages.general.item.EquipParam;
-import messages.mail.GetMailItemRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.item.EquipParam;
+import org.anime_game_servers.multi_proto.gi.messages.mail.GetMailItemRsp;
 
 import java.util.ArrayList;
 import java.util.List;

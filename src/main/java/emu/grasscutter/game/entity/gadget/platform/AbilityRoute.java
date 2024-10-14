@@ -2,9 +2,9 @@ package emu.grasscutter.game.entity.gadget.platform;
 
 import emu.grasscutter.utils.Position;
 import lombok.val;
-import messages.general.MathQuaternion;
-import messages.scene.entity.MovingPlatformType;
-import messages.scene.entity.PlatformInfo;
+import org.anime_game_servers.multi_proto.gi.messages.general.MathQuaternion;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.MovingPlatformType;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.PlatformInfo;
 
 /**
  * TODO mostly hardcoded for EntitySolarIsotomaElevatorPlatform, should be more generic

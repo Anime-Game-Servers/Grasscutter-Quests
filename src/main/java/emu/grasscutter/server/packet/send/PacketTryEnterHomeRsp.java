@@ -1,41 +1,23 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
-import emu.grasscutter.net.proto.TryEnterHomeRspOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.player.TryEnterHomeRsp;
 
-public class PacketTryEnterHomeRsp extends BasePacket {
+public class PacketTryEnterHomeRsp extends BaseTypedPacket<TryEnterHomeRsp> {
 
     public PacketTryEnterHomeRsp() {
-        super(PacketOpcodes.TryEnterHomeRsp);
-
-        TryEnterHomeRspOuterClass.TryEnterHomeRsp proto = TryEnterHomeRspOuterClass.TryEnterHomeRsp.newBuilder()
-                .setRetcode(RetcodeOuterClass.Retcode.RET_SVR_ERROR_VALUE)
-                .build();
-
-        this.setData(proto);
+        super(new TryEnterHomeRsp());
+        proto.setRetcode(Retcode.RET_SVR_ERROR);
     }
 
     public PacketTryEnterHomeRsp(int uid) {
-        super(PacketOpcodes.TryEnterHomeRsp);
-
-        TryEnterHomeRspOuterClass.TryEnterHomeRsp proto = TryEnterHomeRspOuterClass.TryEnterHomeRsp.newBuilder()
-                .setRetcode(0)
-                .setTargetUid(uid)
-                .build();
-
-        this.setData(proto);
+        this(Retcode.RET_SUCC, uid);
     }
 
-    public PacketTryEnterHomeRsp(int retCode, int uid) {
-        super(PacketOpcodes.TryEnterHomeRsp);
-
-        TryEnterHomeRspOuterClass.TryEnterHomeRsp proto = TryEnterHomeRspOuterClass.TryEnterHomeRsp.newBuilder()
-            .setRetcode(retCode)
-            .setTargetUid(uid)
-            .build();
-
-        this.setData(proto);
+    public PacketTryEnterHomeRsp(Retcode retCode, int uid) {
+        super(new TryEnterHomeRsp());
+        proto.setRetcode(retCode);
+        proto.setTargetUid(uid);
     }
 }

@@ -1,47 +1,25 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.WidgetSlotChangeNotifyOuterClass;
-import emu.grasscutter.net.proto.WidgetSlotDataOuterClass;
-import emu.grasscutter.net.proto.WidgetSlotOpOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.manage_slot.WidgetSlotChangeNotify;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.manage_slot.WidgetSlotData;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.manage_slot.WidgetSlotOp;
 
-public class PacketWidgetSlotChangeNotify extends BasePacket {
-
-    public PacketWidgetSlotChangeNotify(WidgetSlotChangeNotifyOuterClass.WidgetSlotChangeNotify proto) {
-        super(PacketOpcodes.WidgetSlotChangeNotify);
-
-        this.setData(proto);
-    }
-
-    public PacketWidgetSlotChangeNotify(WidgetSlotOpOuterClass.WidgetSlotOp op) {
-        super(PacketOpcodes.WidgetSlotChangeNotify);
-
-        WidgetSlotChangeNotifyOuterClass.WidgetSlotChangeNotify proto = WidgetSlotChangeNotifyOuterClass.WidgetSlotChangeNotify.newBuilder()
-                .setOp(op)
-                .setSlot(
-                        WidgetSlotDataOuterClass.WidgetSlotData.newBuilder()
-                                .setIsActive(true)
-                                .build()
-                )
-                .build();
-
-        this.setData(proto);
+public class PacketWidgetSlotChangeNotify extends BaseTypedPacket<WidgetSlotChangeNotify> {
+    public PacketWidgetSlotChangeNotify(WidgetSlotOp op) {
+        super(new WidgetSlotChangeNotify());
+        proto.setOp(op);
+        val widgetSlotData = new WidgetSlotData();
+        widgetSlotData.setActive(true);
+        proto.setSlot(widgetSlotData);
     }
 
     public PacketWidgetSlotChangeNotify(int materialId) {
-        super(PacketOpcodes.WidgetSlotChangeNotify);
-
-        WidgetSlotChangeNotifyOuterClass.WidgetSlotChangeNotify proto = WidgetSlotChangeNotifyOuterClass.WidgetSlotChangeNotify.newBuilder()
-                .setSlot(
-                        WidgetSlotDataOuterClass.WidgetSlotData.newBuilder()
-                                .setIsActive(true)
-                                .setMaterialId(materialId)
-                                .build()
-                )
-                .build();
-
-        this.setData(proto);
+        super(new WidgetSlotChangeNotify());
+        val widgetSlotData = new WidgetSlotData();
+        widgetSlotData.setActive(true);
+        widgetSlotData.setMaterialId(materialId);
+        proto.setSlot(widgetSlotData);
     }
-
 }

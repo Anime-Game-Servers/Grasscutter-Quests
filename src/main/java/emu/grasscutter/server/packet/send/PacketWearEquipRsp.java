@@ -1,19 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.WearEquipRspOuterClass.WearEquipRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.item.avatar.WearEquipRsp;
 
-public class PacketWearEquipRsp extends BasePacket {
-
+public class PacketWearEquipRsp extends BaseTypedPacket<WearEquipRsp> {
 	public PacketWearEquipRsp(long avatarGuid, long equipGuid) {
-		super(PacketOpcodes.WearEquipRsp);
-
-		WearEquipRsp proto = WearEquipRsp.newBuilder()
-				.setAvatarGuid(avatarGuid)
-				.setEquipGuid(equipGuid)
-				.build();
-
-		this.setData(proto);
+        super(new WearEquipRsp());
+        proto.setAvatarGuid(avatarGuid);
+        proto.setEquipGuid(equipGuid);
 	}
 }

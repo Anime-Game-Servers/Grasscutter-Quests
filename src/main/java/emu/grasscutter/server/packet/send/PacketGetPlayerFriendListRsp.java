@@ -1,45 +1,42 @@
 package emu.grasscutter.server.packet.send;
 
-import static emu.grasscutter.config.Configuration.*;
-
 import emu.grasscutter.GameConstants;
 import emu.grasscutter.game.friends.Friendship;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.FriendBriefOuterClass.FriendBrief;
-import emu.grasscutter.net.proto.FriendOnlineStateOuterClass.FriendOnlineState;
-import emu.grasscutter.net.proto.GetPlayerFriendListRspOuterClass.GetPlayerFriendListRsp;
-import emu.grasscutter.net.proto.ProfilePictureOuterClass.ProfilePicture;
-import emu.grasscutter.net.proto.PlatformTypeOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.FriendOnlineState;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.FriendBrief;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.GetPlayerFriendListRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.PlatformType;
+import org.anime_game_servers.multi_proto.gi.messages.general.ProfilePicture;
 
-public class PacketGetPlayerFriendListRsp extends BasePacket {
+import java.util.ArrayList;
+import java.util.List;
+
+import static emu.grasscutter.config.Configuration.GAME_INFO;
+
+public class PacketGetPlayerFriendListRsp extends BaseTypedPacket<GetPlayerFriendListRsp> {
 
     public PacketGetPlayerFriendListRsp(Player player) {
-        super(PacketOpcodes.GetPlayerFriendListRsp);
-
+        super(new GetPlayerFriendListRsp());
         var serverAccount = GAME_INFO.serverAccount;
-        FriendBrief serverFriend = FriendBrief.newBuilder()
-                .setUid(GameConstants.SERVER_CONSOLE_UID)
-                .setNickname(serverAccount.nickName)
-                .setLevel(serverAccount.adventureRank)
-                .setProfilePicture(ProfilePicture.newBuilder().setAvatarId(serverAccount.avatarId))
-                .setWorldLevel(serverAccount.worldLevel)
-                .setSignature(serverAccount.signature)
-                .setLastActiveTime((int) (System.currentTimeMillis() / 1000f))
-                .setNameCardId(serverAccount.nameCardId)
-                .setOnlineState(FriendOnlineState.FRIEND_ONLINE_STATE_ONLINE)
-                .setParam(1)
-                .setIsGameSource(true)
-                .setPlatformType(PlatformTypeOuterClass.PlatformType.PLATFORM_TYPE_PC)
-                .build();
+        FriendBrief serverFriend = new FriendBrief();
+        serverFriend.setUid(GameConstants.SERVER_CONSOLE_UID);
+        serverFriend.setNickname(serverAccount.nickName);
+        serverFriend.setLevel(serverAccount.adventureRank);
+        serverFriend.setProfilePicture(new ProfilePicture(serverAccount.avatarId));
+        serverFriend.setWorldLevel(serverAccount.worldLevel);
+        serverFriend.setSignature(serverAccount.signature);
+        serverFriend.setLastActiveTime((int) (System.currentTimeMillis() / 1000f));
+        serverFriend.setNameCardId(serverAccount.nameCardId);
+        serverFriend.setOnlineState(FriendOnlineState.FRIEND_ONLINE);
+        serverFriend.setParam(1);
+        serverFriend.setGameSource(true);
+        serverFriend.setPlatformType(PlatformType.PC);
 
-        GetPlayerFriendListRsp.Builder proto = GetPlayerFriendListRsp.newBuilder().addFriendList(serverFriend);
-
-        for (Friendship friendship : player.getFriendsList().getFriends().values()) {
-            proto.addFriendList(friendship.toProto());
-        }
-
-        this.setData(proto);
+        List<FriendBrief> friendList = new ArrayList<>();
+        friendList.add(serverFriend);
+        friendList.addAll(player.getFriendsList().getFriends().values().stream().map(Friendship::toProto).toList());
+        proto.setFriendList(friendList);
     }
 }

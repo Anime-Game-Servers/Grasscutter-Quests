@@ -1,17 +1,13 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.SceneEntityDrownRspOuterClass.SceneEntityDrownRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.SceneEntityDrownRsp;
 
-public class PacketSceneEntityDrownRsp extends BasePacket {
+public class PacketSceneEntityDrownRsp extends BaseTypedPacket<SceneEntityDrownRsp> {
 
     public PacketSceneEntityDrownRsp(int entityId) {
-        super(PacketOpcodes.SceneEntityDrownRsp);
-
-        SceneEntityDrownRsp proto = SceneEntityDrownRsp.newBuilder().setEntityId(entityId).build();
-
-        this.setData(proto);
+        super(new SceneEntityDrownRsp());
+        proto.setEntityId(entityId);
     }
 }
 

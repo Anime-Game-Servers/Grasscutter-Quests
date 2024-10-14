@@ -1,19 +1,19 @@
 package emu.grasscutter.server.packet.send;
 
-import java.util.Map;
-
 import emu.grasscutter.game.expedition.ExpeditionInfo;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarExpeditionStartRspOuterClass.AvatarExpeditionStartRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.expedition.AvatarExpeditionStartRsp;
 
-public class PacketAvatarExpeditionStartRsp extends BasePacket {
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class PacketAvatarExpeditionStartRsp extends BaseTypedPacket<AvatarExpeditionStartRsp> {
     public PacketAvatarExpeditionStartRsp(Map<Long, ExpeditionInfo> expeditionInfo) {
-        super(PacketOpcodes.AvatarExpeditionStartRsp);
-
-        AvatarExpeditionStartRsp.Builder proto = AvatarExpeditionStartRsp.newBuilder();
-        expeditionInfo.forEach((key, e) -> proto.putExpeditionInfoMap(key, e.toProto()));
-
-        this.setData(proto.build());
+        super(new AvatarExpeditionStartRsp());
+        proto.setExpeditionInfoMap(expeditionInfo.entrySet().stream()
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> entry.getValue().toProto()
+            )));
     }
 }

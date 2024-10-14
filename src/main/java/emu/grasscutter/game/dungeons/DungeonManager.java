@@ -28,8 +28,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.val;
-import messages.general.avatar.GrantReason;
-import messages.scene.entity.WeeklyBossResinDiscountInfo;
+import org.anime_game_servers.multi_proto.gi.messages.general.avatar.GrantReason;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.WeeklyBossResinDiscountInfo;
 import org.anime_game_servers.gi_lua.models.ScriptArgs;
 import org.anime_game_servers.gi_lua.models.constants.EventType;
 

@@ -1,19 +1,13 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarDieAnimationEndRspOuterClass.AvatarDieAnimationEndRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.AvatarDieAnimationEndRsp;
 
-public class PacketAvatarDieAnimationEndRsp extends BasePacket {
-	
+public class PacketAvatarDieAnimationEndRsp extends BaseTypedPacket<AvatarDieAnimationEndRsp> {
+
 	public PacketAvatarDieAnimationEndRsp(long dieGuid, int skillId) {
-		super(PacketOpcodes.AvatarDieAnimationEndRsp);
-
-		AvatarDieAnimationEndRsp proto = AvatarDieAnimationEndRsp.newBuilder()
-				.setDieGuid(dieGuid)
-				.setSkillId(skillId)
-				.build();
-		
-		this.setData(proto);
+        super(new AvatarDieAnimationEndRsp());
+        proto.setDieGuid(dieGuid);
+        proto.setSkillId(skillId);
 	}
 }

@@ -1,20 +1,13 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.avatar.Avatar;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarFightPropNotifyOuterClass.AvatarFightPropNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.properties.AvatarFightPropNotify;
 
-public class PacketAvatarFightPropNotify extends BasePacket {
-	
+public class PacketAvatarFightPropNotify extends BaseTypedPacket<AvatarFightPropNotify> {
 	public PacketAvatarFightPropNotify(Avatar avatar) {
-		super(PacketOpcodes.AvatarFightPropNotify);
-		
-		AvatarFightPropNotify proto = AvatarFightPropNotify.newBuilder()
-				.setAvatarGuid(avatar.getGuid())
-				.putAllFightPropMap(avatar.getFightProperties())
-				.build();
-		
-		this.setData(proto);
+        super(new AvatarFightPropNotify());
+        proto.setAvatarGuid(avatar.getGuid());
+        proto.setFightPropMap(avatar.getFightProperties());
 	}
 }

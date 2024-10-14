@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.*;
-import messages.general.PropValue;
-import messages.general.avatar.*;
-import messages.general.avatar.FetterData;
+import org.anime_game_servers.multi_proto.gi.messages.general.PropValue;
+import org.anime_game_servers.multi_proto.gi.messages.general.avatar.*;
+import org.anime_game_servers.multi_proto.gi.messages.general.avatar.FetterData;
 import org.bson.types.ObjectId;
 
 import emu.grasscutter.data.GameData;

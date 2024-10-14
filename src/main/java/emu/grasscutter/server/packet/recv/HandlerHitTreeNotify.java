@@ -1,21 +1,15 @@
 package emu.grasscutter.server.packet.recv;
 
-import java.math.BigInteger;
-
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.HitTreeNotifyOuterClass.HitTreeNotify;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
+import org.anime_game_servers.multi_proto.gi.messages.scene.HitTreeNotify;
 
 /**
  * Implement Deforestation Function
  */
-@Opcodes(PacketOpcodes.HitTreeNotify)
-public class HandlerHitTreeNotify extends PacketHandler {
+public class HandlerHitTreeNotify extends TypedPacketHandler<HitTreeNotify> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        HitTreeNotify hit = HitTreeNotify.parseFrom(payload);
-        session.getPlayer().getDeforestationManager().onDeforestationInvoke(hit);
+    public void handle(GameSession session, byte[] header, HitTreeNotify req) throws Exception {
+        session.getPlayer().getDeforestationManager().onDeforestationInvoke(req);
     }
 }

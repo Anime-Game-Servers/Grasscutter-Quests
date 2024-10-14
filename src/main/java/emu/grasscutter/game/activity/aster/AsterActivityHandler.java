@@ -6,9 +6,9 @@ import emu.grasscutter.game.activity.PlayerActivityData;
 import emu.grasscutter.game.props.ActivityType;
 import emu.grasscutter.server.packet.send.*;
 import lombok.val;
-import messages.activity.ActivityInfo;
-import messages.activity.aster.*;
-import messages.general.Vector;
+import org.anime_game_servers.multi_proto.gi.messages.activity.general.ActivityInfo;
+import org.anime_game_servers.multi_proto.gi.messages.activity.aster.*;
+import org.anime_game_servers.multi_proto.gi.messages.general.Vector;
 
 import java.util.List;
 import java.util.Map;

@@ -1,18 +1,13 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarSkillUpgradeReqOuterClass.AvatarSkillUpgradeReq;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
+import org.anime_game_servers.multi_proto.gi.messages.team.skill.AvatarSkillUpgradeReq;
 
-@Opcodes(PacketOpcodes.AvatarSkillUpgradeReq)
-public class HandlerAvatarSkillUpgradeReq extends PacketHandler {
+public class HandlerAvatarSkillUpgradeReq extends TypedPacketHandler<AvatarSkillUpgradeReq> {
 
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        AvatarSkillUpgradeReq req = AvatarSkillUpgradeReq.parseFrom(payload);
-
+    public void handle(GameSession session, byte[] header, AvatarSkillUpgradeReq req) throws Exception {
         // Sanity checks
         var avatar = session.getPlayer().getAvatars().getAvatarByGuid(req.getAvatarGuid());
         if (avatar == null) return;

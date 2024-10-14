@@ -2,35 +2,28 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.PlayerProperty;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.PropValueOuterClass.PropValue;
-import emu.grasscutter.net.proto.SetPlayerPropReqOuterClass.SetPlayerPropReq;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketSetPlayerPropRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.PropValue;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.player.SetPlayerPropReq;
 
-@Opcodes(PacketOpcodes.SetPlayerPropReq)
-public class HandlerSetPlayerPropReq extends PacketHandler {
-
+public class HandlerSetPlayerPropReq extends TypedPacketHandler<SetPlayerPropReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
+    public void handle(GameSession session, byte[] header, SetPlayerPropReq req) throws Exception {
         // Auto template
-        SetPlayerPropReq req = SetPlayerPropReq.parseFrom(payload);
         Player player = session.getPlayer();
-        for (PropValue p : req.getPropListList()) {
+        for (PropValue p : req.getPropList()) {
             PlayerProperty prop = PlayerProperty.getPropById(p.getType());
             if (prop == PlayerProperty.PROP_IS_MP_MODE_AVAILABLE) {
                 if (!player.setProperty(prop, (int) p.getVal(), false)) {
-                    session.send(new PacketSetPlayerPropRsp(1));
+                    session.send(new PacketSetPlayerPropRsp(Retcode.RET_FAIL));
                     return;
                 }
             }
         }
         player.save();
-        session.send(new PacketSetPlayerPropRsp(0));
+        session.send(new PacketSetPlayerPropRsp(Retcode.RET_SUCC));
     }
-
-
-
 }

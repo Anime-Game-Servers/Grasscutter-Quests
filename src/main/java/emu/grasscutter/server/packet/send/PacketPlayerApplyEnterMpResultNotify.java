@@ -1,37 +1,20 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.PlayerApplyEnterMpReasonOuterClass.PlayerApplyEnterMpReason;
-import emu.grasscutter.net.proto.PlayerApplyEnterMpResultNotifyOuterClass;
-import emu.grasscutter.net.proto.PlayerApplyEnterMpResultNotifyOuterClass.PlayerApplyEnterMpResultNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.multiplayer.PlayerApplyEnterMpResultNotify;
+import org.anime_game_servers.multi_proto.gi.messages.multiplayer.MpEnterResultReason;
 
-public class PacketPlayerApplyEnterMpResultNotify extends BasePacket {
-	
-	public PacketPlayerApplyEnterMpResultNotify(Player target, boolean isAgreed, PlayerApplyEnterMpResultNotifyOuterClass.PlayerApplyEnterMpResultNotify.Reason reason) {
-		super(PacketOpcodes.PlayerApplyEnterMpResultNotify);
-
-		PlayerApplyEnterMpResultNotify proto = PlayerApplyEnterMpResultNotify.newBuilder()
-				.setTargetUid(target.getUid())
-				.setTargetNickname(target.getNickname())
-				.setIsAgreed(isAgreed)
-				.setReason(reason)
-				.build();
-		
-		this.setData(proto);
+public class PacketPlayerApplyEnterMpResultNotify extends BaseTypedPacket<PlayerApplyEnterMpResultNotify> {
+    public PacketPlayerApplyEnterMpResultNotify(Player target, boolean isAgreed, MpEnterResultReason reason) {
+        this(target.getUid(), target.getNickname(), isAgreed, reason);
 	}
-	
-	public PacketPlayerApplyEnterMpResultNotify(int targetId, String targetName, boolean isAgreed, PlayerApplyEnterMpResultNotify.Reason reason) {
-		super(PacketOpcodes.PlayerApplyEnterMpResultNotify);
 
-		PlayerApplyEnterMpResultNotify proto = PlayerApplyEnterMpResultNotify.newBuilder()
-				.setTargetUid(targetId)
-				.setTargetNickname(targetName)
-				.setIsAgreed(isAgreed)
-				.setReason(reason)
-				.build();
-		
-		this.setData(proto);
+    public PacketPlayerApplyEnterMpResultNotify(int targetId, String targetName, boolean isAgreed, MpEnterResultReason reason) {
+        super(new PlayerApplyEnterMpResultNotify());
+        proto.setTargetUid(targetId);
+        proto.setTargetNickname(targetName);
+        proto.setAgreed(isAgreed);
+        proto.setReason(reason);
 	}
 }

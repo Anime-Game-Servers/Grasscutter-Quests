@@ -6,13 +6,16 @@ import emu.grasscutter.data.GameDepot;
 import emu.grasscutter.data.binout.SceneNpcBornEntry;
 import emu.grasscutter.data.binout.routes.Route;
 import emu.grasscutter.data.binout.routes.RouteType;
-import emu.grasscutter.data.excels.*;
+import emu.grasscutter.data.excels.CodexAnimalData;
+import emu.grasscutter.data.excels.DungeonData;
+import emu.grasscutter.data.excels.SceneData;
+import emu.grasscutter.data.excels.WorldLevelData;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.dungeons.DungeonManager;
-import emu.grasscutter.game.dungeons.settle_listeners.DungeonSettleListener;
 import emu.grasscutter.game.dungeons.challenge.WorldChallenge;
 import emu.grasscutter.game.dungeons.enums.DungeonPassConditionType;
+import emu.grasscutter.game.dungeons.settle_listeners.DungeonSettleListener;
 import emu.grasscutter.game.entity.*;
 import emu.grasscutter.game.entity.gadget.GadgetWorktop;
 import emu.grasscutter.game.entity.gadget.platform.ConfigRoute;
@@ -22,7 +25,6 @@ import emu.grasscutter.game.props.*;
 import emu.grasscutter.game.quest.QuestGroupSuite;
 import emu.grasscutter.game.world.data.TeleportProperties;
 import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.proto.VisionTypeOuterClass;
 import emu.grasscutter.scripts.SceneIndexManager;
 import emu.grasscutter.scripts.SceneScriptManager;
 import emu.grasscutter.server.event.player.PlayerTeleportEvent;
@@ -34,10 +36,6 @@ import kotlin.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import messages.battle.AttackResult;
-import messages.gadget.SelectWorktopOptionReq;
-import messages.scene.EnterType;
-import messages.scene.VisionType;
 import org.anime_game_servers.gi_lua.models.SceneGroupUserData;
 import org.anime_game_servers.gi_lua.models.ScriptArgs;
 import org.anime_game_servers.gi_lua.models.constants.EventType;
@@ -46,10 +44,13 @@ import org.anime_game_servers.gi_lua.models.scene.block.SceneGroupInfo;
 import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup;
 import org.anime_game_servers.gi_lua.models.scene.group.SceneInitConfig;
 import org.anime_game_servers.gi_lua.utils.GroupUtils;
+import org.anime_game_servers.multi_proto.gi.messages.battle.event.AttackResult;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.SelectWorktopOptionReq;
+import org.anime_game_servers.multi_proto.gi.messages.scene.EnterType;
+import org.anime_game_servers.multi_proto.gi.messages.scene.VisionType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -241,7 +242,7 @@ public class Scene {
     }
 
     private synchronized void removePlayerAvatars(@NotNull Player player) {
-        removeEntities(player.getTeamManager().getActiveTeam(), VisionTypeOuterClass.VisionType.VISION_TYPE_MISS);
+        removeEntities(player.getTeamManager().getActiveTeam(), VisionType.VISION_MISS);
     }
 
     public void spawnPlayer(Player player) {
@@ -320,15 +321,15 @@ public class Scene {
     }
 
     public void removeEntity(GameEntity entity) {
-        removeEntity(entity, VisionTypeOuterClass.VisionType.VISION_TYPE_DIE);
+        removeEntity(entity, VisionType.VISION_DIE);
     }
 
-    private synchronized void removeEntity(GameEntity entity, VisionTypeOuterClass.VisionType visionType) {
+    private synchronized void removeEntity(GameEntity entity, VisionType visionType) {
         Optional.ofNullable(removeEntityDirectly(entity)).ifPresent(removed ->
             broadcastPacket(new PacketSceneEntityDisappearNotify(removed, visionType)));
     }
 
-    public synchronized void removeEntities(Collection<? extends GameEntity> entity, VisionTypeOuterClass.VisionType visionType) {
+    public synchronized void removeEntities(Collection<? extends GameEntity> entity, VisionType visionType) {
         val toRemove = entity.stream().filter(Objects::nonNull)
             .map(this::removeEntityDirectly).filter(Objects::nonNull)
             .toList();
@@ -340,7 +341,7 @@ public class Scene {
     public synchronized void replaceEntity(EntityAvatar oldEntity, EntityAvatar newEntity) {
         removeEntityDirectly(oldEntity);
         addEntityDirectly(newEntity);
-        broadcastPacket(new PacketSceneEntityDisappearNotify(oldEntity, VisionTypeOuterClass.VisionType.VISION_TYPE_REPLACE));
+        broadcastPacket(new PacketSceneEntityDisappearNotify(oldEntity, VisionType.VISION_REPLACE));
         broadcastPacket(new PacketSceneEntityAppearNotify(newEntity, VisionType.VISION_REPLACE, oldEntity.getId()));
     }
 
@@ -614,7 +615,7 @@ public class Scene {
         }
         if (!toRemove.isEmpty()) {
             toRemove.forEach(this::removeEntityDirectly);
-            broadcastPacket(new PacketSceneEntityDisappearNotify(toRemove, VisionTypeOuterClass.VisionType.VISION_TYPE_REMOVE));
+            broadcastPacket(new PacketSceneEntityDisappearNotify(toRemove, VisionType.VISION_REMOVE));
         }
     }
 
@@ -809,7 +810,7 @@ public class Scene {
      * */
     private void unloadGroup(SceneBlock block, int groupId) {
         removeEntities(this.entities.values().stream().filter(Objects::nonNull).filter(e ->
-            e.getBlockId() == block.getId() && e.getGroupId() == groupId).toList(), VisionTypeOuterClass.VisionType.VISION_TYPE_REMOVE);
+            e.getBlockId() == block.getId() && e.getGroupId() == groupId).toList(), VisionType.VISION_REMOVE);
 
 
         SceneGroup group = scriptManager.getMeta().getGroups().get(groupId);
@@ -861,7 +862,7 @@ public class Scene {
 
         // Optimization
         if (this.players.stream().anyMatch(p -> p != gadget.getOwner())) { // if there is other players in scene
-            broadcastPacketToOthers(gadget.getOwner(), new PacketSceneEntityDisappearNotify(gadget, VisionTypeOuterClass.VisionType.VISION_TYPE_DIE));
+            broadcastPacketToOthers(gadget.getOwner(), new PacketSceneEntityDisappearNotify(gadget, VisionType.VISION_DIE));
         }
     }
 
@@ -941,7 +942,7 @@ public class Scene {
             .map(EntityGadget::getContent)
             .filter(GadgetWorktop.class::isInstance).map(GadgetWorktop.class::cast)
             .filter(worktop -> worktop.onSelectWorktopOption(req))
-            .ifPresent(worktop -> entity.getScene().removeEntity(entity, VisionTypeOuterClass.VisionType.VISION_TYPE_REMOVE));
+            .ifPresent(worktop -> entity.getScene().removeEntity(entity, VisionType.VISION_REMOVE));
     }
 
     public void saveGroups() {

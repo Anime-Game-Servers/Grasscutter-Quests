@@ -7,9 +7,9 @@ import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import lombok.val;
-import messages.gadget.GadgetInteractReq;
-import messages.scene.entity.GatherGadgetInfo;
-import messages.scene.entity.SceneGadgetInfo;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.GadgetInteractReq;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.GatherGadgetInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.SceneGadgetInfo;
 
 /**
  * Spawner for the gather objects

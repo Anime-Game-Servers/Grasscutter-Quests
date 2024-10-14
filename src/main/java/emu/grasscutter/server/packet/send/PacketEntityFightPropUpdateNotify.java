@@ -2,32 +2,26 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.props.FightProperty;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.EntityFightPropUpdateNotifyOuterClass.EntityFightPropUpdateNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.EntityFightPropUpdateNotify;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-public class PacketEntityFightPropUpdateNotify extends BasePacket {
+public class PacketEntityFightPropUpdateNotify extends BaseTypedPacket<EntityFightPropUpdateNotify> {
 
 	public PacketEntityFightPropUpdateNotify(GameEntity entity, FightProperty prop) {
-		super(PacketOpcodes.EntityFightPropUpdateNotify);
-
-		EntityFightPropUpdateNotify proto = EntityFightPropUpdateNotify.newBuilder()
-				.setEntityId(entity.getId())
-				.putFightPropMap(prop.getId(), entity.getFightProperty(prop))
-				.build();
-
-		this.setData(proto);
+        super(new EntityFightPropUpdateNotify());
+        proto.setEntityId(entity.getId());
+        proto.setFightPropMap(Map.of(prop.getId(), entity.getFightProperty(prop)));
 	}
 
     public PacketEntityFightPropUpdateNotify(GameEntity entity, Collection<FightProperty> props) {
-		super(PacketOpcodes.EntityFightPropUpdateNotify);
-
-		var protoBuilder = EntityFightPropUpdateNotify.newBuilder()
-				.setEntityId(entity.getId());
-        props.forEach(p -> protoBuilder.putFightPropMap(p.getId(), entity.getFightProperty(p)));
-
-		this.setData(protoBuilder);
+        super(new EntityFightPropUpdateNotify());
+        proto.setEntityId(entity.getId());
+        Map<Integer, Float> fightPropMap = new HashMap<>();
+        props.forEach(p -> fightPropMap.put(p.getId(), entity.getFightProperty(p)));
+        proto.setFightPropMap(fightPropMap);
 	}
 }

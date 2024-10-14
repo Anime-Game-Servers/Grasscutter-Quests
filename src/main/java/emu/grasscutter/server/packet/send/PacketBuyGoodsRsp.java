@@ -1,8 +1,8 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.net.packet.BaseTypedPacket;
-import messages.shop.BuyGoodsRsp;
-import messages.shop.ShopGoods;
+import org.anime_game_servers.multi_proto.gi.messages.shop.BuyGoodsRsp;
+import org.anime_game_servers.multi_proto.gi.messages.shop.ShopGoods;
 
 public class PacketBuyGoodsRsp extends BaseTypedPacket<BuyGoodsRsp> {
     public PacketBuyGoodsRsp(int shopType, int boughtNum, ShopGoods sg) {

@@ -4,8 +4,8 @@ import emu.grasscutter.game.world.World;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.val;
-import messages.general.PropValue;
-import messages.world.WorldDataNotify;
+import org.anime_game_servers.multi_proto.gi.messages.general.PropValue;
+import org.anime_game_servers.multi_proto.gi.messages.world.WorldDataNotify;
 
 public class PacketWorldDataNotify extends BaseTypedPacket<WorldDataNotify> {
 

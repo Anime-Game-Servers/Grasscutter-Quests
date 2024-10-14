@@ -1,20 +1,13 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.game.gacha.GachaBanner;
-import emu.grasscutter.game.gacha.PlayerGachaBannerInfo;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
-import emu.grasscutter.server.packet.send.PacketGachaWishRsp;
 import emu.grasscutter.server.packet.send.PacketGetGachaInfoRsp;
+import org.anime_game_servers.multi_proto.gi.messages.wishing.GetGachaInfoReq;
 
-@Opcodes(PacketOpcodes.GetGachaInfoReq)
-public class HandlerGetGachaInfoReq extends PacketHandler {
-
+public class HandlerGetGachaInfoReq extends TypedPacketHandler<GetGachaInfoReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
+    public void handle(GameSession session, byte[] header, GetGachaInfoReq req) throws Exception {
         session.send(new PacketGetGachaInfoRsp(session.getServer().getGachaSystem(), session.getPlayer()));
     }
-
 }

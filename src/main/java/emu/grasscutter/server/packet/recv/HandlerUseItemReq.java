@@ -1,26 +1,19 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.game.inventory.GameItem;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.UseItemReqOuterClass.UseItemReq;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketUseItemRsp;
+import org.anime_game_servers.multi_proto.gi.messages.item.UseItemReq;
 
-@Opcodes(PacketOpcodes.UseItemReq)
-public class HandlerUseItemReq extends PacketHandler {
-
+public class HandlerUseItemReq extends TypedPacketHandler<UseItemReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        UseItemReq req = UseItemReq.parseFrom(payload);
-
-        GameItem useItem = session.getServer().getInventorySystem().useItem(session.getPlayer(), req.getTargetGuid(), req.getGuid(), req.getCount(), req.getOptionIdx(), req.getIsEnterMpDungeonTeam());
+    public void handle(GameSession session, byte[] header, UseItemReq req) throws Exception {
+        GameItem useItem = session.getServer().getInventorySystem().useItem(session.getPlayer(), req.getTargetGuid(), req.getGuid(), req.getCount(), req.getOptionIdx(), req.isEnterMpDungeonTeam());
         if (useItem != null) {
             session.send(new PacketUseItemRsp(req.getTargetGuid(), useItem));
         } else {
             session.send(new PacketUseItemRsp());
         }
     }
-
 }

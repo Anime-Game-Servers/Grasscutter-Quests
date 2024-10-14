@@ -15,7 +15,6 @@ import emu.grasscutter.utils.JsonUtils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.val;
-import messages.VERSION;
 
 public class PacketOpcodesUtils {
     private static Int2ObjectMap<String> opcodeMap;

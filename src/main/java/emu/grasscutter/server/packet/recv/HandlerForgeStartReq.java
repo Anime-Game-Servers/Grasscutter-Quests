@@ -1,22 +1,12 @@
 package emu.grasscutter.server.packet.recv;
 
-import java.lang.invoke.StringConcatFactory;
-
-import emu.grasscutter.Grasscutter;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ForgeStartReqOuterClass;
-import emu.grasscutter.net.proto.DeleteFriendReqOuterClass;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
-import emu.grasscutter.server.packet.send.PacketDelMailRsp;
+import org.anime_game_servers.multi_proto.gi.messages.item.forge.ForgeStartReq;
 
-@Opcodes(PacketOpcodes.ForgeStartReq)
-public class HandlerForgeStartReq extends PacketHandler {
-
+public class HandlerForgeStartReq extends TypedPacketHandler<ForgeStartReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        ForgeStartReqOuterClass.ForgeStartReq req = ForgeStartReqOuterClass.ForgeStartReq.parseFrom(payload);
+    public void handle(GameSession session, byte[] header, ForgeStartReq req) throws Exception {
         session.getPlayer().getForgingManager().handleForgeStartReq(req);
     }
 

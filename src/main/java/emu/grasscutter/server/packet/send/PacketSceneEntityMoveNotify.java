@@ -1,22 +1,15 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.EntityMoveInfoOuterClass.EntityMoveInfo;
-import emu.grasscutter.net.proto.SceneEntityMoveNotifyOuterClass.SceneEntityMoveNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.entity.EntityMoveInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.SceneEntityMoveNotify;
 
-public class PacketSceneEntityMoveNotify extends BasePacket {
-	
+public class PacketSceneEntityMoveNotify extends BaseTypedPacket<SceneEntityMoveNotify> {
 	public PacketSceneEntityMoveNotify(EntityMoveInfo moveInfo) {
-		super(PacketOpcodes.SceneEntityMoveNotify, true);
-
-		SceneEntityMoveNotify proto = SceneEntityMoveNotify.newBuilder()
-				.setMotionInfo(moveInfo.getMotionInfo())
-				.setEntityId(moveInfo.getEntityId())
-				.setSceneTime(moveInfo.getSceneTime())
-				.setReliableSeq(moveInfo.getReliableSeq())
-				.build();
-		
-		this.setData(proto);
+        super(new SceneEntityMoveNotify(), true);
+        proto.setMotionInfo(moveInfo.getMotionInfo());
+        proto.setEntityId(moveInfo.getEntityId());
+        proto.setSceneTime(moveInfo.getSceneTime());
+        proto.setReliableSeq(moveInfo.getReliableSeq());
 	}
 }

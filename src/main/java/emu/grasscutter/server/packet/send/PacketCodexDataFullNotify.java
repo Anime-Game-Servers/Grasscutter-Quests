@@ -1,108 +1,120 @@
 package emu.grasscutter.server.packet.send;
 
-import java.util.Collections;
-
 import emu.grasscutter.data.GameData;
+import emu.grasscutter.data.excels.CodexAnimalData;
+import emu.grasscutter.data.excels.CodexMaterialData;
+import emu.grasscutter.data.excels.CodexWeaponData;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.CodexDataFullNotifyOuterClass.CodexDataFullNotify;
-import emu.grasscutter.net.proto.CodexTypeDataOuterClass.CodexTypeData;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.codex.CodexDataFullNotify;
+import org.anime_game_servers.multi_proto.gi.messages.codex.CodexType;
+import org.anime_game_servers.multi_proto.gi.messages.codex.CodexTypeData;
 
-public class PacketCodexDataFullNotify extends BasePacket {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+public class PacketCodexDataFullNotify extends BaseTypedPacket<CodexDataFullNotify> {
     public PacketCodexDataFullNotify(Player player) {
-        super(PacketOpcodes.CodexDataFullNotify, true);
+        super(new CodexDataFullNotify(), true);
 
         //Quests
-        CodexTypeData.Builder questTypeData = CodexTypeData.newBuilder()
-                .setTypeValue(1);
+        CodexTypeData questTypeData = new CodexTypeData();
+        questTypeData.setType(CodexType.CODEX_QUEST);
 
         //Weapons
-        CodexTypeData.Builder weaponTypeData = CodexTypeData.newBuilder()
-                .setTypeValue(2);
+        CodexTypeData weaponTypeData = new CodexTypeData();
+        weaponTypeData.setType(CodexType.CODEX_WEAPON);
 
         //Animals
-        CodexTypeData.Builder animalTypeData = CodexTypeData.newBuilder()
-                .setTypeValue(3);
+        CodexTypeData animalTypeData = new CodexTypeData();
+        animalTypeData.setType(CodexType.CODEX_ANIMAL);
 
         //Materials
-        CodexTypeData.Builder materialTypeData = CodexTypeData.newBuilder()
-                .setTypeValue(4);
+        CodexTypeData materialTypeData = new CodexTypeData();
+        materialTypeData.setType(CodexType.CODEX_MATERIAL);
 
         //Books
-        CodexTypeData.Builder bookTypeData = CodexTypeData.newBuilder()
-                .setTypeValue(5);
+        CodexTypeData bookTypeData = new CodexTypeData();
+        bookTypeData.setType(CodexType.CODEX_BOOKS);
 
         //Tips
-        CodexTypeData.Builder pushTipsTypeData = CodexTypeData.newBuilder()
-                .setTypeValue(6);
+        CodexTypeData pushTipsTypeData = new CodexTypeData();
+        pushTipsTypeData.setType(CodexType.CODEX_PUSHTIPS);
 
         //Views
-        CodexTypeData.Builder viewTypeData = CodexTypeData.newBuilder()
-                .setTypeValue(7);
+        CodexTypeData viewTypeData = new CodexTypeData();
+        viewTypeData.setType(CodexType.CODEX_VIEW);
 
         //Reliquary
-        CodexTypeData.Builder reliquaryData = CodexTypeData.newBuilder()
-                .setTypeValue(8);
+        CodexTypeData reliquaryData = new CodexTypeData();
+        reliquaryData.setType(CodexType.CODEX_RELIQUARY);
 
         //Quests
+        List<Integer> questCodexIdList = new ArrayList<>();
         player.getQuestManager().forEachMainQuest(mainQuest -> {
             if(mainQuest.isFinished()){
                 var codexQuest = GameData.getCodexQuestDataIdMap().get(mainQuest.getParentQuestId());
                 if(codexQuest != null){
-                    questTypeData.addCodexIdList(codexQuest.getId()).addAllHaveViewedList(Collections.singleton(true));
+                    questCodexIdList.add(codexQuest.getId());
                 }
             }
         });
+        questTypeData.setCodexIdList(questCodexIdList);
+        questTypeData.setHaveViewedList(Collections.nCopies(questCodexIdList.size(), true));
 
         //Weapons
-        player.getCodex().getUnlockedWeapon().forEach(weapon -> {
-            var codexWeapon = GameData.getCodexWeaponDataIdMap().get(weapon);
-            if(codexWeapon != null){
-                weaponTypeData.addCodexIdList(codexWeapon.getId()).addAllHaveViewedList(Collections.singleton(true));
-            }
-        });
+        List<Integer> weaponCodexIdList = new ArrayList<>(player.getCodex().getUnlockedWeapon().stream()
+            .map(weapon -> GameData.getCodexWeaponDataIdMap().get((int) weapon))
+            .filter(Objects::nonNull)
+            .map(CodexWeaponData::getId)
+            .toList());
+        weaponTypeData.setCodexIdList(weaponCodexIdList);
+        weaponTypeData.setHaveViewedList(Collections.nCopies(weaponCodexIdList.size(), true));
 
         //Animals
-        player.getCodex().getUnlockedAnimal().forEach((animal, amount) -> {
-            var codexAnimal = GameData.getCodexAnimalDataMap().get(animal);
-            if(codexAnimal != null){
-                animalTypeData.addCodexIdList(codexAnimal.getId()).addAllHaveViewedList(Collections.singleton(true));
-            }
-        });
+        List<Integer> animalCodexIdList = new ArrayList<>(player.getCodex().getUnlockedAnimal().keySet().stream()
+            .map(animal -> GameData.getCodexAnimalDataMap().get((int) animal))
+            .filter(Objects::nonNull)
+            .map(CodexAnimalData::getId)
+            .toList());
+        animalTypeData.setCodexIdList(animalCodexIdList);
+        animalTypeData.setHaveViewedList(Collections.nCopies(animalCodexIdList.size(), true));
 
         //Materials
-        player.getCodex().getUnlockedMaterial().forEach(material -> {
-            var codexMaterial = GameData.getCodexMaterialDataIdMap().get(material);
-            if (codexMaterial != null) {
-                materialTypeData.addCodexIdList(codexMaterial.getId()).addAllHaveViewedList(Collections.singleton(true));
-            }
-        });
+        List<Integer> materialCodexIdList = new ArrayList<>(player.getCodex().getUnlockedMaterial().stream()
+            .map(material -> GameData.getCodexMaterialDataIdMap().get((int) material))
+            .filter(Objects::nonNull)
+            .map(CodexMaterialData::getId)
+            .toList());
+        materialTypeData.setCodexIdList(materialCodexIdList);
+        materialTypeData.setHaveViewedList(Collections.nCopies(materialCodexIdList.size(), true));
 
         //Books
-        player.getCodex().getUnlockedBook().forEach(view -> bookTypeData.addCodexIdList(view).addAllHaveViewedList(Collections.singleton(true)));
+        bookTypeData.setCodexIdList(player.getCodex().getUnlockedBook().stream().toList());
+        bookTypeData.setHaveViewedList(Collections.nCopies(player.getCodex().getUnlockedBook().size(), true));
 
         //Tips
         //TODO: Tips
 
         //Views
-        player.getCodex().getUnlockedView().forEach(view -> viewTypeData.addCodexIdList(view).addAllHaveViewedList(Collections.singleton(true)));
+        viewTypeData.setCodexIdList(player.getCodex().getUnlockedView().stream().toList());
+        viewTypeData.setHaveViewedList(Collections.nCopies(player.getCodex().getUnlockedView().size(), true));
 
         //Reliquary
-        player.getCodex().getUnlockedReliquarySuitCodex().forEach(reliquarySuit -> {
-            reliquaryData.addCodexIdList(reliquarySuit).addAllHaveViewedList(Collections.singleton(true));
-        });
+        reliquaryData.setCodexIdList(player.getCodex().getUnlockedReliquarySuitCodex().stream().toList());
+        reliquaryData.setHaveViewedList(Collections.nCopies(player.getCodex().getUnlockedReliquarySuitCodex().size(), true));
 
-        CodexDataFullNotify.Builder proto = CodexDataFullNotify.newBuilder()
-                .addTypeDataList(questTypeData.build())
-                .addTypeDataList(weaponTypeData)
-                .addTypeDataList(animalTypeData)
-                .addTypeDataList(materialTypeData)
-                .addTypeDataList(bookTypeData)
-                .addTypeDataList(pushTipsTypeData.build())
-                .addTypeDataList(viewTypeData.build())
-                .addTypeDataList(reliquaryData);
-
-        this.setData(proto);
+        List<CodexTypeData> codexTypeDataList = new ArrayList<>();
+        codexTypeDataList.add(questTypeData);
+        codexTypeDataList.add(weaponTypeData);
+        codexTypeDataList.add(animalTypeData);
+        codexTypeDataList.add(materialTypeData);
+        codexTypeDataList.add(bookTypeData);
+        codexTypeDataList.add(pushTipsTypeData);
+        codexTypeDataList.add(viewTypeData);
+        codexTypeDataList.add(reliquaryData);
+        proto.setTypeDataList(codexTypeDataList);
     }
 }

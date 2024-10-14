@@ -5,8 +5,8 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.val;
-import messages.team.AvatarDataNotify;
-import messages.team.AvatarTeam;
+import org.anime_game_servers.multi_proto.gi.messages.team.AvatarDataNotify;
+import org.anime_game_servers.multi_proto.gi.messages.team.AvatarTeam;
 
 import java.util.ArrayList;
 

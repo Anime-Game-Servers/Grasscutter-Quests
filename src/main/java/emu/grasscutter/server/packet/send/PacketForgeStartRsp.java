@@ -1,19 +1,13 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ForgeStartRspOuterClass.ForgeStartRsp;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.item.forge.ForgeStartRsp;
 
-public class PacketForgeStartRsp extends BasePacket {
+public class PacketForgeStartRsp extends BaseTypedPacket<ForgeStartRsp> {
 
     public PacketForgeStartRsp(Retcode retcode) {
-        super(PacketOpcodes.ForgeStartRsp);
-
-        ForgeStartRsp proto = ForgeStartRsp.newBuilder()
-                .setRetcode(retcode.getNumber())
-                .build();
-
-        this.setData(proto);
+        super(new ForgeStartRsp());
+        proto.setRetCode(retcode);
     }
 }

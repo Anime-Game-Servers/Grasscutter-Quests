@@ -1,29 +1,18 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarWearFlycloakRspOuterClass.AvatarWearFlycloakRsp;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.cosmetic.AvatarWearFlycloakRsp;
 
-public class PacketAvatarWearFlycloakRsp extends BasePacket {
+public class PacketAvatarWearFlycloakRsp extends BaseTypedPacket<AvatarWearFlycloakRsp> {
 	public PacketAvatarWearFlycloakRsp(long avatarGuid, int costumeId) {
-		super(PacketOpcodes.AvatarWearFlycloakRsp);
-
-		AvatarWearFlycloakRsp proto = AvatarWearFlycloakRsp.newBuilder()
-				.setAvatarGuid(avatarGuid)
-				.setFlycloakId(costumeId)
-				.build();
-		
-		this.setData(proto);
+        super(new AvatarWearFlycloakRsp());
+        proto.setAvatarGuid(avatarGuid);
+        proto.setFlycloakId(costumeId);
 	}
-	
-	public PacketAvatarWearFlycloakRsp() {
-		super(PacketOpcodes.AvatarWearFlycloakRsp);
 
-		AvatarWearFlycloakRsp proto = AvatarWearFlycloakRsp.newBuilder()
-				.setRetcode(RetcodeOuterClass.Retcode.RET_SVR_ERROR_VALUE)
-				.build();
-		
-		this.setData(proto);
+	public PacketAvatarWearFlycloakRsp() {
+        super(new AvatarWearFlycloakRsp());
+        proto.setRetcode(Retcode.RET_SVR_ERROR);
 	}
 }

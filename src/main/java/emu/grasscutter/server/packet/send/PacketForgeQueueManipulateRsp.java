@@ -1,44 +1,20 @@
 package emu.grasscutter.server.packet.send;
 
+import emu.grasscutter.game.inventory.GameItem;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.item.forge.ForgeQueueManipulateRsp;
+import org.anime_game_servers.multi_proto.gi.messages.item.forge.ForgeQueueManipulateType;
+
 import java.util.List;
 
-import emu.grasscutter.game.inventory.GameItem;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ForgeQueueManipulateRspOuterClass.ForgeQueueManipulateRsp;
-import emu.grasscutter.net.proto.ForgeQueueManipulateTypeOuterClass.ForgeQueueManipulateType;
-import emu.grasscutter.net.proto.ItemParamOuterClass.ItemParam;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
-
-public class PacketForgeQueueManipulateRsp extends BasePacket {
-
+public class PacketForgeQueueManipulateRsp extends BaseTypedPacket<ForgeQueueManipulateRsp> {
     public PacketForgeQueueManipulateRsp(Retcode retcode, ForgeQueueManipulateType type, List<GameItem> output, List<GameItem> refund, List<GameItem> extra) {
-        super(PacketOpcodes.ForgeQueueManipulateRsp);
-
-        ForgeQueueManipulateRsp.Builder builder = ForgeQueueManipulateRsp.newBuilder()
-                .setRetcode(retcode.getNumber())
-                .setManipulateType(type);
-        
-        for (GameItem item : output) {
-            ItemParam toAdd = ItemParam.newBuilder()
-                .setItemId(item.getItemId())
-                .setCount(item.getCount())
-                .build();
-
-            builder.addOutputItemList(toAdd);
-        }
-
-        for (GameItem item : refund) {
-            ItemParam toAdd = ItemParam.newBuilder()
-                .setItemId(item.getItemId())
-                .setCount(item.getCount())
-                .build();
-
-            builder.addReturnItemList(toAdd);
-        }
-
+        super(new ForgeQueueManipulateRsp());
+        proto.setRetCode(retcode);
+        proto.setManipulateType(type);
+        proto.setOutputItemList(output.stream().map(GameItem::toItemParam).toList());
+        proto.setReturnItemList(refund.stream().map(GameItem::toItemParam).toList());
         // ToDo: Add extra items when once we have handling for it.
-
-        this.setData(builder.build());
     }
 }

@@ -10,7 +10,6 @@ import emu.grasscutter.game.entity.gadget.chest.BossChestInteractHandler;
 import emu.grasscutter.game.entity.gadget.chest.ChestInteractHandler;
 import emu.grasscutter.game.entity.gadget.chest.NormalChestInteractHandler;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.proto.InvestigationMonsterOuterClass;
 import emu.grasscutter.scripts.ScriptSystem;
 import emu.grasscutter.server.game.BaseGameSystem;
 import emu.grasscutter.server.game.GameServer;
@@ -18,6 +17,7 @@ import emu.grasscutter.utils.Position;
 import lombok.val;
 import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup;
 import org.anime_game_servers.gi_lua.models.scene.group.SceneMonster;
+import org.anime_game_servers.multi_proto.gi.messages.world.investigation.InvestigationMonster;
 
 import java.util.HashMap;
 import java.util.List;
@@ -97,7 +97,8 @@ public class WorldDataSystem extends BaseGameSystem {
         }
         return level;
     }
-    private InvestigationMonsterOuterClass.InvestigationMonster getInvestigationMonster(Player player, InvestigationMonsterData imd) {
+
+    private InvestigationMonster getInvestigationMonster(Player player, InvestigationMonsterData imd) {
         if (imd.getGroupIdList().isEmpty() || imd.getMonsterIdList().isEmpty()) {
             return null;
         }
@@ -125,18 +126,18 @@ public class WorldDataSystem extends BaseGameSystem {
             return null;
         }
 
-        var builder = InvestigationMonsterOuterClass.InvestigationMonster.newBuilder();
+        var builder = new InvestigationMonster();
 
-        builder.setId(imd.getId())
-                .setCityId(imd.getCityId())
-                .setSceneId(imd.getCityData().getSceneId())
-                .setGroupId(groupId)
-                .setMonsterId(monsterId)
-                .setLevel(getMonsterLevel(monster, player.getWorld()))
-                .setIsAlive(true)
-                .setNextRefreshTime(Integer.MAX_VALUE)
-                .setRefreshInterval(Integer.MAX_VALUE)
-                .setPos(new Position(monsterPos).toProtoOld());
+        builder.setId(imd.getId());
+        builder.setCityId(imd.getCityId());
+        builder.setSceneId(imd.getCityData().getSceneId());
+        builder.setGroupId(groupId);
+        builder.setMonsterId(monsterId);
+        builder.setLevel(getMonsterLevel(monster, player.getWorld()));
+        builder.setAlive(true);
+        builder.setNextRefreshTime(Integer.MAX_VALUE);
+        builder.setRefreshInterval(Integer.MAX_VALUE);
+        builder.setPos(new Position(monsterPos).toProto());
 
         if ("Boss".equals(imd.getMonsterCategory())) {
             var bossChest = group.searchBossChestInGroup();
@@ -145,10 +146,10 @@ public class WorldDataSystem extends BaseGameSystem {
                 builder.setBossChestNum(bossChest.get().getTakeNum());
             }
         }
-        return builder.build();
+        return builder;
     }
 
-    public List<InvestigationMonsterOuterClass.InvestigationMonster> getInvestigationMonstersByCityId(Player player, int cityId) {
+    public List<InvestigationMonster> getInvestigationMonstersByCityId(Player player, int cityId) {
         var cityData = GameData.getCityDataMap().get(cityId);
         if (cityData == null) {
             Grasscutter.getLogger().warn("City not exist {}", cityId);

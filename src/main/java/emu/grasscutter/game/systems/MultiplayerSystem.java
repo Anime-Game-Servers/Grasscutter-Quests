@@ -5,13 +5,13 @@ import emu.grasscutter.game.props.EnterReason;
 import emu.grasscutter.game.world.World;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.player.Player.SceneLoadState;
-import emu.grasscutter.net.proto.PlayerApplyEnterMpResultNotifyOuterClass;
+import org.anime_game_servers.multi_proto.gi.messages.multiplayer.MpEnterResultReason;
 import emu.grasscutter.server.game.BaseGameSystem;
 import emu.grasscutter.server.game.GameServer;
 import emu.grasscutter.server.packet.send.PacketPlayerApplyEnterMpNotify;
 import emu.grasscutter.server.packet.send.PacketPlayerApplyEnterMpResultNotify;
 import emu.grasscutter.server.packet.send.PacketPlayerEnterSceneNotify;
-import messages.scene.EnterType;
+import org.anime_game_servers.multi_proto.gi.messages.scene.EnterType;
 
 public class MultiplayerSystem extends BaseGameSystem {
 
@@ -22,7 +22,7 @@ public class MultiplayerSystem extends BaseGameSystem {
     public void applyEnterMp(Player player, int targetUid) {
         Player target = getServer().getPlayerByUid(targetUid);
         if (target == null) {
-            player.sendPacket(new PacketPlayerApplyEnterMpResultNotify(targetUid, "", false, PlayerApplyEnterMpResultNotifyOuterClass.PlayerApplyEnterMpResultNotify.Reason.REASON_PLAYER_CANNOT_ENTER_MP));
+            player.sendPacket(new PacketPlayerApplyEnterMpResultNotify(targetUid, "", false, MpEnterResultReason.PLAYER_CANNOT_ENTER_MP));
             return;
         }
 
@@ -67,12 +67,12 @@ public class MultiplayerSystem extends BaseGameSystem {
 
         // Sanity checks - Dont let the requesting player join if they are already in multiplayer
         if (requester.getWorld().isMultiplayer()) {
-            request.getRequester().sendPacket(new PacketPlayerApplyEnterMpResultNotify(hostPlayer, false, PlayerApplyEnterMpResultNotifyOuterClass.PlayerApplyEnterMpResultNotify.Reason.REASON_PLAYER_CANNOT_ENTER_MP));
+            request.getRequester().sendPacket(new PacketPlayerApplyEnterMpResultNotify(hostPlayer, false, MpEnterResultReason.PLAYER_CANNOT_ENTER_MP));
             return;
         }
 
         // Response packet
-        request.getRequester().sendPacket(new PacketPlayerApplyEnterMpResultNotify(hostPlayer, isAgreed, PlayerApplyEnterMpResultNotifyOuterClass.PlayerApplyEnterMpResultNotify.Reason.REASON_PLAYER_JUDGE));
+        request.getRequester().sendPacket(new PacketPlayerApplyEnterMpResultNotify(hostPlayer, isAgreed, MpEnterResultReason.PLAYER_JUDGE));
 
         // Declined
         if (!isAgreed) {

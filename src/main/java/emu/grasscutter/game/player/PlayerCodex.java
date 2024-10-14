@@ -11,6 +11,7 @@ import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.server.packet.send.PacketCodexDataUpdateNotify;
 import lombok.Getter;
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.codex.CodexType;
 
 import java.util.*;
 
@@ -57,7 +58,7 @@ public class PlayerCodex {
                     .ifPresent(codexData -> {
                         if (this.getUnlockedWeapon().add(itemId)) {
                             this.player.save();
-                            this.player.sendPacket(new PacketCodexDataUpdateNotify(2, codexData.getId()));
+                            this.player.sendPacket(new PacketCodexDataUpdateNotify(CodexType.CODEX_WEAPON, codexData.getId()));
                         }
                     });
             }
@@ -69,7 +70,7 @@ public class PlayerCodex {
                             .ifPresent(codexData -> {
                                 if (this.getUnlockedMaterial().add(itemId)) {
                                     this.player.save();
-                                    this.player.sendPacket(new PacketCodexDataUpdateNotify(4, codexData.getId()));
+                                    this.player.sendPacket(new PacketCodexDataUpdateNotify(CodexType.CODEX_MATERIAL, codexData.getId()));
                                 }
                             });
                     }
@@ -97,7 +98,7 @@ public class PlayerCodex {
             this.getUnlockedAnimal().merge(monsterId, 1, (i, j) -> i + 1);
 
             player.save();
-            this.player.sendPacket(new PacketCodexDataUpdateNotify(3, monsterId));
+            this.player.sendPacket(new PacketCodexDataUpdateNotify(CodexType.CODEX_ANIMAL, monsterId));
         }
     }
 
@@ -110,19 +111,19 @@ public class PlayerCodex {
                 int id = x.getId();
                 this.getUnlockedReliquarySuitCodex().add(id);
                 this.player.save();
-                this.player.sendPacket(new PacketCodexDataUpdateNotify(8, id));
+                this.player.sendPacket(new PacketCodexDataUpdateNotify(CodexType.CODEX_RELIQUARY, id));
             });
     }
 
     public void checkUnlockedViewPoints(CodexViewpointData viewpoint) {
         this.getUnlockedView().add(viewpoint.getId());
         this.player.save();
-        this.player.sendPacket(new PacketCodexDataUpdateNotify(7, viewpoint.getId()));
+        this.player.sendPacket(new PacketCodexDataUpdateNotify(CodexType.CODEX_VIEW, viewpoint.getId()));
     }
 
     public void checkBook(int bookId) {
         this.getUnlockedBook().add(bookId);
         this.player.save();
-        this.player.sendPacket(new PacketCodexDataUpdateNotify(5, bookId));
+        this.player.sendPacket(new PacketCodexDataUpdateNotify(CodexType.CODEX_BOOKS, bookId));
     }
 }

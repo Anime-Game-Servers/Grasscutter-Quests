@@ -1,26 +1,21 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.avatar.Avatar;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarSkillDepotChangeNotifyOuterClass.AvatarSkillDepotChangeNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.team.skill.AvatarSkillDepotChangeNotify;
 
-public class PacketAvatarSkillDepotChangeNotify extends BasePacket {
-	
-	public PacketAvatarSkillDepotChangeNotify(Avatar avatar) {
-		super(PacketOpcodes.AvatarSkillDepotChangeNotify);
-		
-		AvatarSkillDepotChangeNotify proto = AvatarSkillDepotChangeNotify.newBuilder()
-				.setAvatarGuid(avatar.getGuid())
-				.setEntityId(avatar.getEntityId())
-				.setSkillDepotId(avatar.getSkillDepotId())
-				.setCoreProudSkillLevel(avatar.getCoreProudSkillLevel())
-				.addAllTalentIdList(avatar.getTalentIdList())
-				.addAllProudSkillList(avatar.getProudSkillList())
-				.putAllSkillLevelMap(avatar.getSkillLevelMap())
-				.putAllProudSkillExtraLevelMap(avatar.getProudSkillBonusMap())
-				.build();
-		
-		this.setData(proto);
-	}
+import java.util.ArrayList;
+
+public class PacketAvatarSkillDepotChangeNotify extends BaseTypedPacket<AvatarSkillDepotChangeNotify> {
+    public PacketAvatarSkillDepotChangeNotify(Avatar avatar) {
+        super(new AvatarSkillDepotChangeNotify());
+        proto.setAvatarGuid(avatar.getGuid());
+        proto.setEntityId(avatar.getEntityId());
+        proto.setSkillDepotId(avatar.getSkillDepotId());
+        proto.setTalentIdList(new ArrayList<>(avatar.getTalentIdList()));
+        proto.setProudSkillList(new ArrayList<>(avatar.getProudSkillList()));
+        proto.setCoreProudSkillLevel(avatar.getCoreProudSkillLevel());
+        proto.setSkillLevelMap(avatar.getSkillLevelMap());
+        proto.setProudSkillExtraLevelMap(avatar.getProudSkillBonusMap());
+    }
 }

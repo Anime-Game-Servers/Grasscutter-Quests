@@ -7,16 +7,16 @@ import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 
 import emu.grasscutter.utils.Position;
-import messages.gadget.CreateVehicleRsp;
-import messages.gadget.VehicleInteractType;
-import messages.general.vehicle.VehicleMember;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.CreateVehicleRsp;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.VehicleInteractType;
+import org.anime_game_servers.multi_proto.gi.messages.general.vehicle.VehicleMember;
 
 import java.util.List;
 
 public class PacketCreateVehicleRsp extends BaseTypedPacket<CreateVehicleRsp> {
 
     public PacketCreateVehicleRsp(Player player, int vehicleId, int pointId, Position pos, Position rot) {
-        super(new CreateVehicleRsp(vehicleId, pointId));
+        super(new CreateVehicleRsp());
 
         // Eject vehicle members and Kill previous vehicles if there are any
         List<GameEntity> previousVehicles = player.getScene().getEntities().values().stream()

@@ -7,14 +7,14 @@ import emu.grasscutter.game.world.data.TeleportProperties;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import emu.grasscutter.utils.Position;
 import emu.grasscutter.utils.Utils;
-import messages.scene.EnterType;
-import messages.scene.PlayerEnterSceneNotify;
+import org.anime_game_servers.multi_proto.gi.messages.scene.EnterType;
+import org.anime_game_servers.multi_proto.gi.messages.scene.PlayerEnterSceneNotify;
 
 public class PacketPlayerEnterSceneNotify extends BaseTypedPacket<PlayerEnterSceneNotify> {
 
     // Login
     public PacketPlayerEnterSceneNotify(Player player) {
-        super(new PlayerEnterSceneNotify(player.getSceneId(), player.getPosition().toProto(), System.currentTimeMillis(), messages.scene.EnterType.ENTER_SELF));
+        super(new PlayerEnterSceneNotify(player.getSceneId(), player.getPosition().toProto(), System.currentTimeMillis(), org.anime_game_servers.multi_proto.gi.messages.scene.EnterType.ENTER_SELF));
 
         player.setSceneLoadState(SceneLoadState.LOADING);
         player.setEnterSceneToken(Utils.randomRange(1000, 99999));

@@ -6,9 +6,9 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
-import messages.gadget.VehicleInteractRsp;
-import messages.gadget.VehicleInteractType;
-import messages.general.vehicle.VehicleMember;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.VehicleInteractRsp;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.VehicleInteractType;
+import org.anime_game_servers.multi_proto.gi.messages.general.vehicle.VehicleMember;
 
 public class PacketVehicleInteractRsp extends BaseTypedPacket<VehicleInteractRsp> {
 

@@ -1,14 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.data.excels.DungeonData;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.DungeonDataNotifyOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.DungeonDataNotify;
 
-public class PacketDungeonDataNotify extends BasePacket {
+public class PacketDungeonDataNotify extends BaseTypedPacket<DungeonDataNotify> {
     public PacketDungeonDataNotify(DungeonData dungeonData) {
-        super(PacketOpcodes.DungeonDataNotify);
+        super(new DungeonDataNotify());
         // TODO
-        this.setData(DungeonDataNotifyOuterClass.DungeonDataNotify.newBuilder());
     }
 }

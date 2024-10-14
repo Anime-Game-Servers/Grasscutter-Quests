@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.val;
-import messages.battle_pass.BattlePassCycle;
-import messages.battle_pass.BattlePassRewardTakeOption;
-import messages.battle_pass.BattlePassSchedule;
-import messages.battle_pass.BattlePassUnlockStatus;
+import org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassCycle;
+import org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassRewardTakeOption;
+import org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassSchedule;
+import org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassUnlockStatus;
 import org.bson.types.ObjectId;
 
 import dev.morphia.annotations.Entity;

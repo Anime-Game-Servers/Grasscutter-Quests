@@ -1,16 +1,10 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.WidgetGadgetAllDataNotifyOuterClass.WidgetGadgetAllDataNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.manage_gadget.WidgetGadgetAllDataNotify;
 
-public class PacketWidgetGadgetAllDataNotify extends BasePacket {
-
+public class PacketWidgetGadgetAllDataNotify extends BaseTypedPacket<WidgetGadgetAllDataNotify> {
     public PacketWidgetGadgetAllDataNotify() {
-        super(PacketOpcodes.AllWidgetDataNotify);
-
-        WidgetGadgetAllDataNotify proto = WidgetGadgetAllDataNotify.newBuilder().build();
-
-        this.setData(proto);
+        super(new WidgetGadgetAllDataNotify());
     }
 }

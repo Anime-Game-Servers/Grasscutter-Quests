@@ -2,31 +2,26 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.GetScenePointRspOuterClass.GetScenePointRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.scene.GetScenePointRsp;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class PacketGetScenePointRsp extends BasePacket {
+public class PacketGetScenePointRsp extends BaseTypedPacket<GetScenePointRsp> {
     private static final Set<Integer> bruteForceScenePointIdList = buildBruteForceScenePointIdList();
 
     public PacketGetScenePointRsp(Player player, int sceneId) {
-        super(PacketOpcodes.GetScenePointRsp);
-
+        super(new GetScenePointRsp());
         val unlockedAreaList = player.getUnlockedSceneAreas(sceneId);
         val scenePointIdList = GameData.getScenePointIdList().isEmpty() ? bruteForceScenePointIdList :
             player.getUnlockedScenePoints(sceneId);
-
-        val proto = GetScenePointRsp.newBuilder()
-            .setSceneId(sceneId)
-            .addAllUnhidePointList(scenePointIdList)
-            .addAllUnlockedPointList(scenePointIdList)
-            .addAllUnlockAreaList(unlockedAreaList);
-
-        this.setData(proto);
+        proto.setSceneId(sceneId);
+        proto.setUnhidePointList(scenePointIdList.stream().toList());
+        proto.setUnlockedPointList(scenePointIdList.stream().toList());
+        proto.setUnlockAreaList(unlockedAreaList.stream().toList());
+        ;
     }
 
     private static Set<Integer> buildBruteForceScenePointIdList() {

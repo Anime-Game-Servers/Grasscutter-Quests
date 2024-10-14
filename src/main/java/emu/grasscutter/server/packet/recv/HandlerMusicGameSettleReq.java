@@ -5,12 +5,12 @@ import emu.grasscutter.game.activity.musicgame.MusicGamePlayerData;
 import emu.grasscutter.game.props.ActivityType;
 import emu.grasscutter.game.props.WatcherTriggerType;
 import emu.grasscutter.net.packet.TypedPacketHandler;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketActivityInfoNotify;
 import emu.grasscutter.server.packet.send.PacketMusicGameSettleRsp;
 import lombok.val;
-import messages.activity.music_game.MusicGameSettleReq;
+import org.anime_game_servers.multi_proto.gi.messages.activity.music_game.MusicGameSettleReq;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
 public class HandlerMusicGameSettleReq extends TypedPacketHandler<MusicGameSettleReq> {
 
@@ -20,7 +20,7 @@ public class HandlerMusicGameSettleReq extends TypedPacketHandler<MusicGameSettl
 
         val playerDataOpt = activityManager.getPlayerActivityDataByActivityType(ActivityType.NEW_ACTIVITY_MUSIC_GAME);
         if (playerDataOpt.isEmpty()) {
-            session.send(new PacketMusicGameSettleRsp(RetcodeOuterClass.Retcode.RET_MUSIC_GAME_LEVEL_CONFIG_NOT_FOUND, req));
+            session.send(new PacketMusicGameSettleRsp(Retcode.RET_MUSIC_GAME_LEVEL_CONFIG_NOT_FOUND, req));
             return;
         }
 

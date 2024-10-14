@@ -1,32 +1,20 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
-import emu.grasscutter.net.proto.UnlockPersonalLineRspOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.quest.personal.UnlockPersonalLineRsp;
+import org.anime_game_servers.multi_proto.gi.messages.quest.personal.UnlockPersonalLineRsp.Param.ChapterId;
 
-public class PacketUnlockPersonalLineRsp extends BasePacket {
-
-	public PacketUnlockPersonalLineRsp(int id, int level, int chapterId) {
-		super(PacketOpcodes.UnlockPersonalLineRsp);
-
-        var proto = UnlockPersonalLineRspOuterClass.UnlockPersonalLineRsp.newBuilder();
-
-        proto.setPersonalLineId(id)
-            .setLevel(level)
-            .setChapterId(chapterId);
-
-        this.setData(proto);
+public class PacketUnlockPersonalLineRsp extends BaseTypedPacket<UnlockPersonalLineRsp> {
+    public PacketUnlockPersonalLineRsp(int id, int chapterId) {
+        super(new UnlockPersonalLineRsp());
+        proto.setPersonalLineId(id);
+        proto.setParam(new ChapterId(chapterId));
 	}
 
 	public PacketUnlockPersonalLineRsp(int id, Retcode retCode) {
-		super(PacketOpcodes.UnlockPersonalLineRsp);
-
-        var proto = UnlockPersonalLineRspOuterClass.UnlockPersonalLineRsp.newBuilder();
-
-        proto.setPersonalLineId(id)
-            .setRetcode(retCode.getNumber());
-
-        this.setData(proto);
+        super(new UnlockPersonalLineRsp());
+        proto.setPersonalLineId(id);
+        proto.setRetCode(retCode);
 	}
 }

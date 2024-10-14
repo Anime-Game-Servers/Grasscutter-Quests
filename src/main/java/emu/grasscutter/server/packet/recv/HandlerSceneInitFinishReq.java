@@ -2,12 +2,12 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.game.dungeons.DungeonManager;
 import emu.grasscutter.game.player.Player.SceneLoadState;
-import emu.grasscutter.game.world.WeatherArea;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.*;
 import lombok.val;
-import messages.scene.SceneInitFinishReq;
+import org.anime_game_servers.multi_proto.gi.messages.scene.SceneForceUnlockNotify;
+import org.anime_game_servers.multi_proto.gi.messages.scene.SceneInitFinishReq;
 
 import java.util.Optional;
 
@@ -24,7 +24,7 @@ public class HandlerSceneInitFinishReq extends TypedPacketHandler<SceneInitFinis
 		session.send(new PacketWorldDataNotify(session.getPlayer().getWorld()));
         session.send(new PacketWorldOwnerBlossomBriefInfoNotify(session.getPlayer().getWorld()));
 		session.send(new PacketPlayerWorldSceneInfoListNotify(session.getPlayer()));
-        session.send(new BasePacket(session.getPackageIdProvider().getPacketId("SceneForceUnlockNotify")));
+        session.send(new BaseTypedPacket<>(new SceneForceUnlockNotify()) {});
 		session.send(new PacketHostPlayerNotify(session.getPlayer().getWorld()));
 		session.send(new PacketSceneDataNotify(session.getPlayer()));
 		session.send(new PacketSceneTimeNotify(session.getPlayer()));

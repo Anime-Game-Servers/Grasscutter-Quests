@@ -5,7 +5,7 @@ import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketLiveStartNotify;
 import emu.grasscutter.server.packet.send.PacketRequestLiveInfoRsp;
-import messages.gadget.RequestLiveInfoReq;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.RequestLiveInfoReq;
 
 public class HandlerRequestLiveInfoReq extends TypedPacketHandler<RequestLiveInfoReq> {
     @Override

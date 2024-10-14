@@ -1,10 +1,11 @@
 package emu.grasscutter.game.tower;
 
 import dev.morphia.annotations.Entity;
-import emu.grasscutter.net.proto.TowerLevelRecordOuterClass;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.rotation.TowerLevelRecord;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -30,10 +31,10 @@ public class TowerLevelRecordInfo {
         IntStream.rangeClosed(1, star).forEach(this.satisfiedCondList::add);
     }
 
-    public TowerLevelRecordOuterClass.TowerLevelRecord toProto() {
-        return TowerLevelRecordOuterClass.TowerLevelRecord.newBuilder()
-            .setLevelId(this.levelId)
-            .addAllSatisfiedCondList(this.satisfiedCondList)
-            .build();
+    public TowerLevelRecord toProto() {
+        val proto = new TowerLevelRecord();
+        proto.setLevelId(this.levelId);
+        proto.setSatisfiedCondList(this.satisfiedCondList.stream().toList());
+        return proto;
     }
 }

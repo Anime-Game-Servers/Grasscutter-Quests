@@ -1,22 +1,13 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.UnlockAvatarTalentReqOuterClass.UnlockAvatarTalentReq;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
+import org.anime_game_servers.multi_proto.gi.messages.team.skill.UnlockAvatarTalentReq;
 
-@Opcodes(PacketOpcodes.UnlockAvatarTalentReq)
-public class HandlerUnlockAvatarTalentReq extends PacketHandler {
-
+public class HandlerUnlockAvatarTalentReq extends TypedPacketHandler<UnlockAvatarTalentReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        UnlockAvatarTalentReq req = UnlockAvatarTalentReq.parseFrom(payload);
-
-        // Unlock avatar const
+    public void handle(GameSession session, byte[] header, UnlockAvatarTalentReq req) throws Exception {
         var avatar = session.getPlayer().getAvatars().getAvatarByGuid(req.getAvatarGuid());
-        if (avatar == null) return;
-        avatar.unlockConstellation(req.getTalentId());
+        if (avatar != null) avatar.unlockConstellation(req.getTalentId());
     }
-
 }

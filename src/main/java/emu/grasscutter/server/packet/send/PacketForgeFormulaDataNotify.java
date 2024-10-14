@@ -1,19 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ForgeFormulaDataNotifyOuterClass.ForgeFormulaDataNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.item.forge.ForgeFormulaDataNotify;
 
-public class PacketForgeFormulaDataNotify extends BasePacket {
-	
+public class PacketForgeFormulaDataNotify extends BaseTypedPacket<ForgeFormulaDataNotify> {
 	public PacketForgeFormulaDataNotify(int itemId) {
-		super(PacketOpcodes.ForgeFormulaDataNotify);
-
-		ForgeFormulaDataNotify proto = ForgeFormulaDataNotify.newBuilder()
-				.setForgeId(itemId)
-				.setIsLocked(false)
-				.build();
-		
-		this.setData(proto);
+        super(new ForgeFormulaDataNotify());
+        proto.setForgeId(itemId);
+        proto.setLocked(false);
 	}
 }

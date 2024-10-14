@@ -2,7 +2,7 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
-import messages.battle_pass.TakeBattlePassRewardReq;
+import org.anime_game_servers.multi_proto.gi.messages.battle_pass.TakeBattlePassRewardReq;
 
 public class HandlerTakeBattlePassRewardReq extends TypedPacketHandler<TakeBattlePassRewardReq> {
     @Override

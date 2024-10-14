@@ -1613,7 +1613,7 @@ public class PacketOpcodes {
     public static final int Unk2700_IPGJEAEFJMM_ServerRsp = 6318;
     public static final int Unk2700_JCKGJAELBMB = 8704;
     public static final int Unk2700_JCOECJGPNOL_ServerRsp = 5929;
-    public static final int Unk2700_JDMPECKFGIG_ServerNotify = 4639;
+    public static final int HomePreChangeEditModeNotify = 4639;
     public static final int Unk2700_JEFIMHGLOJF = 8096;
     public static final int Unk2700_JEHIAJHHIMP_ServerNotify = 109;
     public static final int Unk2700_JFGFIDBPGBK = 8381;
@@ -1635,7 +1635,7 @@ public class PacketOpcodes {
     public static final int Unk2700_KGNJIBIMAHI = 8842;
     public static final int Unk2700_KHLJJPGOELG_ClientReq = 6225;
     public static final int Unk2700_KIHEEAGDGIL_ServerNotify = 108;
-    public static final int Unk2700_KIIOGMKFNNP_ServerRsp = 4615;
+    public static final int HomeEnterEditModeFinishRsp = 4615;
     public static final int Unk2700_KKEDIMOKCGD = 8218;
     public static final int Unk2700_KMIDCPLAGMN = 8848;
     public static final int Unk2700_KMNPMLCHELD_ServerRsp = 6201;
@@ -1661,13 +1661,13 @@ public class PacketOpcodes {
     public static final int Unk2700_LMAKABBJNLN = 8253;
     public static final int Unk2700_LNBBLNNPNBE_ServerNotify = 4583;
     public static final int Unk2700_LNMFIHNFKOO = 8572;
-    public static final int Unk2700_LOHBMOKOPLH_ServerNotify = 4608;
+    public static final int HomeAllUnlockedBgmIdListNotify = 4608;
     public static final int Unk2700_LPMIMLCNEDA = 8518;
     public static final int Unk2700_MBIAJKLACBG = 5757;
     public static final int Unk2700_MCJIOOELGHG_ServerNotify = 6033;
     public static final int Unk2700_MDGKMNEBIBA = 8038;
     public static final int Unk2700_MDPHLPEGFCG_ClientReq = 4020;
-    public static final int Unk2700_MEBFPBDNPGO_ServerNotify = 4847;
+    public static final int HomeNewUnlockedBgmIdListNotify = 4847;
     public static final int Unk2700_MEFJECGAFNH_ServerNotify = 5338;
     public static final int Unk2700_MENCEGPEFAK = 8791;
     public static final int Unk2700_MFAIPHGDPBL = 8345;
@@ -1714,7 +1714,7 @@ public class PacketOpcodes {
     public static final int Unk2700_ODJKHILOILK = 8067;
     public static final int Unk2700_OEDLCGKNGLH = 8686;
     public static final int Unk2700_OFDBHGHAJBD_ServerNotify = 6223;
-    public static final int Unk2700_OGHMHELMBNN_ServerRsp = 4488;
+    public static final int HomeChangeBgmRsp = 4488;
     public static final int Unk2700_OHDDPIFAPPD = 8125;
     public static final int Unk2700_OHIKIOLLMHM = 8233;
     public static final int Unk2700_OJHJBKHIPLA_ClientReq = 2009;

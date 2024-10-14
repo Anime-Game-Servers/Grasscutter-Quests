@@ -1,19 +1,11 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.FurnitureCurModuleArrangeCountNotifyOuterClass;
-import emu.grasscutter.net.proto.Uint32PairOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.furniture.FurnitureCurModuleArrangeCountNotify;
 
-public class PacketFurnitureCurModuleArrangeCountNotify extends BasePacket {
-
+public class PacketFurnitureCurModuleArrangeCountNotify extends BaseTypedPacket<FurnitureCurModuleArrangeCountNotify> {
 	public PacketFurnitureCurModuleArrangeCountNotify() {
-		super(PacketOpcodes.FurnitureCurModuleArrangeCountNotify);
-
-		var proto = FurnitureCurModuleArrangeCountNotifyOuterClass.FurnitureCurModuleArrangeCountNotify.newBuilder();
-
+        super(new FurnitureCurModuleArrangeCountNotify());
 		// TODO
-
-		this.setData(proto);
 	}
 }

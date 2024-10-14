@@ -2,22 +2,15 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.game.activity.trialavatar.TrialAvatarActivityHandler;
 import emu.grasscutter.game.props.ActivityType;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
-import emu.grasscutter.net.proto.ReceivedTrialAvatarActivityRewardReqOuterClass.ReceivedTrialAvatarActivityRewardReq;
 import emu.grasscutter.server.packet.send.PacketReceivedTrialAvatarActivityRewardRsp;
-
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.activity.trial.ReceivedTrialAvatarActivityRewardReq;
 
-@Opcodes(PacketOpcodes.ReceivedTrialAvatarActivityRewardReq)
-public class HandlerReceivedTrialAvatarActivityRewardReq extends PacketHandler {
-
+public class HandlerReceivedTrialAvatarActivityRewardReq extends TypedPacketHandler<ReceivedTrialAvatarActivityRewardReq> {
 	@Override
-	public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        val req = ReceivedTrialAvatarActivityRewardReq.parseFrom(payload);
+    public void handle(GameSession session, byte[] header, ReceivedTrialAvatarActivityRewardReq req) throws Exception {
         val player = session.getPlayer();
         val handler = player.getActivityManager().getActivityHandlerAs(ActivityType.NEW_ACTIVITY_TRIAL_AVATAR, TrialAvatarActivityHandler.class);
 
@@ -28,5 +21,4 @@ public class HandlerReceivedTrialAvatarActivityRewardReq extends PacketHandler {
             req.getTrialAvatarIndexId(),
             result));
 	}
-
 }

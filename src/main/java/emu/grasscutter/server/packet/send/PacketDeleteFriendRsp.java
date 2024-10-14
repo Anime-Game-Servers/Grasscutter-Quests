@@ -1,18 +1,11 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.DeleteFriendRspOuterClass.DeleteFriendRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.management.DeleteFriendRsp;
 
-public class PacketDeleteFriendRsp extends BasePacket {
-	
+public class PacketDeleteFriendRsp extends BaseTypedPacket<DeleteFriendRsp> {
 	public PacketDeleteFriendRsp(int targetUid) {
-		super(PacketOpcodes.DeleteFriendRsp);
-
-		DeleteFriendRsp proto = DeleteFriendRsp.newBuilder()
-				.setTargetUid(targetUid)
-				.build();
-		
-		this.setData(proto);
+        super(new DeleteFriendRsp());
+        proto.setTargetUid(targetUid);
 	}
 }

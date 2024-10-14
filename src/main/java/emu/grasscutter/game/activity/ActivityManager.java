@@ -12,7 +12,7 @@ import emu.grasscutter.game.props.WatcherTriggerType;
 import emu.grasscutter.server.packet.send.PacketActivityScheduleInfoNotify;
 import lombok.Getter;
 import lombok.val;
-import messages.activity.ActivityInfo;
+import org.anime_game_servers.multi_proto.gi.messages.activity.general.ActivityInfo;
 import org.reflections.Reflections;
 
 import java.util.*;

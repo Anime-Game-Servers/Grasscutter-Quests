@@ -3,9 +3,9 @@ package emu.grasscutter.game.entity.gadget;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.player.Player;
 import lombok.val;
-import messages.gadget.GadgetInteractReq;
-import messages.scene.entity.SceneGadgetInfo;
-import messages.scene.entity.ScreenInfo;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.GadgetInteractReq;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.SceneGadgetInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.ScreenInfo;
 
 public class GadgetScreen extends GadgetContent {
     public GadgetScreen(EntityGadget gadget) {

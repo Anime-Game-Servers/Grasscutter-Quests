@@ -1,19 +1,12 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.TakeFurnitureMakeReqOuterClass;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.furniture.TakeFurnitureMakeReq;
 
-@Opcodes(PacketOpcodes.TakeFurnitureMakeReq)
-public class HandlerTakeFurnitureMakeReq extends PacketHandler {
-	
+public class HandlerTakeFurnitureMakeReq extends TypedPacketHandler<TakeFurnitureMakeReq> {
 	@Override
-	public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-		var req = TakeFurnitureMakeReqOuterClass.TakeFurnitureMakeReq.parseFrom(payload);
-
-		session.getPlayer().getFurnitureManager().take(req.getIndex(), req.getMakeId(), req.getIsFastFinish());
+    public void handle(GameSession session, byte[] header, TakeFurnitureMakeReq req) throws Exception {
+        session.getPlayer().getFurnitureManager().take(req.getIndex(), req.getMakeId(), req.isFastFinish());
 	}
-
 }

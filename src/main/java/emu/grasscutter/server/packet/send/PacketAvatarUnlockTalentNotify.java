@@ -1,22 +1,15 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.avatar.Avatar;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarUnlockTalentNotifyOuterClass.AvatarUnlockTalentNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.team.skill.AvatarUnlockTalentNotify;
 
-public class PacketAvatarUnlockTalentNotify extends BasePacket {
-	
+public class PacketAvatarUnlockTalentNotify extends BaseTypedPacket<AvatarUnlockTalentNotify> {
 	public PacketAvatarUnlockTalentNotify(Avatar avatar, int talentId) {
-		super(PacketOpcodes.AvatarUnlockTalentNotify);
-
-		AvatarUnlockTalentNotify proto = AvatarUnlockTalentNotify.newBuilder()
-				.setAvatarGuid(avatar.getGuid())
-				.setEntityId(avatar.getEntityId())
-				.setTalentId(talentId)
-				.setSkillDepotId(avatar.getSkillDepotId())
-				.build();
-		
-		this.setData(proto);
+        super(new AvatarUnlockTalentNotify());
+        proto.setAvatarGuid(avatar.getGuid());
+        proto.setEntityId(avatar.getEntityId());
+        proto.setTalentId(talentId);
+        proto.setSkillDepotId(avatar.getSkillDepotId());
 	}
 }

@@ -1,20 +1,14 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.friends.Friendship;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AskAddFriendNotifyOuterClass.AskAddFriendNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.management.AskAddFriendNotify;
 
-public class PacketAskAddFriendNotify extends BasePacket {
-	
+public class PacketAskAddFriendNotify extends BaseTypedPacket<AskAddFriendNotify> {
+
 	public PacketAskAddFriendNotify(Friendship friendship) {
-		super(PacketOpcodes.AskAddFriendNotify);
-
-		AskAddFriendNotify proto = AskAddFriendNotify.newBuilder()
-				.setTargetUid(friendship.getFriendId())
-				.setTargetFriendBrief(friendship.toProto())
-				.build();
-		
-		this.setData(proto);
+        super(new AskAddFriendNotify());
+        proto.setTargetUid(friendship.getFriendId());
+        proto.setTargetFriendBrief(friendship.toProto());
 	}
 }

@@ -1,18 +1,16 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
-import emu.grasscutter.net.proto.QuestTransmitRspOuterClass.QuestTransmitRsp;
-import emu.grasscutter.net.proto.QuestTransmitReqOuterClass.QuestTransmitReq;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.quest.entities.QuestTransmitReq;
+import org.anime_game_servers.multi_proto.gi.messages.quest.entities.QuestTransmitRsp;
 
-public class PacketQuestTransmitRsp extends BasePacket {
+public class PacketQuestTransmitRsp extends BaseTypedPacket<QuestTransmitRsp> {
 
 	public PacketQuestTransmitRsp(boolean result, QuestTransmitReq req) {
-		super(PacketOpcodes.QuestTransmitRsp);
-		this.setData(QuestTransmitRsp.newBuilder()
-			.setQuestId(req.getQuestId())
-			.setPointId(req.getPointId())
-			.setRetcode(result ? Retcode.RET_SUCC_VALUE : Retcode.RET_FAIL_VALUE));
+        super(new QuestTransmitRsp());
+        proto.setPointId(req.getPointId());
+        proto.setQuestId(req.getQuestId());
+        proto.setRetCode(result ? Retcode.RET_SUCC : Retcode.RET_FAIL);
 	}
 }

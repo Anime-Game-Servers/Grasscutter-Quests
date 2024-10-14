@@ -1,21 +1,18 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
-import emu.grasscutter.net.proto.QuestDestroyEntityRspOuterClass.QuestDestroyEntityRsp;
-import emu.grasscutter.net.proto.QuestDestroyEntityReqOuterClass.QuestDestroyEntityReq;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.quest.entities.QuestDestroyEntityReq;
+import org.anime_game_servers.multi_proto.gi.messages.quest.entities.QuestDestroyEntityRsp;
 
-public class PacketQuestDestroyEntityRsp extends BasePacket {
+public class PacketQuestDestroyEntityRsp extends BaseTypedPacket<QuestDestroyEntityRsp> {
 
 	public PacketQuestDestroyEntityRsp(boolean success, QuestDestroyEntityReq req) {
-		super(PacketOpcodes.QuestDestroyEntityRsp);
-
-        this.setData(QuestDestroyEntityRsp.newBuilder()
-            .setQuestId(req.getQuestId())
-            .setEntityId(req.getEntityId())
-            .setSceneId(req.getSceneId())
-            .setRetcode(success ? Retcode.RET_SUCC_VALUE : Retcode.RET_FAIL_VALUE));
+        super(new QuestDestroyEntityRsp());
+        proto.setEntityId(req.getEntityId());
+        proto.setQuestId(req.getQuestId());
+        proto.setSceneId(req.getSceneId());
+        proto.setRetCode(success ? Retcode.RET_SUCC : Retcode.RET_FAIL);
 	}
 
 }

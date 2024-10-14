@@ -1,20 +1,15 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.QuestDestroyNpcRspOuterClass.QuestDestroyNpcRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.quest.entities.QuestDestroyNpcRsp;
 
-public class PacketQuestDestroyNpcRsp extends BasePacket {
+public class PacketQuestDestroyNpcRsp extends BaseTypedPacket<QuestDestroyNpcRsp> {
 
-    public PacketQuestDestroyNpcRsp(int npcId, int parentQuestId, int retCode) {
-        super(PacketOpcodes.QuestDestroyNpcRsp, true);
-
-        QuestDestroyNpcRsp proto = QuestDestroyNpcRsp.newBuilder()
-            .setNpcId(npcId)
-            .setParentQuestId(parentQuestId)
-            .setRetcode(retCode)
-            .build();
-
-        this.setData(proto);
+    public PacketQuestDestroyNpcRsp(int npcId, int parentQuestId, Retcode retCode) {
+        super(new QuestDestroyNpcRsp(), true);
+        proto.setNpcId(npcId);
+        proto.setParentQuestId(parentQuestId);
+        proto.setRetCode(retCode);
     }
 }

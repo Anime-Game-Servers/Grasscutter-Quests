@@ -2,23 +2,18 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.binout.ScenePointEntry;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.PersonalSceneJumpReqOuterClass.PersonalSceneJumpReq;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketPersonalSceneJumpRsp;
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.scene.PersonalSceneJumpReq;
 
 import java.util.Optional;
 
-
-@Opcodes(PacketOpcodes.PersonalSceneJumpReq)
-public class HandlerPersonalSceneJumpReq extends PacketHandler {
+public class HandlerPersonalSceneJumpReq extends TypedPacketHandler<PersonalSceneJumpReq> {
 
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        val req = PersonalSceneJumpReq.parseFrom(payload);
+    public void handle(GameSession session, byte[] header, PersonalSceneJumpReq req) throws Exception {
         val player = session.getPlayer();
 
         // get the scene point

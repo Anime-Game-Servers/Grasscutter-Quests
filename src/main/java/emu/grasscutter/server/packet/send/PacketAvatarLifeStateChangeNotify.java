@@ -2,40 +2,24 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.entity.GameEntity;
-import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.FightProperty;
 import emu.grasscutter.game.props.LifeState;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarLifeStateChangeNotifyOuterClass.AvatarLifeStateChangeNotify;
-import emu.grasscutter.net.proto.PlayerDieTypeOuterClass.PlayerDieType;
-import emu.grasscutter.net.proto.ServerBuffOuterClass;
-import emu.grasscutter.net.proto.ServerBuffOuterClass.ServerBuff;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.PlayerDieType;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.properties.AvatarLifeStateChangeNotify;
 
-import java.util.ArrayList;
-
-public class PacketAvatarLifeStateChangeNotify extends BasePacket {
-	
+public class PacketAvatarLifeStateChangeNotify extends BaseTypedPacket<AvatarLifeStateChangeNotify> {
 	public PacketAvatarLifeStateChangeNotify(Avatar avatar) {
-		super(PacketOpcodes.AvatarLifeStateChangeNotify);
+        super(new AvatarLifeStateChangeNotify());
+        proto.setAvatarGuid(avatar.getGuid());
+        proto.setLifeState(avatar.getFightProperty(FightProperty.FIGHT_PROP_CUR_HP) > 0 ? LifeState.LIFE_ALIVE.getValue() : LifeState.LIFE_DEAD.getValue());
+    }
 
-		AvatarLifeStateChangeNotify proto = AvatarLifeStateChangeNotify.newBuilder()
-				.setAvatarGuid(avatar.getGuid())
-				.setLifeState(avatar.getFightProperty(FightProperty.FIGHT_PROP_CUR_HP) > 0 ? LifeState.LIFE_ALIVE.getValue() : LifeState.LIFE_DEAD.getValue())
-				.build();
-		
-		this.setData(proto);
-	}
 	public PacketAvatarLifeStateChangeNotify(Avatar avatar, int attackerId, LifeState lifeState) {
-		super(PacketOpcodes.AvatarLifeStateChangeNotify);
-
-		AvatarLifeStateChangeNotify proto = AvatarLifeStateChangeNotify.newBuilder()
-				.setAvatarGuid(avatar.getGuid())
-				.setLifeState(lifeState.getValue())
-				.setMoveReliableSeq(attackerId)
-				.build();
-
-		this.setData(proto);
+        super(new AvatarLifeStateChangeNotify());
+        proto.setAvatarGuid(avatar.getGuid());
+        proto.setLifeState(lifeState.getValue());
+        proto.setMoveReliableSeq(attackerId);
 	}
 
 	public PacketAvatarLifeStateChangeNotify(Avatar avatar, LifeState lifeState, PlayerDieType dieType) {
@@ -44,10 +28,7 @@ public class PacketAvatarLifeStateChangeNotify extends BasePacket {
 
 	public PacketAvatarLifeStateChangeNotify(Avatar avatar, LifeState lifeState, GameEntity sourceEntity,
 											 String attackTag, PlayerDieType dieType) {
-		super(PacketOpcodes.AvatarLifeStateChangeNotify);
-
-		AvatarLifeStateChangeNotify.Builder proto = AvatarLifeStateChangeNotify.newBuilder();
-
+        super(new AvatarLifeStateChangeNotify());
 		proto.setAvatarGuid(avatar.getGuid());
 		proto.setLifeState(lifeState.getValue());
 		if (sourceEntity != null) {
@@ -55,8 +36,6 @@ public class PacketAvatarLifeStateChangeNotify extends BasePacket {
 		}
 		proto.setDieType(dieType);
 		proto.setAttackTag((attackTag));
-
-		this.setData(proto.build());
 	}
 
 }

@@ -3,7 +3,7 @@ package emu.grasscutter.server.packet.recv;
 import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
-import messages.gadget.GadgetInteractReq;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.GadgetInteractReq;
 
 public class HandlerGadgetInteractReq extends TypedPacketHandler<GadgetInteractReq> {
 

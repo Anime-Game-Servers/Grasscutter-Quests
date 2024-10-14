@@ -1,8 +1,5 @@
 package emu.grasscutter.scripts;
 
-import com.github.davidmoten.rtreemulti.RTree;
-import com.github.davidmoten.rtreemulti.geometry.Geometry;
-
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Loggers;
 import emu.grasscutter.data.GameData;
@@ -17,7 +14,6 @@ import emu.grasscutter.game.quest.QuestGroupSuite;
 import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.game.world.SceneGroupInstance;
-import emu.grasscutter.net.proto.VisionTypeOuterClass;
 import emu.grasscutter.scripts.lua_engine.GroupEventLuaContext;
 import emu.grasscutter.scripts.lua_engine.service.ScriptMonsterSpawnService;
 import emu.grasscutter.scripts.lua_engine.service.ScriptMonsterTideService;
@@ -31,8 +27,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import kotlin.Pair;
 import lombok.Getter;
 import lombok.val;
-import messages.scene.VisionType;
-import org.anime_game_servers.gi_lua.models.*;
+import org.anime_game_servers.gi_lua.models.Position;
+import org.anime_game_servers.gi_lua.models.ScriptArgs;
 import org.anime_game_servers.gi_lua.models.constants.EventType;
 import org.anime_game_servers.gi_lua.models.constants.VisionLevelType;
 import org.anime_game_servers.gi_lua.models.scene.SceneConfig;
@@ -42,12 +38,12 @@ import org.anime_game_servers.gi_lua.models.scene.block.SceneGroupInfo;
 import org.anime_game_servers.gi_lua.models.scene.group.*;
 import org.anime_game_servers.lua.engine.LuaValue;
 import org.anime_game_servers.lua.models.BooleanLuaValue;
+import org.anime_game_servers.multi_proto.gi.messages.scene.VisionType;
 import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.script.ScriptException;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -932,7 +928,7 @@ public class SceneScriptManager {
     }
 
     public void removeEntities(List<? extends GameEntity> gameEntity) {
-        getScene().removeEntities(gameEntity.stream().map(e -> (GameEntity) e).collect(Collectors.toList()), VisionTypeOuterClass.VisionType.VISION_TYPE_REFRESH);
+        getScene().removeEntities(gameEntity.stream().map(e -> (GameEntity) e).collect(Collectors.toList()), VisionType.VISION_REFRESH);
     }
 
     public void removeMonstersInGroup(SceneGroup group, SceneSuite suite) {
@@ -945,7 +941,7 @@ public class SceneScriptManager {
                 .filter(e -> configSet.contains(e.getConfigId()))
                 .toList();
 
-        getScene().removeEntities(toRemove, VisionTypeOuterClass.VisionType.VISION_TYPE_MISS);
+        getScene().removeEntities(toRemove, VisionType.VISION_MISS);
     }
     public void removeGadgetsInGroup(SceneGroup group, SceneSuite suite) {
         var configSet = suite.getSceneGadgets().stream()
@@ -957,7 +953,7 @@ public class SceneScriptManager {
                 .filter(e -> configSet.contains(e.getConfigId()))
                 .toList();
 
-        getScene().removeEntities(toRemove, VisionTypeOuterClass.VisionType.VISION_TYPE_MISS);
+        getScene().removeEntities(toRemove, VisionType.VISION_MISS);
     }
 
     public void killMonstersInGroup(SceneGroup group, SceneSuite suite) {

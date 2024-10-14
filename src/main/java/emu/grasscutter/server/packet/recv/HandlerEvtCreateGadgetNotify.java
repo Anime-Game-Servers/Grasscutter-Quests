@@ -4,7 +4,7 @@ import emu.grasscutter.game.entity.EntitySolarIsotomaClientGadget;
 import emu.grasscutter.game.entity.EntityClientGadget;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
-import messages.battle.EvtCreateGadgetNotify;
+import org.anime_game_servers.multi_proto.gi.messages.battle.event.EvtCreateGadgetNotify;
 
 public class HandlerEvtCreateGadgetNotify extends TypedPacketHandler<EvtCreateGadgetNotify> {
 

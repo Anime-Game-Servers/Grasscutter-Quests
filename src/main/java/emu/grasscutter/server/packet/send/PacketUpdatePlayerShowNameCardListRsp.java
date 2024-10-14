@@ -1,20 +1,15 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.UpdatePlayerShowNameCardListRspOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.community.player_presentation.UpdatePlayerShowNameCardListRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
 import java.util.List;
 
-public class PacketUpdatePlayerShowNameCardListRsp extends BasePacket {
+public class PacketUpdatePlayerShowNameCardListRsp extends BaseTypedPacket<UpdatePlayerShowNameCardListRsp> {
     public PacketUpdatePlayerShowNameCardListRsp(List<Integer> cardIds) {
-        super(PacketOpcodes.UpdatePlayerShowNameCardListRsp);
-
-        var rsp = UpdatePlayerShowNameCardListRspOuterClass.UpdatePlayerShowNameCardListRsp.newBuilder()
-            .addAllShowNameCardIdList(cardIds)
-            .setRetcode(0)
-            .build();
-
-        this.setData(rsp);
+        super(new UpdatePlayerShowNameCardListRsp());
+        proto.setShowNameCardIdList(cardIds);
+        proto.setRetcode(Retcode.RET_SUCC);
     }
 }

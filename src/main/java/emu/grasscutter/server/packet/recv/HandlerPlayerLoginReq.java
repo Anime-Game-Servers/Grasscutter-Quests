@@ -5,7 +5,7 @@ import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.game.GameSession.SessionState;
 import emu.grasscutter.server.packet.send.PacketPlayerLoginRsp;
-import messages.player.PlayerLoginReq;
+import org.anime_game_servers.multi_proto.gi.messages.player.PlayerLoginReq;
 
  // Sends initial data packets
 public class HandlerPlayerLoginReq extends TypedPacketHandler<PlayerLoginReq> {

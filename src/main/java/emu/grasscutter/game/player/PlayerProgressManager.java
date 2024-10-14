@@ -8,7 +8,6 @@ import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.quest.enums.ParentQuestState;
 import emu.grasscutter.game.quest.enums.QuestCond;
 import emu.grasscutter.game.quest.enums.QuestContent;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
 import emu.grasscutter.server.packet.send.PacketOpenStateChangeNotify;
 import emu.grasscutter.server.packet.send.PacketOpenStateUpdateNotify;
 import emu.grasscutter.server.packet.send.PacketSceneAreaUnlockNotify;
@@ -17,6 +16,7 @@ import emu.grasscutter.server.packet.send.PacketSetOpenStateRsp;
 import lombok.val;
 import org.anime_game_servers.core.gi.enums.QuestState;
 import org.anime_game_servers.gi_lua.models.ScriptArgs;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
 import java.util.*;
 import java.util.stream.Collectors;

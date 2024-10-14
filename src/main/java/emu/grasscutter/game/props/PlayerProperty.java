@@ -12,6 +12,8 @@ public enum PlayerProperty {
     PROP_BREAK_LEVEL						(1002),
     PROP_SATIATION_VAL						(1003),
     PROP_SATIATION_PENALTY_TIME				(1004),
+    PROP_GEAR_START_VAL                     (2001),
+    PROP_GEAR_STOP_VAL                      (2002),
     PROP_LEVEL								(4001, 0, 90),
     PROP_LAST_CHANGE_AVATAR_TIME			(10001),
     PROP_MAX_SPRING_VOLUME					(10002, 0, 8_500_000), // Maximum volume of the Statue of the Seven for the player [0, 8500000]
@@ -51,7 +53,11 @@ public enum PlayerProperty {
     PROP_PLAYER_WORLD_LEVEL_ADJUST_CD		(10040),
     PROP_PLAYER_LEGENDARY_DAILY_TASK_NUM	(10041),
     PROP_PLAYER_HOME_COIN					(10042, 0), // Realm currency [0, +inf)
-    PROP_PLAYER_WAIT_SUB_HOME_COIN			(10043);
+    PROP_PLAYER_WAIT_SUB_HOME_COIN			(10043),
+    PROP_IS_AUTO_UNLOCK_SPECIFIC_EQUIP      (10044),
+    PROP_PLAYER_GCG_COIN                    (10045),
+    PROP_PLAYER_WAIT_SUB_GCG_COIN           (10046),
+    PROP_PLAYER_ONLINE_TIME                 (10047);
 
     private static final int inf = Integer.MAX_VALUE;  // Maybe this should be something else?
     @Getter private final int id, min, max;

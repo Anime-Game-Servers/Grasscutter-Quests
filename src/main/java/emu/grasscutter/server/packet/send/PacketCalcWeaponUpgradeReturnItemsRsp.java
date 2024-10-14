@@ -1,33 +1,21 @@
 package emu.grasscutter.server.packet.send;
 
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.general.item.ItemParam;
+import org.anime_game_servers.multi_proto.gi.messages.item.upgrade.CalcWeaponUpgradeReturnItemsRsp;
+
 import java.util.List;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.CalcWeaponUpgradeReturnItemsRspOuterClass.CalcWeaponUpgradeReturnItemsRsp;
-import emu.grasscutter.net.proto.ItemParamOuterClass.ItemParam;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
-
-public class PacketCalcWeaponUpgradeReturnItemsRsp extends BasePacket {
-	
-	public PacketCalcWeaponUpgradeReturnItemsRsp(long itemGuid, List<ItemParam> returnItems) {
-		super(PacketOpcodes.CalcWeaponUpgradeReturnItemsRsp);
-		
-		CalcWeaponUpgradeReturnItemsRsp proto = CalcWeaponUpgradeReturnItemsRsp.newBuilder()
-				.setTargetWeaponGuid(itemGuid)
-				.addAllItemParamList(returnItems)
-				.build();
-		
-		this.setData(proto);
+public class PacketCalcWeaponUpgradeReturnItemsRsp extends BaseTypedPacket<CalcWeaponUpgradeReturnItemsRsp> {
+    public PacketCalcWeaponUpgradeReturnItemsRsp(long itemGuid, List<ItemParam> returnItems) {
+        super(new CalcWeaponUpgradeReturnItemsRsp());
+        proto.setTargetWeaponGuid(itemGuid);
+        proto.setItemParamList(returnItems);
 	}
-	
-	public PacketCalcWeaponUpgradeReturnItemsRsp() {
-		super(PacketOpcodes.CalcWeaponUpgradeReturnItemsRsp);
-		
-		CalcWeaponUpgradeReturnItemsRsp proto = CalcWeaponUpgradeReturnItemsRsp.newBuilder()
-				.setRetcode(RetcodeOuterClass.Retcode.RET_SVR_ERROR_VALUE)
-				.build();
-		
-		this.setData(proto);
+
+    public PacketCalcWeaponUpgradeReturnItemsRsp() {
+        super(new CalcWeaponUpgradeReturnItemsRsp());
+        proto.setRetCode(Retcode.RET_SVR_ERROR);
 	}
 }

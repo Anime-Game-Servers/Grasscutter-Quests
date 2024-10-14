@@ -1,16 +1,11 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.CutSceneBeginNotifyOuterClass.CutSceneBeginNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.scene.cutscene.CutSceneBeginNotify;
 
-public class PacketCutsceneBeginNotify extends BasePacket {
-
+public class PacketCutsceneBeginNotify extends BaseTypedPacket<CutSceneBeginNotify> {
     public PacketCutsceneBeginNotify(int cutsceneId) {
-        super(PacketOpcodes.CutSceneBeginNotify);
-
-        setData(CutSceneBeginNotify.newBuilder()
-            .setCutsceneId(cutsceneId));
+        super(new CutSceneBeginNotify());
+        proto.setCutsceneId(cutsceneId);
     }
-
 }

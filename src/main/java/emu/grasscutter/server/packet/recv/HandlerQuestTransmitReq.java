@@ -2,28 +2,23 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.quest.GameQuest;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.event.player.PlayerTeleportEvent.TeleportType;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketQuestTransmitRsp;
 import emu.grasscutter.utils.Position;
-import emu.grasscutter.net.proto.QuestTransmitReqOuterClass.QuestTransmitReq;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Optional;
-
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.quest.entities.QuestTransmitReq;
 import org.anime_game_servers.gi_lua.models.quest.QuestData;
 
-@Opcodes(PacketOpcodes.QuestTransmitReq)
-public class HandlerQuestTransmitReq extends PacketHandler {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class HandlerQuestTransmitReq extends TypedPacketHandler<QuestTransmitReq> {
 
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        val req = QuestTransmitReq.parseFrom(payload);
+    public void handle(GameSession session, byte[] header, QuestTransmitReq req) throws Exception {
         val player = session.getPlayer();
         val posAndRot = new ArrayList<Position>();
         final int sceneId = Optional.ofNullable(GameData.getTeleportDataMap().get(req.getQuestId()))

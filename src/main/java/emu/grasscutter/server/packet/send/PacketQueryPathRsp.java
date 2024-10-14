@@ -1,22 +1,17 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.QueryPathReqOuterClass;
-import emu.grasscutter.net.proto.QueryPathRspOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.pathfinding.QueryPathReq;
+import org.anime_game_servers.multi_proto.gi.messages.pathfinding.QueryPathRsp;
+import org.anime_game_servers.multi_proto.gi.messages.pathfinding.PathStatusType;
 
-public class PacketQueryPathRsp extends BasePacket {
+import java.util.List;
 
-	public PacketQueryPathRsp(QueryPathReqOuterClass.QueryPathReq req) {
-		super(PacketOpcodes.QueryPathRsp);
-
-        var proto = QueryPathRspOuterClass.QueryPathRsp.newBuilder();
-
-        proto.addCorners(req.getSourcePos())
-            .addCorners(req.getDestinationPos(0))
-            .setQueryId(req.getQueryId())
-            .setQueryStatus(QueryPathRspOuterClass.QueryPathRsp.PathStatusType.PATH_STATUS_TYPE_SUCC);
-
-        this.setData(proto);
+public class PacketQueryPathRsp extends BaseTypedPacket<QueryPathRsp> {
+    public PacketQueryPathRsp(QueryPathReq req) {
+        super(new QueryPathRsp());
+        proto.setCorners(List.of(req.getSourcePos(), req.getDestinationPos().get(0)));
+        proto.setQueryId(req.getQueryId());
+        proto.setQueryStatus(PathStatusType.STATUS_SUCC);
 	}
 }

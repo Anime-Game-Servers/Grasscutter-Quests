@@ -47,7 +47,13 @@ public enum ItemUseOp {
     ITEM_USE_COMBINE_ITEM (43),
     ITEM_USE_UNLOCK_HOME_MODULE (44),
     ITEM_USE_UNLOCK_HOME_BGM (45),
-    ITEM_USE_ADD_REGIONAL_PLAY_VAR (46);
+    ITEM_USE_ADD_REGIONAL_PLAY_VAR (46),
+    ITEM_USE_ADD_AVATAR_EXTRA_PROPERTY (47),
+    ITEM_USE_GAIN_GCG_CARD (48),
+    ITEM_USE_GAIN_GCG_CARD_FACE (49),
+    ITEM_USE_GAIN_GCG_CARD_BACK (50),
+    ITEM_USE_GAIN_GCG_CARD_FIELD (51),
+    ITEM_USE_OPEN_RENAME_DIALOG (52);
 
     private final int value;
     private static final Int2ObjectMap<ItemUseOp> map = new Int2ObjectOpenHashMap<>();

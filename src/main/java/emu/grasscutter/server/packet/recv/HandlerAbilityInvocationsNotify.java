@@ -4,7 +4,7 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import lombok.val;
-import messages.ability.AbilityInvocationsNotify;
+import org.anime_game_servers.multi_proto.gi.messages.ability.AbilityInvocationsNotify;
 
 public class HandlerAbilityInvocationsNotify extends TypedPacketHandler<AbilityInvocationsNotify> {
 

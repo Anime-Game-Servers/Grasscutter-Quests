@@ -1,18 +1,17 @@
 package emu.grasscutter.game.managers.deforestation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import dev.morphia.annotations.Transient;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.entity.EntityItem;
 import emu.grasscutter.game.player.BasePlayerManager;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.world.Scene;
-import emu.grasscutter.net.proto.HitTreeNotifyOuterClass;
-import emu.grasscutter.net.proto.VectorOuterClass;
+import org.anime_game_servers.multi_proto.gi.messages.scene.HitTreeNotify;
+import org.anime_game_servers.multi_proto.gi.messages.general.Vector;
 import emu.grasscutter.utils.Position;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DeforestationManager extends BasePlayerManager {
     final static int RECORD_EXPIRED_SECONDS = 60*5; // 5 min
@@ -52,10 +51,11 @@ public class DeforestationManager extends BasePlayerManager {
             currentRecord.clear();
         }
     }
-    public void onDeforestationInvoke(HitTreeNotifyOuterClass.HitTreeNotify hit) {
+
+    public void onDeforestationInvoke(HitTreeNotify hit) {
         synchronized (currentRecord) {
             //Grasscutter.getLogger().info("onDeforestationInvoke! Wood records {}", currentRecord);
-            VectorOuterClass.Vector hitPosition = hit.getTreePos();
+            Vector hitPosition = hit.getTreePos();
             int woodType = hit.getTreeType();
             if (ColliderTypeToWoodItemID.containsKey(woodType)) {// is a available wood type
                 Scene scene = player.getScene();

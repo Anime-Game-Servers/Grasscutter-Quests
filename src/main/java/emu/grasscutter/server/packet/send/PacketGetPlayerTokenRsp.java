@@ -3,7 +3,8 @@ package emu.grasscutter.server.packet.send;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.utils.Crypto;
-import messages.player.GetPlayerTokenRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.player.GetPlayerTokenRsp;
 
 public class PacketGetPlayerTokenRsp extends BaseTypedPacket<GetPlayerTokenRsp> {
 
@@ -31,7 +32,7 @@ public class PacketGetPlayerTokenRsp extends BaseTypedPacket<GetPlayerTokenRsp> 
         proto.setClientIpStr(session.getAddress().getAddress().getHostAddress());
     }
 
-    public PacketGetPlayerTokenRsp(GameSession session, int retcode, String msg, int blackEndTime) {
+    public PacketGetPlayerTokenRsp(GameSession session, Retcode retcode, String msg, int blackEndTime) {
         super(new GetPlayerTokenRsp());
 
         this.setUseDispatchKey(true);

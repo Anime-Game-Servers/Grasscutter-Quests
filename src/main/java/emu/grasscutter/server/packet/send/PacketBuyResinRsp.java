@@ -2,18 +2,14 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.PlayerProperty;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.BuyResinRspOuterClass.BuyResinRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.item.exchange.BuyResinRsp;
 
-public class PacketBuyResinRsp extends BasePacket {
-
-	public PacketBuyResinRsp(Player player, int ret) {
-        super(PacketOpcodes.BuyResinRsp);
-
-        this.setData(BuyResinRsp.newBuilder()
-            .setCurValue(player.getProperty(PlayerProperty.PROP_PLAYER_RESIN))
-            .setRetcode(ret)
-            .build());
+public class PacketBuyResinRsp extends BaseTypedPacket<BuyResinRsp> {
+	public PacketBuyResinRsp(Player player, Retcode ret) {
+        super(new BuyResinRsp());
+        proto.setCurValue(player.getProperty(PlayerProperty.PROP_PLAYER_RESIN));
+        proto.setRetCode(ret);
     }
 }

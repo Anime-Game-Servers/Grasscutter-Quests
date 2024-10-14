@@ -1,18 +1,11 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.SetNameCardRspOuterClass.SetNameCardRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.community.player_presentation.SetNameCardRsp;
 
-public class PacketSetNameCardRsp extends BasePacket {
-	
+public class PacketSetNameCardRsp extends BaseTypedPacket<SetNameCardRsp> {
 	public PacketSetNameCardRsp(int nameCardId) {
-		super(PacketOpcodes.SetNameCardRsp);
-		
-		SetNameCardRsp proto = SetNameCardRsp.newBuilder()
-				.setNameCardId(nameCardId)
-				.build();
-		
-		this.setData(proto);
+        super(new SetNameCardRsp());
+        proto.setNameCardId(nameCardId);
 	}
 }

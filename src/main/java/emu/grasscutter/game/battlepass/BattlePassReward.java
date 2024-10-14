@@ -4,8 +4,8 @@ import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Transient;
 import emu.grasscutter.data.excels.BattlePassMissionData;
 import lombok.val;
-import messages.battle_pass.BattlePassRewardTag;
-import messages.battle_pass.BattlePassUnlockStatus;
+import org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassRewardTag;
+import org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassUnlockStatus;
 
 @Entity
 public class BattlePassReward {

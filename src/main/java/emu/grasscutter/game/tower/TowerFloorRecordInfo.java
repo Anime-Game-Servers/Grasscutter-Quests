@@ -1,18 +1,19 @@
 package emu.grasscutter.game.tower;
 
 import dev.morphia.annotations.Entity;
-import emu.grasscutter.net.proto.TowerFloorRecordOuterClass;
-import emu.grasscutter.net.proto.TowerLevelRecordOuterClass;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.rotation.TowerFloorRecord;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.rotation.TowerLevelRecord;
 
 import java.util.*;
 
 @Entity
 @Getter
 @Builder(builderMethodName = "of")
+@AllArgsConstructor
+@NoArgsConstructor
 public class TowerFloorRecordInfo {
     /**
      * FloorId in config
@@ -61,14 +62,15 @@ public class TowerFloorRecordInfo {
         return this.passedLevelRecordMap.keySet().stream().mapToInt(Integer::intValue).map(key -> key + 1).max().orElse(0);
     }
 
-    public TowerFloorRecordOuterClass.TowerFloorRecord toProto() {
-        return TowerFloorRecordOuterClass.TowerFloorRecord.newBuilder()
-            .setFloorId(this.floorId)
-            .setFloorStarRewardProgress(this.floorStarRewardProgress)
-            .putAllPassedLevelMap(this.passedLevelMap)
-            .addAllPassedLevelRecordList(this.passedLevelRecordMap.values().stream()
-                .map(TowerLevelRecordInfo::toProto)
-                .sorted(Comparator.comparing(TowerLevelRecordOuterClass.TowerLevelRecord::getLevelId)).toList())
-            .build();
+    public TowerFloorRecord toProto() {
+        val proto = new TowerFloorRecord();
+        proto.setFloorId(this.floorId);
+        proto.setFloorStarRewardProgress(this.floorStarRewardProgress);
+        proto.setPassedLevelMap(this.passedLevelMap);
+        proto.setPassedLevelRecordList(this.passedLevelRecordMap.values().stream()
+            .map(TowerLevelRecordInfo::toProto)
+            .sorted(Comparator.comparing(TowerLevelRecord::getLevelId))
+            .toList());
+        return proto;
     }
 }

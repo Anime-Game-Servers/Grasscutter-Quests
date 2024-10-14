@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 
-import messages.general.RoutePoint.MoveParams;
+import org.anime_game_servers.multi_proto.gi.messages.general.RoutePoint.MoveParams;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -20,8 +20,8 @@ public class RoutePoint {
     // rotRoundReachDir //optional Pos with optional values
     // rotRoundLeaveDir //optional Pos with optional values
 
-    public messages.general.RoutePoint toProto(){
-        val proto = new messages.general.RoutePoint(pos.toProto());
+    public org.anime_game_servers.multi_proto.gi.messages.general.RoutePoint toProto(){
+        val proto = new org.anime_game_servers.multi_proto.gi.messages.general.RoutePoint(pos.toProto());
         if(waitTime!=0){
             proto.setMoveParams(new MoveParams.Time(waitTime));
         } else if(targetVelocity!=0){

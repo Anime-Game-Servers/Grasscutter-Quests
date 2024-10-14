@@ -2,7 +2,7 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
-import messages.shop.GetShopmallDataRsp;
+import org.anime_game_servers.multi_proto.gi.messages.shop.GetShopmallDataRsp;
 
 import java.util.List;
 

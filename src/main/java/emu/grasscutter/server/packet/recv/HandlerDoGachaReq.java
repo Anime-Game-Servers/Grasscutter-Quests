@@ -1,17 +1,12 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.DoGachaReqOuterClass.DoGachaReq;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
+import org.anime_game_servers.multi_proto.gi.messages.wishing.DoGachaReq;
 import emu.grasscutter.server.game.GameSession;
 
-@Opcodes(PacketOpcodes.DoGachaReq)
-public class HandlerDoGachaReq extends PacketHandler {
+public class HandlerDoGachaReq extends TypedPacketHandler<DoGachaReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        DoGachaReq req = DoGachaReq.parseFrom(payload);
-
+    public void handle(GameSession session, byte[] header, DoGachaReq req) throws Exception {
         session.getServer().getGachaSystem().doPulls(session.getPlayer(), req.getGachaScheduleId(), req.getGachaTimes());
     }
 }

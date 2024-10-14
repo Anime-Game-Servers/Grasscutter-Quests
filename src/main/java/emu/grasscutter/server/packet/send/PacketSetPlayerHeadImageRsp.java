@@ -1,20 +1,16 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ProfilePictureOuterClass.ProfilePicture;
-import emu.grasscutter.net.proto.SetPlayerHeadImageRspOuterClass.SetPlayerHeadImageRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.community.player_presentation.SetPlayerHeadImageRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.ProfilePicture;
 
-public class PacketSetPlayerHeadImageRsp extends BasePacket {
-	
+public class PacketSetPlayerHeadImageRsp extends BaseTypedPacket<SetPlayerHeadImageRsp> {
 	public PacketSetPlayerHeadImageRsp(Player player) {
-		super(PacketOpcodes.SetPlayerHeadImageRsp);
-		
-		SetPlayerHeadImageRsp proto = SetPlayerHeadImageRsp.newBuilder()
-				.setProfilePicture(ProfilePicture.newBuilder().setAvatarId(player.getHeadImage()))
-				.build();
-		
-		this.setData(proto);
+        super(new SetPlayerHeadImageRsp());
+        val profilePicture = new ProfilePicture();
+        profilePicture.setAvatarId(player.getHeadImage());
+        proto.setProfilePicture(profilePicture);
 	}
 }

@@ -8,8 +8,6 @@ import emu.grasscutter.data.excels.CombineData;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
 import emu.grasscutter.server.game.BaseGameSystem;
 import emu.grasscutter.server.game.GameServer;
 import emu.grasscutter.server.packet.send.PacketCombineFormulaDataNotify;
@@ -18,6 +16,7 @@ import emu.grasscutter.server.packet.send.PacketReliquaryDecomposeRsp;
 import emu.grasscutter.utils.Utils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +71,7 @@ public class CombineManger extends BaseGameSystem {
 
         // abort if not enough material
         if (!success) {
-            player.sendPacket(new PacketCombineRsp(RetcodeOuterClass.Retcode.RET_ITEM_COMBINE_COUNT_NOT_ENOUGH_VALUE));
+            player.sendPacket(new PacketCombineRsp(Retcode.RET_ITEM_COMBINE_COUNT_NOT_ENOUGH));
         }
 
         // make the result

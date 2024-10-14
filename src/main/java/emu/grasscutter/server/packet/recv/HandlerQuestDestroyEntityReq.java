@@ -1,19 +1,15 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketQuestDestroyEntityRsp;
 import lombok.val;
-import emu.grasscutter.net.proto.QuestDestroyEntityReqOuterClass.QuestDestroyEntityReq;
+import org.anime_game_servers.multi_proto.gi.messages.quest.entities.QuestDestroyEntityReq;
 
-@Opcodes(PacketOpcodes.QuestDestroyEntityReq)
-public class HandlerQuestDestroyEntityReq extends PacketHandler {
+public class HandlerQuestDestroyEntityReq extends TypedPacketHandler<QuestDestroyEntityReq> {
 
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        val req = QuestDestroyEntityReq.parseFrom(payload);
+    public void handle(GameSession session, byte[] header, QuestDestroyEntityReq req) throws Exception {
         val scene = session.getPlayer().getWorld().getSceneById(req.getSceneId());
         val entity = scene.getEntityById(req.getEntityId());
 

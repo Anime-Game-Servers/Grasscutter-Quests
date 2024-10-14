@@ -1,18 +1,11 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.DeleteFriendNotifyOuterClass.DeleteFriendNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.management.DeleteFriendNotify;
 
-public class PacketDeleteFriendNotify extends BasePacket {
-	
+public class PacketDeleteFriendNotify extends BaseTypedPacket<DeleteFriendNotify> {
 	public PacketDeleteFriendNotify(int targetUid) {
-		super(PacketOpcodes.DeleteFriendNotify);
-
-		DeleteFriendNotify proto = DeleteFriendNotify.newBuilder()
-				.setTargetUid(targetUid)
-				.build();
-		
-		this.setData(proto);
+        super(new DeleteFriendNotify());
+        proto.setTargetUid(targetUid);
 	}
 }

@@ -1,19 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.avatar.Avatar;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarPromoteRspOuterClass.AvatarPromoteRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.upgrade.AvatarPromoteRsp;
 
-public class PacketAvatarPromoteRsp extends BasePacket {
-	
+public class PacketAvatarPromoteRsp extends BaseTypedPacket<AvatarPromoteRsp> {
 	public PacketAvatarPromoteRsp(Avatar avatar) {
-		super(PacketOpcodes.AvatarPromoteRsp);
-
-		AvatarPromoteRsp proto = AvatarPromoteRsp.newBuilder()
-				.setGuid(avatar.getGuid())
-				.build();
-
-		this.setData(proto);
+        super(new AvatarPromoteRsp());
+        proto.setGuid(avatar.getGuid());
 	}
 }

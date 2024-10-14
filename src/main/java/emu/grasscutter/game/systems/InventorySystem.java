@@ -1,15 +1,5 @@
 package emu.grasscutter.game.systems;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.ItemParamData;
@@ -23,25 +13,24 @@ import emu.grasscutter.game.inventory.ItemType;
 import emu.grasscutter.game.inventory.MaterialType;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.FightProperty;
-import emu.grasscutter.game.props.ItemUseOp;
-import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.game.props.ItemUseAction.ItemUseAddExp;
 import emu.grasscutter.game.props.ItemUseAction.ItemUseAddReliquaryExp;
 import emu.grasscutter.game.props.ItemUseAction.ItemUseAddWeaponExp;
 import emu.grasscutter.game.props.ItemUseAction.UseItemParams;
-import emu.grasscutter.net.proto.ItemParamOuterClass.ItemParam;
-import emu.grasscutter.net.proto.MaterialInfoOuterClass.MaterialInfo;
+import emu.grasscutter.game.props.ItemUseOp;
+import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.server.event.player.PlayerUseFoodEvent;
 import emu.grasscutter.server.game.BaseGameSystem;
 import emu.grasscutter.server.game.GameServer;
 import emu.grasscutter.server.packet.send.*;
 import emu.grasscutter.utils.Utils;
-import it.unimi.dsi.fastutil.ints.Int2FloatArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2IntRBTreeMap;
+import it.unimi.dsi.fastutil.ints.*;
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.general.item.ItemParam;
+import org.anime_game_servers.multi_proto.gi.messages.item.management.MaterialInfo;
+
+import java.util.*;
+import java.util.stream.Stream;
 
 public class InventorySystem extends BaseGameSystem {
     private static final Int2IntMap weaponRefundMaterials = new Int2IntArrayMap();
@@ -390,8 +379,12 @@ public class InventorySystem extends BaseGameSystem {
             int ores = leftover / exp;
             leftover = leftover % exp;
 
-            if (ores > 0)
-                leftoverOreList.add(ItemParam.newBuilder().setItemId(e.getIntKey()).setCount(ores).build());
+            if (ores > 0) {
+                val itemParam = new ItemParam();
+                itemParam.setItemId(e.getIntKey());
+                itemParam.setCount(ores);
+                leftoverOreList.add(itemParam);
+            }
         }
 
         return leftoverOreList;
@@ -725,7 +718,7 @@ public class InventorySystem extends BaseGameSystem {
         }
 
         // Give back items
-        if (returnMaterialMap.size() > 0) {
+        if (!returnMaterialMap.isEmpty()) {
             returnMaterialMap.forEach((id, count) -> inventory.addItem(new GameItem(id, count)));
         }
 

@@ -1,20 +1,14 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ChapterStateNotifyOuterClass;
-import emu.grasscutter.net.proto.ChapterStateOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.quest.chapter.ChapterState;
+import org.anime_game_servers.multi_proto.gi.messages.quest.chapter.ChapterStateNotify;
 
-public class PacketChapterStateNotify extends BasePacket {
+public class PacketChapterStateNotify extends BaseTypedPacket<ChapterStateNotify> {
 
-	public PacketChapterStateNotify(int id, ChapterStateOuterClass.ChapterState state) {
-		super(PacketOpcodes.ChapterStateNotify);
-
-        var proto = ChapterStateNotifyOuterClass.ChapterStateNotify.newBuilder();
-
-        proto.setChapterId(id)
-            .setChapterState(state);
-
-        this.setData(proto);
+    public PacketChapterStateNotify(int id, ChapterState state) {
+        super(new ChapterStateNotify());
+        proto.setChapterId(id);
+        proto.setChapterState(state);
 	}
 }

@@ -1,13 +1,10 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.CloseCommonTipsNotifyOuterClass.CloseCommonTipsNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.scene.CloseCommonTipsNotify;
 
-public class PacketCloseCommonTipsNotify extends BasePacket {
-	
+public class PacketCloseCommonTipsNotify extends BaseTypedPacket<CloseCommonTipsNotify> {
 	public PacketCloseCommonTipsNotify() {
-		super(PacketOpcodes.CloseCommonTipsNotify);
-		this.setData(CloseCommonTipsNotify.newBuilder().build());
+        super(new CloseCommonTipsNotify());
 	}
 }

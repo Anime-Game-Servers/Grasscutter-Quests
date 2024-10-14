@@ -1,18 +1,11 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.SetWidgetSlotRspOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.manage_slot.SetWidgetSlotRsp;
 
-public class PacketSetWidgetSlotRsp extends BasePacket {
-
+public class PacketSetWidgetSlotRsp extends BaseTypedPacket<SetWidgetSlotRsp> {
     public PacketSetWidgetSlotRsp(int materialId) {
-        super(PacketOpcodes.SetWidgetSlotRsp);
-
-        SetWidgetSlotRspOuterClass.SetWidgetSlotRsp proto = SetWidgetSlotRspOuterClass.SetWidgetSlotRsp.newBuilder()
-                .setMaterialId(materialId)
-                .build();
-
-        this.setData(proto);
+        super(new SetWidgetSlotRsp());
+        proto.setMaterialId(materialId);
     }
 }

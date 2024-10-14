@@ -3,7 +3,6 @@ package emu.grasscutter.server.http.dispatch;
 import com.google.protobuf.ByteString;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Grasscutter.ServerRunMode;
-import emu.grasscutter.net.proto.RegionSimpleInfoOuterClass.RegionSimpleInfo;
 import emu.grasscutter.server.event.dispatch.QueryAllRegionsEvent;
 import emu.grasscutter.server.event.dispatch.QueryCurrentRegionEvent;
 import emu.grasscutter.server.http.Router;
@@ -13,10 +12,12 @@ import emu.grasscutter.utils.Utils;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import lombok.val;
-import messages.general.server.RegionInfo;
-import messages.login.QueryCurrRegionHttpRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.server.RegionInfo;
+import org.anime_game_servers.multi_proto.gi.messages.login.QueryCurrRegionHttpRsp;
 import org.anime_game_servers.core.base.Game;
 import org.anime_game_servers.core.base.Version;
+import org.anime_game_servers.multi_proto.gi.messages.login.QueryRegionListHttpRsp;
+import org.anime_game_servers.multi_proto.gi.messages.login.RegionSimpleInfo;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
@@ -26,7 +27,6 @@ import java.security.Signature;
 import java.util.regex.Pattern;
 
 import static emu.grasscutter.config.Configuration.*;
-import static emu.grasscutter.net.proto.QueryRegionListHttpRspOuterClass.QueryRegionListHttpRsp;
 
 /**
  * Handles requests related to region queries.
@@ -76,10 +76,11 @@ public final class RegionHandler implements Router {
             }
 
             // Create a region identifier.
-            var identifier = RegionSimpleInfo.newBuilder()
-                    .setName(region.Name).setTitle(region.Title).setType("DEV_PUBLIC")
-                    .setDispatchUrl(dispatchDomain + "/query_cur_region/" + region.Name)
-                    .build();
+            val identifier = new RegionSimpleInfo();
+            identifier.setName(region.Name);
+            identifier.setTitle(region.Title);
+            identifier.setType("DEV_PUBLIC");
+            identifier.setDispatchUrl(dispatchDomain + "/query_cur_region/" + region.Name);
             usedNames.add(region.Name); servers.add(identifier);
 
             // Create a region info object.
@@ -102,17 +103,31 @@ public final class RegionHandler implements Router {
         Crypto.xor(customConfigCn, Crypto.DISPATCH_KEY); // XOR the config with the key.
 
         // Create an updated region list.
-        val updatedRegionList = QueryRegionListHttpRsp.newBuilder()
-                .addAllRegionList(servers)
-                .setClientSecretKey(ByteString.copyFrom(Crypto.DISPATCH_SEED))
-                .setClientCustomConfigEncrypted(ByteString.copyFrom(customConfig))
-                .setEnableLoginPc(true);
+        val updatedRegionList = new QueryRegionListHttpRsp();
+        updatedRegionList.setRegionList(servers);
+        updatedRegionList.setClientSecretKey(Crypto.DISPATCH_SEED);
+        updatedRegionList.setEnableLoginPc(true);
 
         // Set the region list response.
-        regionListResponses.put(RegionType.OS, Utils.base64Encode(updatedRegionList.build().toByteString().toByteArray()));
+        setRegionListResponses(RegionType.OS, customConfig, updatedRegionList);
+        setRegionListResponses(RegionType.CN, customConfigCn, updatedRegionList);
+    }
 
-        updatedRegionList.setClientCustomConfigEncrypted(ByteString.copyFrom(customConfigCn));
-        regionListResponses.put(RegionType.CN, Utils.base64Encode(updatedRegionList.build().toByteString().toByteArray()));
+    /**
+     * Pre generates the region list responses for each version
+     * @param regionType The region type
+     * @param customConfig The  custom configuration, XOR'd with the dispatch key
+     * @param baseRegionList The filled out region list response model
+     */
+    private void setRegionListResponses(RegionType regionType, byte[] customConfig, QueryRegionListHttpRsp baseRegionList) {
+        baseRegionList.setClientCustomConfigEncrypted(customConfig);
+        Arrays.stream(Version.values()).forEach(version -> {
+            val encoded = baseRegionList.encodeToByteArray(version);
+            if (encoded != null) {
+                // todo actually save region specific responses, and not just the newest success
+                regionListResponses.put(regionType, Utils.base64Encode(encoded));
+            }
+        });
     }
 
     @Override public void applyRoutes(Javalin javalin) {

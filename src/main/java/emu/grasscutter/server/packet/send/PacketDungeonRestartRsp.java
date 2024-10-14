@@ -1,12 +1,10 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.DungeonRestartRspOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.progression.DungeonRestartRsp;
 
-public class PacketDungeonRestartRsp extends BasePacket {
+public class PacketDungeonRestartRsp extends BaseTypedPacket<DungeonRestartRsp> {
     public PacketDungeonRestartRsp() {
-        super(PacketOpcodes.DungeonRestartRsp);
-        this.setData(DungeonRestartRspOuterClass.DungeonRestartRsp.newBuilder());
+        super(new DungeonRestartRsp());
     }
 }

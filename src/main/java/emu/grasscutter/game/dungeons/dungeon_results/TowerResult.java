@@ -4,15 +4,14 @@ import emu.grasscutter.data.excels.DungeonData;
 import emu.grasscutter.game.dungeons.DungeonEndStats;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.proto.DungeonSettleNotifyOuterClass;
-import emu.grasscutter.net.proto.TowerLevelEndNotifyOuterClass.TowerLevelEndNotify;
 import lombok.Builder;
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.progression.DungeonSettleNotify;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.run.ContinueStateType;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.run.TowerLevelEndNotify;
 
 import java.util.List;
 import java.util.stream.IntStream;
-
-import static emu.grasscutter.net.proto.TowerLevelEndNotifyOuterClass.TowerLevelEndNotify.ContinueStateType.*;
 
 public class TowerResult extends BaseDungeonResult {
     private final boolean hasNextFloor;
@@ -34,17 +33,21 @@ public class TowerResult extends BaseDungeonResult {
     }
 
     @Override
-    protected void onProto(DungeonSettleNotifyOuterClass.DungeonSettleNotify.Builder builder) {
+    protected void onProto(DungeonSettleNotify builder) {
         val success = getDungeonStats().getDungeonResult().isSuccess();
 
-        builder.setTowerLevelEndNotify(TowerLevelEndNotify.newBuilder()
-            .setIsSuccess(success)
-            .setContinueState(success && this.hasNextFloor ? this.hasNextLevel ?
-                CONTINUE_STATE_TYPE_CAN_ENTER_NEXT_LEVEL_VALUE :
-                CONTINUE_STATE_TYPE_CAN_ENTER_NEXT_FLOOR_VALUE :
-                CONTINUE_STATE_TYPE_CAN_NOT_CONTINUE_VALUE)
-            .addAllFinishedStarCondList(IntStream.rangeClosed(1, this.stars).boxed().toList())
-            .setNextFloorId(this.hasNextFloor ? this.nextFloorId : 0)
-            .addAllRewardItemList(this.rewardItems.stream().map(GameItem::toItemParamOld).toList()));
+        val towerLevelEndNotify = new TowerLevelEndNotify();
+        towerLevelEndNotify.setSuccess(success);
+        towerLevelEndNotify.setContinueState(success && this.hasNextFloor ? this.hasNextLevel ?
+            ContinueStateType.CONTINUE_STATE_CAN_ENTER_NEXT_LEVEL :
+            ContinueStateType.CONTINUE_STATE_CAN_ENTER_NEXT_FLOOR :
+            ContinueStateType.CONTINUE_STATE_CAN_NOT_CONTINUE);
+        towerLevelEndNotify.setFinishedStarCondList(IntStream.rangeClosed(1, this.stars).boxed().toList());
+        towerLevelEndNotify.setNextFloorId(this.hasNextFloor ? this.nextFloorId : 0);
+        towerLevelEndNotify.setRewardItemList(this.rewardItems.stream()
+            .map(GameItem::toItemParam)
+            .toList());
+
+        builder.setDetail(new DungeonSettleNotify.Detail.TowerLevelEndNotify(towerLevelEndNotify));
     }
 }

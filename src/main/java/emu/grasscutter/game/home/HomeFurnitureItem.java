@@ -4,14 +4,14 @@ import dev.morphia.annotations.Entity;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.binout.HomeworldDefaultSaveData;
 import emu.grasscutter.data.excels.ItemData;
-import emu.grasscutter.net.proto.HomeFurnitureDataOuterClass;
-import emu.grasscutter.net.proto.HomeMarkPointFurnitureDataOuterClass;
-import emu.grasscutter.net.proto.VectorOuterClass;
 import emu.grasscutter.utils.Position;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.furniture.HomeFurnitureData;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.mark_point.HomeMarkPointFurnitureData;
 
 @Entity
 @Data
@@ -24,28 +24,29 @@ public class HomeFurnitureItem {
     Position spawnPos;
     Position spawnRot;
     int version;
-    public HomeFurnitureDataOuterClass.HomeFurnitureData toProto(){
-        return HomeFurnitureDataOuterClass.HomeFurnitureData.newBuilder()
-                .setFurnitureId(furnitureId)
-                .setGuid(guid)
-                .setParentFurnitureIndex(parentFurnitureIndex)
-                .setSpawnPos(spawnPos.toProtoOld())
-                .setSpawnRot(spawnRot.toProtoOld())
-                .setVersion(version)
-                .build();
+
+    public HomeFurnitureData toProto() {
+        val proto = new HomeFurnitureData();
+        proto.setFurnitureId(furnitureId);
+        proto.setGuid(guid);
+        proto.setParentFurnitureIndex(parentFurnitureIndex);
+        proto.setSpawnPos(spawnPos.toProto());
+        proto.setSpawnRot(spawnRot.toProto());
+        proto.setVersion(version);
+        return proto;
     }
 
-    public HomeMarkPointFurnitureDataOuterClass.HomeMarkPointFurnitureData toMarkPointProto(int type){
-        return HomeMarkPointFurnitureDataOuterClass.HomeMarkPointFurnitureData.newBuilder()
-                .setFurnitureId(furnitureId)
-                .setGuid(guid)
-                .setFurnitureType(type)
-                .setPos(spawnPos.toProtoOld())
+    public HomeMarkPointFurnitureData toMarkPointProto(int type) {
+        val proto = new HomeMarkPointFurnitureData();
+        proto.setFurnitureId(furnitureId);
+        proto.setGuid(guid);
+        proto.setFurnitureType(type);
+        proto.setPos(spawnPos.toProto());
                 // TODO NPC and farm
-                .build();
+        return proto;
     }
 
-    public static HomeFurnitureItem parseFrom(HomeFurnitureDataOuterClass.HomeFurnitureData homeFurnitureData) {
+    public static HomeFurnitureItem parseFrom(HomeFurnitureData homeFurnitureData) {
         return HomeFurnitureItem.of()
                 .furnitureId(homeFurnitureData.getFurnitureId())
                 .guid(homeFurnitureData.getGuid())

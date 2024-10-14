@@ -4,8 +4,8 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.world.World;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
-import messages.scene.WorldPlayerInfoNotify;
-import messages.scene.entity.OnlinePlayerInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.WorldPlayerInfoNotify;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.OnlinePlayerInfo;
 
 import java.util.ArrayList;
 

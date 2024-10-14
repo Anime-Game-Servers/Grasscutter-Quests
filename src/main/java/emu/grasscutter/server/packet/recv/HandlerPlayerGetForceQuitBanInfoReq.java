@@ -1,25 +1,20 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketPlayerGetForceQuitBanInfoRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.player.PlayerGetForceQuitBanInfoReq;
 
-@Opcodes(PacketOpcodes.PlayerGetForceQuitBanInfoReq)
-public class HandlerPlayerGetForceQuitBanInfoReq extends PacketHandler {
-
+public class HandlerPlayerGetForceQuitBanInfoReq extends TypedPacketHandler<PlayerGetForceQuitBanInfoReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-
+    public void handle(GameSession session, byte[] header, PlayerGetForceQuitBanInfoReq req) throws Exception {
         if (session.getServer().getMultiplayerSystem().leaveCoop(session.getPlayer())) {
             // Success
-            session.send(new PacketPlayerGetForceQuitBanInfoRsp(RetcodeOuterClass.Retcode.RET_SUCC_VALUE));
+            session.send(new PacketPlayerGetForceQuitBanInfoRsp(Retcode.RET_SUCC));
         } else {
             // Fail
-            session.send(new PacketPlayerGetForceQuitBanInfoRsp(RetcodeOuterClass.Retcode.RET_SVR_ERROR_VALUE));
+            session.send(new PacketPlayerGetForceQuitBanInfoRsp(Retcode.RET_SVR_ERROR));
         }
     }
-
 }

@@ -4,8 +4,8 @@ import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.SceneType;
 import emu.grasscutter.net.packet.BaseTypedPacket;
-import messages.scene.PlayerWorldSceneInfoListNotify;
-import messages.scene.PlayerWorldSceneInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.PlayerWorldSceneInfoListNotify;
+import org.anime_game_servers.multi_proto.gi.messages.scene.PlayerWorldSceneInfo;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,20 +1,14 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.GroupUnloadNotifyOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.scene.group.GroupUnloadNotify;
 
 import java.util.List;
 
-public class PacketGroupUnloadNotify extends BasePacket {
+public class PacketGroupUnloadNotify extends BaseTypedPacket<GroupUnloadNotify> {
 
 	public PacketGroupUnloadNotify(List<Integer> groupList) {
-		super(PacketOpcodes.GroupUnloadNotify);
-
-        var proto = GroupUnloadNotifyOuterClass.GroupUnloadNotify.newBuilder();
-
-        proto.addAllGroupList(groupList);
-
-        this.setData(proto);
+        super(new GroupUnloadNotify());
+        proto.setGroupList(groupList);
 	}
 }

@@ -1,38 +1,32 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.data.common.ItemParamData;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.FurnitureMakeDataOuterClass;
-import emu.grasscutter.net.proto.FurnitureMakeSlotOuterClass;
-import emu.grasscutter.net.proto.ItemParamOuterClass;
-import emu.grasscutter.net.proto.TakeFurnitureMakeRspOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.general.item.ItemParam;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.furniture.FurnitureMakeData;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.furniture.FurnitureMakeSlot;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.furniture.TakeFurnitureMakeRsp;
 
 import java.util.List;
 
-public class PacketTakeFurnitureMakeRsp extends BasePacket {
+public class PacketTakeFurnitureMakeRsp extends BaseTypedPacket<TakeFurnitureMakeRsp> {
+    public PacketTakeFurnitureMakeRsp(Retcode ret,
+                                      int makeId,
+                                      List<ItemParam> output,
+                                      List<FurnitureMakeData> others) {
+        super(new TakeFurnitureMakeRsp());
+        proto.setRetcode(ret);
+        proto.setMakeId(makeId);
 
-	public PacketTakeFurnitureMakeRsp(int ret,
-									  int makeId,
-									  List<ItemParamOuterClass.ItemParam> output,
-									  List<FurnitureMakeDataOuterClass.FurnitureMakeData> others) {
-		super(PacketOpcodes.TakeFurnitureMakeRsp);
+        if (output != null) {
+            proto.setOutputItemList(output);
+        }
 
-		var proto = TakeFurnitureMakeRspOuterClass.TakeFurnitureMakeRsp.newBuilder();
-
-		proto.setRetcode(ret)
-				.setMakeId(makeId);
-
-		if(output != null){
-			proto.addAllOutputItemList(output);
-		}
-
-		if(others != null){
-			proto.setFurnitureMakeSlot(FurnitureMakeSlotOuterClass.FurnitureMakeSlot.newBuilder()
-					.addAllFurnitureMakeDataList(others)
-					.build());
-		}
-
-		this.setData(proto);
-	}
+        if (others != null) {
+            val furnitureMakeSlot = new FurnitureMakeSlot();
+            furnitureMakeSlot.setFurnitureMakeDataList(others);
+            proto.setFurnitureMakeSlot(furnitureMakeSlot);
+        }
+    }
 }

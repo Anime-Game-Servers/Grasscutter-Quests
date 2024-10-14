@@ -3,11 +3,11 @@ package emu.grasscutter.server.packet.send;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
-import messages.general.ability.AbilityControlBlock;
-import messages.general.ability.AbilitySyncStateInfo;
-import messages.scene.AvatarEnterSceneInfo;
-import messages.scene.PlayerEnterSceneInfoNotify;
-import messages.scene.entity.MPLevelEntityInfo;
+import org.anime_game_servers.multi_proto.gi.messages.general.ability.AbilityControlBlock;
+import org.anime_game_servers.multi_proto.gi.messages.general.ability.AbilitySyncStateInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.AvatarEnterSceneInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.PlayerEnterSceneInfoNotify;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.MPLevelEntityInfo;
 
 public class PacketPlayerEnterSceneInfoNotify extends BaseTypedPacket<PlayerEnterSceneInfoNotify> {
 
@@ -20,7 +20,7 @@ public class PacketPlayerEnterSceneInfoNotify extends BaseTypedPacket<PlayerEnte
         proto.setEnterSceneToken(player.getEnterSceneToken());
 
 		proto.setTeamEnterInfo(
-				new messages.scene.TeamEnterSceneInfo(
+				new org.anime_game_servers.multi_proto.gi.messages.scene.TeamEnterSceneInfo(
                     player.getTeamManager().getEntity().getId(), // 150995833
                     empty,
                     new AbilityControlBlock()

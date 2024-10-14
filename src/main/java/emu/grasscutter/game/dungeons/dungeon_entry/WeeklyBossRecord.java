@@ -3,9 +3,11 @@ package emu.grasscutter.game.dungeons.dungeon_entry;
 import dev.morphia.annotations.Entity;
 import emu.grasscutter.GameConstants;
 import emu.grasscutter.data.excels.DungeonSerialData;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import messages.scene.entity.WeeklyBossResinDiscountInfo;
+import lombok.NoArgsConstructor;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.WeeklyBossResinDiscountInfo;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -17,6 +19,8 @@ import java.util.Optional;
 @Entity
 @Builder(builderMethodName = "of")
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class WeeklyBossRecord {
     private int serialId;
     private int discountNum;

@@ -3,7 +3,7 @@ package emu.grasscutter.server.packet.send;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
-import messages.mail.GetAllMailRsp;
+import org.anime_game_servers.multi_proto.gi.messages.mail.GetAllMailRsp;
 
 import java.time.Instant;
 import java.util.List;

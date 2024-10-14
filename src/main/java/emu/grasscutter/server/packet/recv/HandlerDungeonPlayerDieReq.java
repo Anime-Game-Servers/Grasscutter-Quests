@@ -2,22 +2,16 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.DungeonPlayerDieReqOuterClass.DungeonPlayerDieReq;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketDungeonPlayerDieRsp;
-import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.DungeonPlayerDieReq;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
-@Opcodes(PacketOpcodes.DungeonPlayerDieReq)
-public class HandlerDungeonPlayerDieReq extends PacketHandler {
+public class HandlerDungeonPlayerDieReq extends TypedPacketHandler<DungeonPlayerDieReq> {
 
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        DungeonPlayerDieReq req = DungeonPlayerDieReq.parseFrom(payload);
-
+    public void handle(GameSession session, byte[] header, DungeonPlayerDieReq req) throws Exception {
         Player player = session.getPlayer();
 
         boolean result = player.getScene().respawnPlayer(player);

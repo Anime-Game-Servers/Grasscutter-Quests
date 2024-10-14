@@ -2,35 +2,25 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.player.TeamInfo;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ChangeMpTeamAvatarRspOuterClass.ChangeMpTeamAvatarRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.team.ChangeMpTeamAvatarRsp;
 
 import java.util.List;
 
-public class PacketChangeMpTeamAvatarRsp extends BasePacket {
-
+public class PacketChangeMpTeamAvatarRsp extends BaseTypedPacket<ChangeMpTeamAvatarRsp> {
 	public PacketChangeMpTeamAvatarRsp(Player player, TeamInfo teamInfo) {
-		super(PacketOpcodes.ChangeMpTeamAvatarRsp);
-
-		ChangeMpTeamAvatarRsp.Builder proto = ChangeMpTeamAvatarRsp.newBuilder()
-				.setCurAvatarGuid(player.getTeamManager().getCurrentCharacterGuid());
-
-		for (int avatarId : teamInfo.getAvatars()) {
-			proto.addAvatarGuidList(player.getAvatars().getAvatarById(avatarId).getGuid());
-		}
-
-		this.setData(proto);
+        super(new ChangeMpTeamAvatarRsp());
+        proto.setCurAvatarGuid(player.getTeamManager().getCurrentCharacterGuid());
+        proto.setAvatarGuidList(teamInfo.getAvatars().stream()
+            .map(avatarId -> player.getAvatars().getAvatarById(avatarId).getGuid())
+            .toList());
 	}
 
-    public PacketChangeMpTeamAvatarRsp(int retVal, List<Long> guidList, long guid) {
-        super(PacketOpcodes.ChangeMpTeamAvatarRsp);
-
-        ChangeMpTeamAvatarRsp.Builder proto = ChangeMpTeamAvatarRsp.newBuilder()
-            .setCurAvatarGuid(guid)
-            .addAllAvatarGuidList(guidList)
-            .setRetcode(retVal);
-
-        this.setData(proto);
+    public PacketChangeMpTeamAvatarRsp(long playerGuid, List<Long> teamGuidList, Retcode retCode) {
+        super(new ChangeMpTeamAvatarRsp());
+        proto.setCurAvatarGuid(playerGuid);
+        proto.setAvatarGuidList(teamGuidList);
+        proto.setRetcode(retCode);
     }
 }

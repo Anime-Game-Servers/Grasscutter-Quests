@@ -4,8 +4,8 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.world.World;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
-import messages.scene.ScenePlayerInfo;
-import messages.scene.ScenePlayerInfoNotify;
+import org.anime_game_servers.multi_proto.gi.messages.scene.ScenePlayerInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.ScenePlayerInfoNotify;
 
 public class PacketScenePlayerInfoNotify extends BaseTypedPacket<ScenePlayerInfoNotify> {
 

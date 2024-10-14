@@ -1,24 +1,25 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.QuestListNotifyOuterClass.QuestListNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.quest.child.Quest;
+import org.anime_game_servers.multi_proto.gi.messages.quest.child.QuestListNotify;
 import org.anime_game_servers.core.gi.enums.QuestState;
 
-public class PacketQuestListNotify extends BasePacket {
+import java.util.ArrayList;
+import java.util.List;
+
+public class PacketQuestListNotify extends BaseTypedPacket<QuestListNotify> {
 
     public PacketQuestListNotify(Player player) {
-        super(PacketOpcodes.QuestListNotify, true);
+        super(new QuestListNotify(), true);
 
-        QuestListNotify.Builder proto = QuestListNotify.newBuilder();
-
+        List<Quest> questList = new ArrayList<>();
         player.getQuestManager().forEachQuest(quest -> {
             if (quest.getState() != QuestState.QUEST_STATE_UNSTARTED) {
-                proto.addQuestList(quest.toProto());
+                questList.add(quest.toProto());
             }
         });
-
-        this.setData(proto);
+        proto.setQuestList(questList);
     }
 }

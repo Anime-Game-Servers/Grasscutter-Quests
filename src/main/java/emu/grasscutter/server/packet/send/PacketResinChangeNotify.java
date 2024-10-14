@@ -2,20 +2,14 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.PlayerProperty;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ResinChangeNotifyOuterClass.ResinChangeNotify;
-import lombok.val;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.item.ResinChangeNotify;
 
-public class PacketResinChangeNotify extends BasePacket {
+public class PacketResinChangeNotify extends BaseTypedPacket<ResinChangeNotify> {
     public PacketResinChangeNotify(Player player) {
-        super(PacketOpcodes.ResinChangeNotify);
-
-        val proto = ResinChangeNotify.newBuilder()
-            .setCurValue(player.getProperty(PlayerProperty.PROP_PLAYER_RESIN))
-            .setNextAddTimestamp(player.getNextResinRefresh())
-            .setCurBuyCount(player.getResinBuyCount());
-
-        this.setData(proto);
+        super(new ResinChangeNotify());
+        proto.setCurValue(player.getProperty(PlayerProperty.PROP_PLAYER_RESIN));
+        proto.setNextAddTimestamp(player.getNextResinRefresh());
+        proto.setCurBuyCount(player.getResinBuyCount());
     }
 }

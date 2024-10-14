@@ -1,30 +1,23 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.game.quest.GameMainQuest;
 import emu.grasscutter.game.quest.GameQuest;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.QuestProgressUpdateNotifyOuterClass.QuestProgressUpdateNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.quest.child.QuestProgressUpdateNotify;
 
-public class PacketQuestProgressUpdateNotify extends BasePacket {
+import java.util.Arrays;
+
+public class PacketQuestProgressUpdateNotify extends BaseTypedPacket<QuestProgressUpdateNotify> {
 
     public PacketQuestProgressUpdateNotify(GameQuest quest) {
-        super(PacketOpcodes.QuestProgressUpdateNotify);
-
-        QuestProgressUpdateNotify.Builder proto = QuestProgressUpdateNotify.newBuilder().setQuestId(quest.getSubQuestId());
+        super(new QuestProgressUpdateNotify());
+        proto.setQuestId(quest.getSubQuestId());
 
         if (quest.getFinishProgressList() != null) {
-            for (int i : quest.getFinishProgressList()) {
-                proto.addFinishProgressList(i);
-            }
+            proto.setFinishProgressList(Arrays.stream(quest.getFinishProgressList()).boxed().toList());
         }
 
         if (quest.getFailProgressList() != null) {
-            for (int i : quest.getFailProgressList()) {
-                proto.addFailProgressList(i);
-            }
+            proto.setFailProgressList(Arrays.stream(quest.getFailProgressList()).boxed().toList());
         }
-
-        this.setData(proto);
     }
 }

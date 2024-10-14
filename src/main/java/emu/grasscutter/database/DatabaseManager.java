@@ -13,10 +13,11 @@ import dev.morphia.Morphia;
 import dev.morphia.annotations.Entity;
 import dev.morphia.mapping.Mapper;
 import dev.morphia.mapping.MapperOptions;
-import dev.morphia.query.experimental.filters.Filters;
 
+import dev.morphia.query.filters.Filters;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Grasscutter.ServerRunMode;
+import emu.grasscutter.database.codec.CodecProvider;
 import emu.grasscutter.game.Account;
 
 public final class DatabaseManager {
@@ -42,12 +43,16 @@ public final class DatabaseManager {
     }
 
     public static void initialize() {
+
         // Initialize
         MongoClient gameMongoClient = MongoClients.create(DATABASE.game.connectionUri);
 
         // Set mapper options.
         MapperOptions mapperOptions = MapperOptions.builder()
-                .storeEmpties(true).storeNulls(false).build();
+            .storeEmpties(true)
+            .storeNulls(false)
+            .codecProvider(new CodecProvider())
+            .build();
 
         // Create data store.
         gameDatastore = Morphia.createDatastore(gameMongoClient, DATABASE.game.collection, mapperOptions);

@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import messages.activity.user_generated_content.music_game.UgcMusicBriefInfo;
+import org.anime_game_servers.multi_proto.gi.messages.activity.user_generated_content.music_game.UgcMusicBriefInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,8 +45,8 @@ public class MusicGamePlayerData {
                 .build();
         }
 
-        public messages.activity.music_game.MusicGameRecord toProto() {
-            return new messages.activity.music_game.MusicGameRecord(
+        public org.anime_game_servers.multi_proto.gi.messages.activity.music_game.MusicGameRecord toProto() {
+            return new org.anime_game_servers.multi_proto.gi.messages.activity.music_game.MusicGameRecord(
                 true,
                 maxCombo,
                 maxScore

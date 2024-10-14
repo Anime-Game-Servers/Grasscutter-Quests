@@ -13,10 +13,12 @@ import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.server.packet.send.PacketGadgetInteractRsp;
 import emu.grasscutter.utils.Utils;
 import lombok.val;
-import messages.gadget.GadgetInteractReq;
-import messages.gadget.InteractType;
-import messages.scene.entity.GatherGadgetInfo;
-import messages.scene.entity.SceneGadgetInfo;
+import org.anime_game_servers.gi_lua.models.ScriptArgs;
+import org.anime_game_servers.gi_lua.models.constants.EventType;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.GadgetInteractReq;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.InteractType;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.GatherGadgetInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.SceneGadgetInfo;
 
 public class GadgetGatherObject extends GadgetContent {
     private int itemId;
@@ -57,6 +59,10 @@ public class GadgetGatherObject extends GadgetContent {
 
         GameItem item = new GameItem(itemData, 1);
         player.getInventory().addItem(item, ActionReason.Gather);
+
+        var ScriptArgs = new ScriptArgs(getGadget().getGroupId(), EventType.EVENT_GATHER, getGadget().getConfigId());
+        ScriptArgs.setEventSource(getGadget().getConfigId());
+        getGadget().getScene().getScriptManager().callEvent(ScriptArgs);
 
         getGadget().getScene().broadcastPacket(new PacketGadgetInteractRsp(getGadget(), InteractType.INTERACT_GATHER));
 

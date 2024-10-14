@@ -11,16 +11,15 @@ import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.entity.EntityWeapon;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.FightProperty;
-import emu.grasscutter.net.proto.ItemHintOuterClass.ItemHint;
-import emu.grasscutter.net.proto.ItemParamOuterClass;
 import emu.grasscutter.utils.WeightedList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import messages.general.ability.AbilitySyncStateInfo;
-import messages.general.entity.SceneReliquaryInfo;
-import messages.general.entity.SceneWeaponInfo;
-import messages.general.item.*;
+import org.anime_game_servers.multi_proto.gi.messages.general.ability.AbilitySyncStateInfo;
+import org.anime_game_servers.multi_proto.gi.messages.general.entity.SceneReliquaryInfo;
+import org.anime_game_servers.multi_proto.gi.messages.general.entity.SceneWeaponInfo;
+import org.anime_game_servers.multi_proto.gi.messages.general.item.*;
+import org.anime_game_servers.multi_proto.gi.messages.item.ItemHint;
 import org.bson.types.ObjectId;
 
 import java.util.*;
@@ -279,16 +278,14 @@ public class GameItem {
     }
 
     public ItemHint toItemHintProto() {
-        return ItemHint.newBuilder()
-            .setItemId(this.itemId)
-            .setCount(this.count)
-            .setIsNew(this.newItem)
-            .build();
+        ItemHint proto = new ItemHint();
+        proto.setCount(this.count);
+        proto.setNew(this.newItem);
+        proto.setItemId(this.itemId);
+        return proto;
+
     }
 
-    public ItemParamOuterClass.ItemParam toItemParamOld() {
-        return ItemParamOuterClass.ItemParam.newBuilder().setItemId(this.itemId).setCount(this.count).build();
-    }
     public ItemParam toItemParam() {
         return new ItemParam(this.itemId, this.count);
     }

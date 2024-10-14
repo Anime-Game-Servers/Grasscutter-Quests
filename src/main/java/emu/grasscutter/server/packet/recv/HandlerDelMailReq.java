@@ -2,7 +2,7 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
-import messages.mail.DelMailReq;
+import org.anime_game_servers.multi_proto.gi.messages.mail.DelMailReq;
 
 public class HandlerDelMailReq extends TypedPacketHandler<DelMailReq> {
 

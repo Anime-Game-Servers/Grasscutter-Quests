@@ -4,12 +4,12 @@ import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Id;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.binout.HomeworldDefaultSaveData;
-import emu.grasscutter.net.proto.HomeSceneArrangementInfoOuterClass.HomeSceneArrangementInfo;
 import emu.grasscutter.utils.Position;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.arangement.HomeSceneArrangementInfo;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,7 +43,7 @@ public class HomeSceneItem {
     }
 
     public void update(HomeSceneArrangementInfo arrangementInfo) {
-        for (var blockItem : arrangementInfo.getBlockArrangementInfoListList()) {
+        for (var blockItem : arrangementInfo.getBlockArrangementInfoList()) {
             var block = this.blockItems.get(blockItem.getBlockId());
             if (block == null) {
                 Grasscutter.getLogger().warn("Could not found the Home Block {}", blockItem.getBlockId());
@@ -56,7 +56,7 @@ public class HomeSceneItem {
         this.bornPos = new Position(arrangementInfo.getBornPos());
         this.bornRot = new Position(arrangementInfo.getBornRot());
         this.djinnPos = new Position(arrangementInfo.getDjinnPos());
-        this.homeBgmId = arrangementInfo.getUnk2700BJHAMKKECEI();
+        this.homeBgmId = arrangementInfo.getBgmId();
         this.mainHouse = HomeFurnitureItem.parseFrom(arrangementInfo.getMainHouse());
         this.tmpVersion = arrangementInfo.getTmpVersion();
     }
@@ -75,22 +75,22 @@ public class HomeSceneItem {
     }
 
     public HomeSceneArrangementInfo toProto() {
-        var proto = HomeSceneArrangementInfo.newBuilder();
-        blockItems.values().forEach(b -> proto.addBlockArrangementInfoList(b.toProto()));
+        var proto = new HomeSceneArrangementInfo();
+        proto.setBlockArrangementInfoList(blockItems.values().stream().map(HomeBlockItem::toProto).toList());
 
-        proto.setComfortValue(calComfort())
-                .setBornPos(bornPos.toProtoOld())
-                .setBornRot(bornRot.toProtoOld())
-                .setDjinnPos(djinnPos.toProtoOld())
-                .setIsSetBornPos(true)
-                .setSceneId(sceneId)
-                .setUnk2700BJHAMKKECEI(homeBgmId)
-                .setTmpVersion(tmpVersion);
+        proto.setComfortValue(calComfort());
+        proto.setBornPos(bornPos.toProto());
+        proto.setBornRot(bornRot.toProto());
+        proto.setDjinnPos(djinnPos.toProto());
+        proto.setSetBornPos(true);
+        proto.setSceneId(sceneId);
+        proto.setBgmId(homeBgmId);
+        proto.setTmpVersion(tmpVersion);
 
         if (mainHouse != null) {
             proto.setMainHouse(mainHouse.toProto());
         }
-        return proto.build();
+        return proto;
     }
 
 }

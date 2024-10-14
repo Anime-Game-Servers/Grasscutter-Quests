@@ -1,21 +1,21 @@
 package emu.grasscutter.game.tower;
 
-import java.util.*;
-
 import dev.morphia.annotations.Entity;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.TowerFloorData;
 import emu.grasscutter.data.excels.TowerLevelData;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.proto.TowerCurLevelRecordOuterClass.TowerCurLevelRecord;
-import emu.grasscutter.net.proto.TowerFloorRecordOuterClass.TowerFloorRecord;
-import emu.grasscutter.net.proto.TowerTeamOuterClass.TowerTeam;
 import emu.grasscutter.utils.Utils;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.rotation.TowerCurLevelRecord;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.rotation.TowerFloorRecord;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.TowerTeam;
+
+import java.util.*;
 
 
 /**
@@ -148,14 +148,14 @@ public class TowerData{
     }
 
     public TowerCurLevelRecord toProto() {
-        return TowerCurLevelRecord.newBuilder()
-            .setCurFloorId(this.currentFloorId)
-            .setCurLevelIndex(this.currentLevelIndex)
-            .addAllTowerTeamList(towerTeamProto())
-            .addAllBuffIdList(this.towerBuffs.values().stream().toList())
-            .setUnk2700CBPNPEBMPOH(this.isUpperPart)
-            .setIsEmpty(this.teamOnHold.isEmpty())
-            .build();
+        val proto = new TowerCurLevelRecord();
+        proto.setCurFloorId(this.currentFloorId);
+        proto.setCurLevelIndex(this.currentLevelIndex);
+        proto.setTowerTeamList(towerTeamProto());
+        proto.setBuffIdList(this.towerBuffs.values().stream().toList());
+        proto.setUpperPart(this.isUpperPart);
+        proto.setEmpty(this.teamOnHold.isEmpty());
+        return proto;
     }
 
     public List<TowerFloorRecord> getTowerRecordProtoList() {

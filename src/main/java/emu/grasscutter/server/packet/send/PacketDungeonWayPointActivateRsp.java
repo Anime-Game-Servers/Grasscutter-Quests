@@ -1,16 +1,13 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.DungeonWayPointActivateRspOuterClass;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.progression.DungeonWayPointActivateRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
-public class PacketDungeonWayPointActivateRsp extends BasePacket {
+public class PacketDungeonWayPointActivateRsp extends BaseTypedPacket<DungeonWayPointActivateRsp> {
 	public PacketDungeonWayPointActivateRsp(boolean success, int pointId) {
-		super(PacketOpcodes.DungeonWayPointActivateRsp);
-
-		this.setData(DungeonWayPointActivateRspOuterClass.DungeonWayPointActivateRsp.newBuilder()
-            .setWayPointId(pointId)
-            .setRetcode(success ? RetcodeOuterClass.Retcode.RET_SUCC_VALUE : RetcodeOuterClass.Retcode.RET_FAIL_VALUE));
+        super(new DungeonWayPointActivateRsp());
+        proto.setWayPointId(pointId);
+        proto.setRetcode(success ? Retcode.RET_SUCC : Retcode.RET_FAIL);
 	}
 }

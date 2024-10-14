@@ -12,9 +12,6 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.quest.enums.QuestCond;
 import emu.grasscutter.game.quest.enums.QuestContent;
-import emu.grasscutter.net.proto.ChapterStateOuterClass;
-import emu.grasscutter.net.proto.QuestOuterClass.Quest;
-
 import emu.grasscutter.server.packet.send.PacketChapterStateNotify;
 import emu.grasscutter.server.packet.send.PacketDelQuestNotify;
 import emu.grasscutter.server.packet.send.PacketQuestListUpdateNotify;
@@ -23,9 +20,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import org.anime_game_servers.core.gi.enums.QuestState;
+import org.anime_game_servers.multi_proto.gi.messages.quest.chapter.ChapterState;
+import org.anime_game_servers.multi_proto.gi.messages.quest.child.Quest;
 
 import javax.annotation.Nullable;
 import javax.script.Bindings;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,7 +93,7 @@ public class GameQuest {
         if (ChapterData.beginQuestChapterMap.containsKey(subQuestId)) {
             getOwner().sendPacket(new PacketChapterStateNotify(
                 ChapterData.beginQuestChapterMap.get(subQuestId).getId(),
-                ChapterStateOuterClass.ChapterState.CHAPTER_STATE_BEGIN
+                ChapterState.CHAPTER_STATE_BEGIN
             ));
         }
 
@@ -193,7 +193,7 @@ public class GameQuest {
         if (ChapterData.endQuestChapterMap.containsKey(subQuestId)) {
             mainQuest.getOwner().sendPacket(new PacketChapterStateNotify(
                 ChapterData.endQuestChapterMap.get(subQuestId).getId(),
-                ChapterStateOuterClass.ChapterState.CHAPTER_STATE_END
+                ChapterState.CHAPTER_STATE_END
             ));
         }
 
@@ -262,26 +262,19 @@ public class GameQuest {
     }
 
     public Quest toProto() {
-        Quest.Builder proto = Quest.newBuilder()
-                .setQuestId(getSubQuestId())
-                .setState(getState().getValue())
-                .setParentQuestId(getMainQuestId())
-                .setStartTime(getStartTime())
-                .setStartGameTime(438)
-                .setAcceptTime(getAcceptTime());
+        Quest proto = new Quest(getSubQuestId(), getState().getValue(), getStartTime());
+        proto.setParentQuestId(getMainQuestId());
+        proto.setStartGameTime(438);
+        proto.setAcceptTime(getAcceptTime());
 
         if (getFinishProgressList() != null) {
-            for (int i : getFinishProgressList()) {
-                proto.addFinishProgressList(i);
-            }
+            proto.setFinishProgressList(Arrays.stream(getFinishProgressList()).boxed().toList());
         }
 
         if (getFailProgressList() != null) {
-            for (int i : getFailProgressList()) {
-                proto.addFailProgressList(i);
-            }
+            proto.setFailProgressList(Arrays.stream(getFailProgressList()).boxed().toList());
         }
 
-        return proto.build();
+        return proto;
     }
 }

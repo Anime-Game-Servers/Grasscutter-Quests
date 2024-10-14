@@ -6,9 +6,9 @@ import emu.grasscutter.game.activity.PlayerActivityData;
 import emu.grasscutter.game.props.ActivityType;
 import emu.grasscutter.utils.JsonUtils;
 import lombok.val;
-import messages.activity.ActivityInfo;
-import messages.activity.music_game.MusicGameActivityDetailInfo;
-import messages.activity.user_generated_content.music_game.UgcMusicBriefInfo;
+import org.anime_game_servers.multi_proto.gi.messages.activity.general.ActivityInfo;
+import org.anime_game_servers.multi_proto.gi.messages.activity.music_game.MusicGameActivityDetailInfo;
+import org.anime_game_servers.multi_proto.gi.messages.activity.user_generated_content.music_game.UgcMusicBriefInfo;
 
 import java.util.stream.Collectors;
 

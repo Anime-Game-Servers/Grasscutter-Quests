@@ -1,20 +1,13 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.avatar.Avatar;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarFlycloakChangeNotifyOuterClass.AvatarFlycloakChangeNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.cosmetic.AvatarFlycloakChangeNotify;
 
-public class PacketAvatarFlycloakChangeNotify extends BasePacket {
-	
+public class PacketAvatarFlycloakChangeNotify extends BaseTypedPacket<AvatarFlycloakChangeNotify> {
 	public PacketAvatarFlycloakChangeNotify(Avatar avatar) {
-		super(PacketOpcodes.AvatarFlycloakChangeNotify);
-
-		 AvatarFlycloakChangeNotify proto = AvatarFlycloakChangeNotify.newBuilder()
-				 .setAvatarGuid(avatar.getGuid())
-				 .setFlycloakId(avatar.getFlyCloak())
-				 .build();
-
-		 this.setData(proto);
+        super(new AvatarFlycloakChangeNotify());
+        proto.setAvatarGuid(avatar.getGuid());
+        proto.setFlycloakId(avatar.getFlyCloak());
 	}
 }

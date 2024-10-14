@@ -18,7 +18,7 @@ import it.unimi.dsi.fastutil.ints.Int2FloatOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import messages.scene.entity.SceneEntityInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.SceneEntityInfo;
 
 import java.util.Collection;
 

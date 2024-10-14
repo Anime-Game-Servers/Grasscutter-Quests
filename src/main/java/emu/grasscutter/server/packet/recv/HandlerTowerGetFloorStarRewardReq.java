@@ -1,19 +1,13 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.TowerGetFloorStarRewardReqOuterClass.TowerGetFloorStarRewardReq;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketTowerGetFloorStarRewardRsp;
-import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.rotation.TowerGetFloorStarRewardReq;
 
-@Opcodes(PacketOpcodes.TowerGetFloorStarRewardReq)
-public class HandlerTowerGetFloorStarRewardReq extends PacketHandler {
+public class HandlerTowerGetFloorStarRewardReq extends TypedPacketHandler<TowerGetFloorStarRewardReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        val req = TowerGetFloorStarRewardReq.parseFrom(payload);
-
+    public void handle(GameSession session, byte[] header, TowerGetFloorStarRewardReq req) throws Exception {
         session.send(new PacketTowerGetFloorStarRewardRsp(
             session.getPlayer().getTowerManager().getStarReward(req.getFloorId()), req.getFloorId()));
     }

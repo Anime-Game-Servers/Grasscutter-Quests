@@ -1,17 +1,10 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.H5ActivityIdsNotifyOuterClass.H5ActivityIdsNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.web_event.H5ActivityIdsNotify;
 
-public class PacketH5ActivityIdsNotify extends BasePacket {
-	
+public class PacketH5ActivityIdsNotify extends BaseTypedPacket<H5ActivityIdsNotify> {
 	public PacketH5ActivityIdsNotify() {
-		super(PacketOpcodes.H5ActivityIdsNotify);
-
-		H5ActivityIdsNotify proto = H5ActivityIdsNotify.newBuilder()
-				.build();
-		
-		this.setData(proto);
+        super(new H5ActivityIdsNotify());
 	}
 }

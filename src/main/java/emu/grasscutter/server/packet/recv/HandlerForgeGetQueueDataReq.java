@@ -1,14 +1,12 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
+import org.anime_game_servers.multi_proto.gi.messages.item.forge.ForgeGetQueueDataReq;
 
-@Opcodes(PacketOpcodes.ForgeGetQueueDataReq)
-public class HandlerForgeGetQueueDataReq extends PacketHandler {
+public class HandlerForgeGetQueueDataReq extends TypedPacketHandler<ForgeGetQueueDataReq> {
 	@Override
-	public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
+    public void handle(GameSession session, byte[] header, ForgeGetQueueDataReq req) throws Exception {
 		session.getPlayer().getForgingManager().handleForgeGetQueueDataReq();
 	}
 }

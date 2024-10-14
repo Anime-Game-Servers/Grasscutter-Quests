@@ -1,36 +1,27 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.CompoundQueueDataOuterClass.CompoundQueueData;
-import emu.grasscutter.net.proto.PlayerCompoundMaterialRspOuterClass.PlayerCompoundMaterialRsp;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.item.cooking.CompoundQueueData;
+import org.anime_game_servers.multi_proto.gi.messages.item.cooking.PlayerCompoundMaterialRsp;
 
-public class PacketPlayerCompoundMaterialRsp extends BasePacket {
+public class PacketPlayerCompoundMaterialRsp extends BaseTypedPacket<PlayerCompoundMaterialRsp> {
     /**
      * Builder for successful message.
-     *
      * @param compoundQueueData new compound queue
      */
     public PacketPlayerCompoundMaterialRsp(CompoundQueueData compoundQueueData) {
-        super(PacketOpcodes.PlayerCompoundMaterialRsp);
-        PlayerCompoundMaterialRsp proto = PlayerCompoundMaterialRsp.newBuilder()
-            .setCompoundQueData(compoundQueueData)
-            .setRetcode(Retcode.RET_SUCC_VALUE)
-            .build();
-        setData(proto);
+        super(new PlayerCompoundMaterialRsp());
+        proto.setCompoundQueueData(compoundQueueData);
+        proto.setRetcode(Retcode.RET_SUCC);
     }
 
     /**
      * Builder for failed message.
      * @param retcode error code
      */
-    public PacketPlayerCompoundMaterialRsp(int retcode) {
-        super(PacketOpcodes.PlayerCompoundMaterialRsp);
-        PlayerCompoundMaterialRsp proto = PlayerCompoundMaterialRsp.newBuilder()
-            .setRetcode(retcode)
-            .build();
-        setData(proto);
+    public PacketPlayerCompoundMaterialRsp(Retcode retcode) {
+        super(new PlayerCompoundMaterialRsp());
+        proto.setRetcode(retcode);
     }
-
 }

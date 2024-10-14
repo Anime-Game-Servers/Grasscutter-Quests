@@ -4,7 +4,7 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.PlayerProperty;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import emu.grasscutter.utils.ProtoHelper;
-import messages.player.PlayerPropNotify;
+import org.anime_game_servers.multi_proto.gi.messages.player.PlayerPropNotify;
 
 import java.util.Map;
 

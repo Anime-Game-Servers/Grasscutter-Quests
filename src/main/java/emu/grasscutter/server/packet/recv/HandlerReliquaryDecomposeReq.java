@@ -1,16 +1,12 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ReliquaryDecomposeReqOuterClass.ReliquaryDecomposeReq;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
+import org.anime_game_servers.multi_proto.gi.messages.item.management.ReliquaryDecomposeReq;
 
-@Opcodes(PacketOpcodes.ReliquaryDecomposeReq)
-public class HandlerReliquaryDecomposeReq extends PacketHandler {
+public class HandlerReliquaryDecomposeReq extends TypedPacketHandler<ReliquaryDecomposeReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        ReliquaryDecomposeReq req = ReliquaryDecomposeReq.parseFrom(payload);
-        session.getServer().getCombineSystem().decomposeReliquaries(session.getPlayer(), req.getConfigId(), req.getTargetCount(), req.getGuidListList());
+    public void handle(GameSession session, byte[] header, ReliquaryDecomposeReq req) throws Exception {
+        session.getServer().getCombineSystem().decomposeReliquaries(session.getPlayer(), req.getConfigId(), req.getTargetCount(), req.getGuidList());
     }
 }

@@ -10,8 +10,8 @@ import emu.grasscutter.game.props.BattlePassMissionRefreshType;
 import emu.grasscutter.game.props.WatcherTriggerType;
 import lombok.Getter;
 import lombok.val;
-import messages.battle_pass.BattlePassMission;
-import messages.battle_pass.MissionStatus;
+import org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassMission;
+import org.anime_game_servers.multi_proto.gi.messages.battle_pass.MissionStatus;
 
 @ResourceType(name = {"BattlePassMissionExcelConfigData.json"})
 @Getter

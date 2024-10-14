@@ -1,19 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.CombineFormulaDataNotifyOuterClass.CombineFormulaDataNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.item.combine.CombineFormulaDataNotify;
 
-public class PacketCombineFormulaDataNotify extends BasePacket {
-	
+public class PacketCombineFormulaDataNotify extends BaseTypedPacket<CombineFormulaDataNotify> {
 	public PacketCombineFormulaDataNotify(int combineId) {
-		super(PacketOpcodes.CombineFormulaDataNotify);
-		
-		CombineFormulaDataNotify proto = CombineFormulaDataNotify.newBuilder()
-				.setCombineId(combineId)
-				.setIsLocked(false)
-				.build();
-		
-		this.setData(proto);
+        super(new CombineFormulaDataNotify());
+        proto.setCombineId(combineId);
+        proto.setLocked(false);
 	}
 }

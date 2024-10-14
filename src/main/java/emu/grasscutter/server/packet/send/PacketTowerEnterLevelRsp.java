@@ -1,19 +1,14 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.tower.TowerData;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.TowerEnterLevelRspOuterClass.TowerEnterLevelRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.run.TowerEnterLevelRsp;
 
-public class PacketTowerEnterLevelRsp extends BasePacket {
-
+public class PacketTowerEnterLevelRsp extends BaseTypedPacket<TowerEnterLevelRsp> {
     public PacketTowerEnterLevelRsp(TowerData data) {
-        super(PacketOpcodes.TowerEnterLevelRsp);
-
-        this.setData(TowerEnterLevelRsp.newBuilder()
-            .setFloorId(data.getCurrentFloorId())
-            .setLevelIndex(data.getCurrentLevelIndex())
-            .addAllTowerBuffIdList(data.getRandomBuffs())
-            .build());
+        super(new TowerEnterLevelRsp());
+        proto.setFloorId(data.getCurrentFloorId());
+        proto.setLevelIndex(data.getCurrentLevelIndex());
+        proto.setTowerBuffIdList(data.getRandomBuffs());
     }
 }

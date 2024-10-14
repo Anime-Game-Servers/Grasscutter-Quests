@@ -2,29 +2,22 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.quest.GameMainQuest;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.CodexDataUpdateNotifyOuterClass.CodexDataUpdateNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.codex.CodexDataUpdateNotify;
+import org.anime_game_servers.multi_proto.gi.messages.codex.CodexType;
 
-public class PacketCodexDataUpdateNotify extends BasePacket {
+public class PacketCodexDataUpdateNotify extends BaseTypedPacket<CodexDataUpdateNotify> {
     public PacketCodexDataUpdateNotify(GameMainQuest quest) {
-        super(PacketOpcodes.CodexDataUpdateNotify, true);
+        super(new CodexDataUpdateNotify(), true);
         var codexQuest = GameData.getCodexQuestDataIdMap().get(quest.getParentQuestId());
-        if(codexQuest != null){
-            CodexDataUpdateNotify proto = CodexDataUpdateNotify.newBuilder()
-                    .setTypeValue(1)
-                    .setId(codexQuest.getId())
-                    .build();
-            this.setData(proto);
-        }
+        if (codexQuest == null) return;
+        proto.setType(CodexType.CODEX_QUEST);
+        proto.setId(codexQuest.getId());
     }
 
-    public PacketCodexDataUpdateNotify(int typeValue, int codexId){
-        super(PacketOpcodes.CodexDataUpdateNotify, true);
-        CodexDataUpdateNotify proto = CodexDataUpdateNotify.newBuilder()
-                .setTypeValue(typeValue)
-                .setId(codexId)
-                .build();
-        this.setData(proto);
+    public PacketCodexDataUpdateNotify(CodexType codexType, int codexId) {
+        super(new CodexDataUpdateNotify(), true);
+        proto.setType(codexType);
+        proto.setId(codexId);
     }
 }

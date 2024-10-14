@@ -3,7 +3,7 @@ package emu.grasscutter.game.entity;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.utils.Position;
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
-import messages.scene.entity.SceneEntityInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.SceneEntityInfo;
 
 public abstract class MetaGameEntity extends GameEntity {
     public MetaGameEntity(Scene scene) {

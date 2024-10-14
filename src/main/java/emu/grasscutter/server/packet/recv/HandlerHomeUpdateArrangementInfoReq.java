@@ -1,27 +1,16 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.HomeUpdateArrangementInfoReqOuterClass;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketHomeUpdateArrangementInfoRsp;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.arangement.HomeUpdateArrangementInfoReq;
 
-@Opcodes(PacketOpcodes.HomeUpdateArrangementInfoReq)
-public class HandlerHomeUpdateArrangementInfoReq extends PacketHandler {
-	
+public class HandlerHomeUpdateArrangementInfoReq extends TypedPacketHandler<HomeUpdateArrangementInfoReq> {
 	@Override
-	public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-		var req = HomeUpdateArrangementInfoReqOuterClass.HomeUpdateArrangementInfoReq.parseFrom(payload);
-
-		var homeScene = session.getPlayer().getHome()
-				.getHomeSceneItem(session.getPlayer().getSceneId());
-
+    public void handle(GameSession session, byte[] header, HomeUpdateArrangementInfoReq req) throws Exception {
+        var homeScene = session.getPlayer().getHome().getHomeSceneItem(session.getPlayer().getSceneId());
 		homeScene.update(req.getSceneArrangementInfo());
-
 		session.getPlayer().getHome().save();
-
 		session.send(new PacketHomeUpdateArrangementInfoRsp());
 	}
-
 }

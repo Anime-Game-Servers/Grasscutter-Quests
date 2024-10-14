@@ -6,7 +6,7 @@ import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.props.CampTargetType;
 import emu.grasscutter.utils.Position;
-import messages.ability.action.AbilityActionCreateGadget;
+import org.anime_game_servers.multi_proto.gi.messages.ability.action.AbilityActionCreateGadget;
 
 @AbilityAction(AbilityModifierAction.Type.CreateGadget)
 public class ActionCreateGadget extends AbilityActionHandler {

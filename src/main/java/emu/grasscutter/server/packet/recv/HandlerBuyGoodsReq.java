@@ -10,7 +10,7 @@ import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketBuyGoodsRsp;
 import emu.grasscutter.utils.Utils;
-import messages.shop.BuyGoodsReq;
+import org.anime_game_servers.multi_proto.gi.messages.shop.BuyGoodsReq;
 
 import java.util.ArrayList;
 import java.util.List;

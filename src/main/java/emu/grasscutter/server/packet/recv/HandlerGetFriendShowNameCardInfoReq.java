@@ -1,22 +1,15 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.GetFriendShowNameCardInfoReqOuterClass;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketGetFriendShowNameCardInfoRsp;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.GetFriendShowNameCardInfoReq;
 
-@Opcodes(PacketOpcodes.GetFriendShowNameCardInfoReq)
-public class HandlerGetFriendShowNameCardInfoReq extends PacketHandler {
+public class HandlerGetFriendShowNameCardInfoReq extends TypedPacketHandler<GetFriendShowNameCardInfoReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        var req = GetFriendShowNameCardInfoReqOuterClass.GetFriendShowNameCardInfoReq.parseFrom(payload);
-
-        int targetUid = req.getUid();
-        Player target = session.getServer().getPlayerByUid(targetUid, true);
-
-        session.send(new PacketGetFriendShowNameCardInfoRsp(targetUid, target.getShowNameCardInfoList()));
+    public void handle(GameSession session, byte[] header, GetFriendShowNameCardInfoReq req) throws Exception {
+        Player target = session.getServer().getPlayerByUid(req.getUid(), true);
+        session.send(new PacketGetFriendShowNameCardInfoRsp(req.getUid(), target.getShowNameCardInfoList()));
     }
 }

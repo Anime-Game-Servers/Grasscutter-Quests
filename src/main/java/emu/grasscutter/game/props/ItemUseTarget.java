@@ -11,7 +11,8 @@ public enum ItemUseTarget {
     ITEM_USE_TARGET_CUR_TEAM (2),
     ITEM_USE_TARGET_SPECIFY_AVATAR (3),
     ITEM_USE_TARGET_SPECIFY_ALIVE_AVATAR (4),
-    ITEM_USE_TARGET_SPECIFY_DEAD_AVATAR (5);
+    ITEM_USE_TARGET_SPECIFY_DEAD_AVATAR (5),
+    ITEM_USE_TARGET_PLAYER_AVATAR (6);
 
     private final int value;
     private static final Int2ObjectMap<ItemUseTarget> map = new Int2ObjectOpenHashMap<>();

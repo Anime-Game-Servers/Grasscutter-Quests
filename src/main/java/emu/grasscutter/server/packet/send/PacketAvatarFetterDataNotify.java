@@ -2,33 +2,38 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.props.FetterState;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarFetterDataNotifyOuterClass.AvatarFetterDataNotify;
-import emu.grasscutter.net.proto.AvatarFetterInfoOuterClass.AvatarFetterInfo;
-import emu.grasscutter.net.proto.FetterDataOuterClass.FetterData;
+import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.general.avatar.AvatarFetterInfo;
+import org.anime_game_servers.multi_proto.gi.messages.general.avatar.FetterData;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.friendship.AvatarFetterDataNotify;
 
-public class PacketAvatarFetterDataNotify extends BasePacket {
+import java.util.List;
+import java.util.Map;
 
+public class PacketAvatarFetterDataNotify extends BaseTypedPacket<AvatarFetterDataNotify> {
 	public PacketAvatarFetterDataNotify(Avatar avatar) {
-		super(PacketOpcodes.AvatarFetterDataNotify);
+        super(new AvatarFetterDataNotify());
 
 		int fetterLevel = avatar.getFetterLevel();
 
-		val avatarFetter = AvatarFetterInfo.newBuilder()
-				.setExpLevel(fetterLevel);
-		if (fetterLevel != 10) avatarFetter.setExpNumber(avatar.getFetterExp());
+        val avatarFetter = new AvatarFetterInfo();
+        avatarFetter.setExpLevel(fetterLevel);
+		if (fetterLevel != 10) {
+            avatarFetter.setExpNumber(avatar.getFetterExp());
+        }
 
-        avatar.getFetters().stream().map(id -> FetterData.newBuilder().setFetterId(id)
-                .setFetterState(FetterState.FINISH.getValue()))
-            .forEach(avatarFetter::addFetterList);
+        avatarFetter.setFetterList(avatar.getFetters().stream().map(id -> {
+            val fetterData = new FetterData();
+            fetterData.setFetterId(id);
+            fetterData.setFetterState(FetterState.FINISH.getValue());
+            return fetterData;
+        }).toList());
 
-		if (avatar.getPlayer().getNameCardList().contains(avatar.getNameCardId()))
-            avatarFetter.addRewardedFetterLevelList(10);
+		if (avatar.getPlayer().getNameCardList().contains(avatar.getNameCardId())) {
+            avatarFetter.setRewardedFetterLevelList(List.of(10));
+        }
 
-		this.setData(AvatarFetterDataNotify.newBuilder()
-            .putFetterInfoMap(avatar.getGuid(), avatarFetter.build())
-            .build());
+        proto.setFetterInfoMap(Map.of(avatar.getGuid(), avatarFetter));
 	}
 }

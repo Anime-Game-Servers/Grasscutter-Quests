@@ -3,7 +3,7 @@ package emu.grasscutter.server.packet.recv;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketGetSceneAreaRsp;
-import messages.scene.GetSceneAreaReq;
+import org.anime_game_servers.multi_proto.gi.messages.scene.GetSceneAreaReq;
 
 public class HandlerGetSceneAreaReq extends TypedPacketHandler<GetSceneAreaReq> {
 

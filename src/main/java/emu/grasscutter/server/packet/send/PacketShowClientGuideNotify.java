@@ -1,17 +1,11 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ShowClientGuideNotifyOuterClass.ShowClientGuideNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.scene.ShowClientGuideNotify;
 
-public class PacketShowClientGuideNotify extends BasePacket {
-
+public class PacketShowClientGuideNotify extends BaseTypedPacket<ShowClientGuideNotify> {
 	public PacketShowClientGuideNotify(String guideName) {
-		super(PacketOpcodes.ShowClientGuideNotify, true);
-
-		ShowClientGuideNotify proto = ShowClientGuideNotify.newBuilder()
-			.setGuideName(guideName)
-			.build();
-		this.setData(proto);
+        super(new ShowClientGuideNotify(), true);
+        proto.setGuideName(guideName);
 	}
 }

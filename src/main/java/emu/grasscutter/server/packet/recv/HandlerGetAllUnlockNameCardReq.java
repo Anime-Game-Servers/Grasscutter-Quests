@@ -1,16 +1,13 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketGetAllUnlockNameCardRsp;
+import org.anime_game_servers.multi_proto.gi.messages.community.player_presentation.GetAllUnlockNameCardReq;
 
-@Opcodes(PacketOpcodes.GetAllUnlockNameCardReq)
-public class HandlerGetAllUnlockNameCardReq extends PacketHandler {
-	
+public class HandlerGetAllUnlockNameCardReq extends TypedPacketHandler<GetAllUnlockNameCardReq> {
 	@Override
-	public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
+    public void handle(GameSession session, byte[] header, GetAllUnlockNameCardReq req) throws Exception {
 		session.send(new PacketGetAllUnlockNameCardRsp(session.getPlayer()));
 	}
 

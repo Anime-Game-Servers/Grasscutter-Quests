@@ -1,18 +1,13 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AskAddFriendReqOuterClass.AskAddFriendReq;
-import emu.grasscutter.net.packet.PacketHandler;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.management.AskAddFriendReq;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 
-@Opcodes(PacketOpcodes.AskAddFriendReq)
-public class HandlerAskAddFriendReq extends PacketHandler {
-	
+public class HandlerAskAddFriendReq extends TypedPacketHandler<AskAddFriendReq> {
+
 	@Override
-	public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-		AskAddFriendReq req = AskAddFriendReq.parseFrom(payload);
-		
+    public void handle(GameSession session, byte[] header, AskAddFriendReq req) throws Exception {
 		session.getPlayer().getFriendsList().sendFriendRequest(req.getTargetUid());
 	}
 

@@ -3,9 +3,9 @@ package emu.grasscutter.game.managers.mapmark;
 import emu.grasscutter.config.Configuration;
 import emu.grasscutter.game.player.BasePlayerManager;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.proto.MapMarkPointTypeOuterClass.MapMarkPointType;
-import emu.grasscutter.net.proto.MarkMapReqOuterClass.MarkMapReq;
-import emu.grasscutter.net.proto.MarkMapReqOuterClass.MarkMapReq.Operation;
+import org.anime_game_servers.multi_proto.gi.messages.scene.map.MapMarkPointType;
+import org.anime_game_servers.multi_proto.gi.messages.scene.map.MarkMapReq;
+import org.anime_game_servers.multi_proto.gi.messages.scene.map.Operation;
 import emu.grasscutter.server.event.player.PlayerTeleportEvent.TeleportType;
 import emu.grasscutter.server.packet.send.PacketMarkMapRsp;
 import emu.grasscutter.server.packet.send.PacketSceneEntityAppearNotify;
@@ -27,27 +27,27 @@ public class MapMarksManager extends BasePlayerManager {
     public void handleMapMarkReq(MarkMapReq req) {
         Operation op = req.getOp();
         switch (op) {
-            case OPERATION_ADD -> {
+            case ADD -> {
                 MapMark createMark = new MapMark(req.getMark());
                 // keep teleporting functionality on fishhook mark.
-                if (Configuration.GAME_OPTIONS.fishhookTeleport && createMark.getMapMarkPointType() == MapMarkPointType.MAP_MARK_POINT_TYPE_FISH_POOL) {
+                if (Configuration.GAME_OPTIONS.fishhookTeleport && createMark.getMapMarkPointType() == MapMarkPointType.FISH_POOL) {
                     this.teleport(player, createMark);
                     return;
                 }
                 this.addMapMark(createMark);
             }
-            case OPERATION_MOD -> {
+            case MOD -> {
                 MapMark oldMark = new MapMark(req.getOld());
                 this.removeMapMark(oldMark.getPosition());
                 MapMark newMark = new MapMark(req.getMark());
                 this.addMapMark(newMark);
             }
-            case OPERATION_DEL -> {
+            case DEL -> {
                 MapMark deleteMark = new MapMark(req.getMark());
                 this.removeMapMark(deleteMark.getPosition());
             }
         }
-        if (op != Operation.OPERATION_GET) {
+        if (op != Operation.GET) {
             this.save();
         }
         player.getSession().send(new PacketMarkMapRsp(this.getMapMarks()));

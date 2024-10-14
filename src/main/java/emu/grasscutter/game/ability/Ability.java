@@ -10,7 +10,7 @@ import emu.grasscutter.game.player.Player;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import lombok.Getter;
-import messages.general.ability.AbilityString;
+import org.anime_game_servers.multi_proto.gi.messages.general.ability.AbilityString;
 
 import javax.annotation.Nullable;
 

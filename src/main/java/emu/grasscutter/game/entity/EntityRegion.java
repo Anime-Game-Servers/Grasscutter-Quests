@@ -5,7 +5,7 @@ import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.utils.Position;
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
 import lombok.Getter;
-import messages.scene.entity.SceneEntityInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.SceneEntityInfo;
 import org.anime_game_servers.gi_lua.models.scene.group.SceneRegion;
 
 import java.util.Set;

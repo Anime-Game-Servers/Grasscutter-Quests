@@ -1,58 +1,45 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AllWidgetDataNotifyOuterClass.AllWidgetDataNotify;
-import emu.grasscutter.net.proto.LunchBoxDataOuterClass;
-import emu.grasscutter.net.proto.WidgetSlotDataOuterClass;
-import emu.grasscutter.net.proto.WidgetSlotTagOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.AllWidgetDataNotify;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.lunch_box.LunchBoxData;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.manage_slot.WidgetSlotData;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.manage_slot.WidgetSlotTag;
 
 import java.util.List;
 
-public class PacketAllWidgetDataNotify extends BasePacket {
-
+public class PacketAllWidgetDataNotify extends BaseTypedPacket<AllWidgetDataNotify> {
     public PacketAllWidgetDataNotify(Player player) {
-        super(PacketOpcodes.AllWidgetDataNotify);
-
+        super(new AllWidgetDataNotify());
         // TODO: Implement this
 
-        AllWidgetDataNotify.Builder proto = AllWidgetDataNotify.newBuilder()
             // If you want to implement this, feel free to do so. :)
-            .setLunchBoxData(
-                LunchBoxDataOuterClass.LunchBoxData.newBuilder().build()
-            )
+        proto.setLunchBoxData(new LunchBoxData());
             // Maybe it's a little difficult, or it makes you upset :(
-            .addAllOneofGatherPointDetectorDataList(List.of())
+        proto.setOneOfGatherPointDetectorDataList(List.of());
             // So, goodbye, and hopefully sometime in the future o(*￣▽￣*)ブ
-            .addAllCoolDownGroupDataList(List.of())
+        proto.setCoolDownGroupDataList(List.of());
             // I'll see your PR with a title that says (・∀・(・∀・(・∀・*)
-            .addAllAnchorPointList(List.of())
+        proto.setAnchorPointList(List.of());
             // "Complete implementation of widget functionality" b（￣▽￣）d　
-            .addAllClientCollectorDataList(List.of())
+        proto.setClientCollectorDataList(List.of());
             // Good luck, my boy.
-            .addAllNormalCoolDownDataList(List.of());
+        proto.setNormalCoolDownDataList(List.of());
 
         if (player.getWidgetId() == 0) {  // TODO: check this logic later, it was null-checking an int before which made it dead code
-            proto.addAllSlotList(List.of());
+            proto.setSlotList(List.of());
         } else {
-            proto.addSlotList(
-                WidgetSlotDataOuterClass.WidgetSlotData.newBuilder()
-                    .setIsActive(true)
-                    .setMaterialId(player.getWidgetId())
-                    .build()
-            );
+            val widgetSlotDataFirst = new WidgetSlotData();
+            widgetSlotDataFirst.setActive(true);
+            widgetSlotDataFirst.setMaterialId(player.getWidgetId());
 
-            proto.addSlotList(
-                WidgetSlotDataOuterClass.WidgetSlotData.newBuilder()
-                    .setTag(WidgetSlotTagOuterClass.WidgetSlotTag.WIDGET_SLOT_TAG_ATTACH_AVATAR)
-                    .build()
-            );
+            val widgetSlotDataSecond = new WidgetSlotData();
+            widgetSlotDataSecond.setTag(WidgetSlotTag.WIDGET_SLOT_ATTACH_AVATAR);
+
+            proto.setSlotList(List.of(widgetSlotDataFirst, widgetSlotDataSecond));
         }
-
-        AllWidgetDataNotify protoData = proto.build();
-
-        this.setData(protoData);
     }
 }
 

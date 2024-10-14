@@ -1,33 +1,25 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.PlayerHomeCompInfoNotifyOuterClass;
-import emu.grasscutter.net.proto.PlayerHomeCompInfoOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.comp_info.PlayerHomeCompInfo;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.comp_info.PlayerHomeCompInfoNotify;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.FriendEnterHomeOption;
 
 import java.util.List;
 
-public class PacketPlayerHomeCompInfoNotify extends BasePacket {
-
+public class PacketPlayerHomeCompInfoNotify extends BaseTypedPacket<PlayerHomeCompInfoNotify> {
     public PacketPlayerHomeCompInfoNotify(Player player) {
-        super(PacketOpcodes.PlayerHomeCompInfoNotify);
-
+        super(new PlayerHomeCompInfoNotify());
         if (player.getRealmList() == null) {
             // Do not send
             return;
         }
-
-        PlayerHomeCompInfoNotifyOuterClass.PlayerHomeCompInfoNotify proto = PlayerHomeCompInfoNotifyOuterClass.PlayerHomeCompInfoNotify.newBuilder()
-                .setCompInfo(
-                        PlayerHomeCompInfoOuterClass.PlayerHomeCompInfo.newBuilder()
-                                .addAllUnlockedModuleIdList(player.getRealmList())
-                                .addAllLevelupRewardGotLevelList(List.of(1)) // Hardcoded
-                                .setFriendEnterHomeOptionValue(player.getHome().getEnterHomeOption())
-                                .build()
-                )
-                .build();
-
-        this.setData(proto);
+        val playerHomeCompInfo = new PlayerHomeCompInfo();
+        playerHomeCompInfo.setUnlockedModuleIdList(player.getRealmList().stream().toList());
+        playerHomeCompInfo.setLevelUpRewardGotLevelList(List.of(1)); // Hardcoded
+        playerHomeCompInfo.setFriendEnterHomeOption(FriendEnterHomeOption.values()[player.getHome().getEnterHomeOption()]);
+        proto.setCompInfo(playerHomeCompInfo);
     }
 }

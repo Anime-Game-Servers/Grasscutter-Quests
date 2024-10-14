@@ -1,21 +1,20 @@
 package emu.grasscutter.game.player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.excels.BuffData;
 import emu.grasscutter.game.avatar.Avatar;
 import emu.grasscutter.game.props.FightProperty;
-import emu.grasscutter.net.proto.ServerBuffChangeNotifyOuterClass.ServerBuffChangeNotify.ServerBuffChangeType;
-import emu.grasscutter.net.proto.ServerBuffOuterClass.ServerBuff;
 import emu.grasscutter.server.packet.send.PacketServerBuffChangeNotify;
-
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-
 import lombok.Getter;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.battle.ServerBuffChangeType;
+import org.anime_game_servers.multi_proto.gi.messages.general.ability.ServerBuff;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class PlayerBuffManager extends BasePlayerManager {
     private int nextBuffUid;
@@ -52,7 +51,7 @@ public class PlayerBuffManager extends BasePlayerManager {
     public synchronized void clearBuffs() {
         // Remove from player
         getPlayer().sendPacket(
-            new PacketServerBuffChangeNotify(getPlayer(), ServerBuffChangeType.SERVER_BUFF_CHANGE_TYPE_DEL_SERVER_BUFF, this.buffs.values())
+            new PacketServerBuffChangeNotify(getPlayer(), ServerBuffChangeType.DEL_SERVER_BUFF, this.buffs.values().stream().toList())
         );
 
         // Clear
@@ -137,7 +136,7 @@ public class PlayerBuffManager extends BasePlayerManager {
         this.buffs.put(buff.getGroupId(), buff);
 
         // Packet
-        getPlayer().sendPacket(new PacketServerBuffChangeNotify(getPlayer(), ServerBuffChangeType.SERVER_BUFF_CHANGE_TYPE_ADD_SERVER_BUFF, buff));
+        getPlayer().sendPacket(new PacketServerBuffChangeNotify(getPlayer(), ServerBuffChangeType.ADD_SERVER_BUFF, buff));
 
         return true;
     }
@@ -152,7 +151,7 @@ public class PlayerBuffManager extends BasePlayerManager {
 
         if (buff != null) {
             getPlayer().sendPacket(
-                new PacketServerBuffChangeNotify(getPlayer(), ServerBuffChangeType.SERVER_BUFF_CHANGE_TYPE_DEL_SERVER_BUFF, buff)
+                new PacketServerBuffChangeNotify(getPlayer(), ServerBuffChangeType.DEL_SERVER_BUFF, buff)
             );
             return true;
         }
@@ -174,10 +173,10 @@ public class PlayerBuffManager extends BasePlayerManager {
             return true;
         });
 
-        if (this.pendingBuffs.size() > 0) {
+        if (!this.pendingBuffs.isEmpty()) {
             // Send packet
             getPlayer().sendPacket(
-                new PacketServerBuffChangeNotify(getPlayer(), ServerBuffChangeType.SERVER_BUFF_CHANGE_TYPE_DEL_SERVER_BUFF, this.pendingBuffs)
+                new PacketServerBuffChangeNotify(getPlayer(), ServerBuffChangeType.DEL_SERVER_BUFF, this.pendingBuffs)
             );
             this.pendingBuffs.clear();
         }
@@ -200,12 +199,12 @@ public class PlayerBuffManager extends BasePlayerManager {
         }
 
         public ServerBuff toProto() {
-            return ServerBuff.newBuilder()
-                .setServerBuffUid(this.getUid())
-                .setServerBuffId(this.getBuffData().getId())
-                .setServerBuffType(this.getBuffData().getServerBuffType().getValue())
-                .setInstancedModifierId(1)
-                .build();
+            val proto = new ServerBuff();
+            proto.setServerBuffUid(this.getUid());
+            proto.setServerBuffId(this.getBuffData().getId());
+            proto.setServerBuffType(this.getBuffData().getServerBuffType().getValue());
+            proto.setInstancedModifierId(1);
+            return proto;
         }
     }
 }

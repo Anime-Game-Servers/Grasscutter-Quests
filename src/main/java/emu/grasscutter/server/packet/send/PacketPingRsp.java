@@ -1,18 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.PingRspOuterClass.PingRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.other.PingRsp;
 
-public class PacketPingRsp extends BasePacket {
+public class PacketPingRsp extends BaseTypedPacket<PingRsp> {
 
 	public PacketPingRsp(int clientSeq, int time) {
-		super(PacketOpcodes.PingRsp, clientSeq);
-		
-		PingRsp p = PingRsp.newBuilder()
-				.setClientTime(time)
-				.build();
-		
-		this.setData(p.toByteArray());
+        super(new PingRsp(), clientSeq);
+        proto.setClientTime(time);
 	}
 }

@@ -6,16 +6,13 @@ import emu.grasscutter.game.inventory.Inventory;
 import emu.grasscutter.game.inventory.InventoryTab;
 import emu.grasscutter.game.inventory.ItemType;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.QuickUseWidgetRspOuterClass.QuickUseWidgetRsp;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
-import emu.grasscutter.server.packet.send.PacketPullRecentChatRsp;
+import emu.grasscutter.server.packet.send.PacketQuickUseWidgetRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.use.QuickUseWidgetReq;
 
-@Opcodes(PacketOpcodes.QuickUseWidgetReq)
-public class HandlerQuickUseWidgetReq extends PacketHandler {
+public class HandlerQuickUseWidgetReq extends TypedPacketHandler<QuickUseWidgetReq> {
     /*
     * WARNING: with the consuming of material widget ( Example: bomb ),
     * this is just a implement designed to the decreasing of count
@@ -25,8 +22,7 @@ public class HandlerQuickUseWidgetReq extends PacketHandler {
     * If you know which Packet could make the effects, feel free to contribute!
     * */
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        QuickUseWidgetRsp.Builder proto = QuickUseWidgetRsp.newBuilder();
+    public void handle(GameSession session, byte[] header, QuickUseWidgetReq req) throws Exception {
         Player pl = session.getPlayer();
         synchronized (pl) {
             int materialId = pl.getWidgetId();
@@ -36,16 +32,8 @@ public class HandlerQuickUseWidgetReq extends PacketHandler {
             int remain = item.getCount();
             if (remain > 0) {
                 remain--;
-                if (remain <= 0) {
-                    proto.setRetcode(1);
-                } else {
-                    proto.setRetcode(0);
-                }
-                proto.setMaterialId(materialId);
                 inventory.removeItem(item,1);// decrease count
-                BasePacket rsp = new BasePacket(session.getPackageIdProvider().getPacketId("QuickUseWidgetRsp"));
-                rsp.setData(proto);
-                session.send(rsp);
+                session.send(new PacketQuickUseWidgetRsp(materialId, remain <= 0 ? Retcode.RET_FAIL : Retcode.RET_SUCC));
                 Grasscutter.getLogger().warn("class has no effects in the game, feel free to implement it");
                 // but no effects in the game, feel free to implement it!
             }

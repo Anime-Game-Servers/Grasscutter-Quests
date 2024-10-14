@@ -1,14 +1,10 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.EndCameraSceneLookNotifyOuterClass.EndCameraSceneLookNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.scene.camera.EndCameraSceneLookNotify;
 
-public class PacketEndCameraSceneLookNotify extends BasePacket {
-
+public class PacketEndCameraSceneLookNotify extends BaseTypedPacket<EndCameraSceneLookNotify> {
 	public PacketEndCameraSceneLookNotify() {
-		super(PacketOpcodes.EndCameraSceneLookNotify);
-
-		this.setData(EndCameraSceneLookNotify.newBuilder());
+        super(new EndCameraSceneLookNotify());
 	}
 }

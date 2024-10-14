@@ -1,12 +1,5 @@
 package emu.grasscutter.game.gacha;
 
-import static emu.grasscutter.config.Configuration.*;
-
-import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-
 import com.sun.nio.file.SensitivityWatchEventModifier;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.DataLoader;
@@ -21,11 +14,6 @@ import emu.grasscutter.game.inventory.ItemType;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.WatcherTriggerType;
 import emu.grasscutter.game.systems.InventorySystem;
-import emu.grasscutter.net.proto.GachaItemOuterClass.GachaItem;
-import emu.grasscutter.net.proto.GachaTransferItemOuterClass.GachaTransferItem;
-import emu.grasscutter.net.proto.GetGachaInfoRspOuterClass.GetGachaInfoRsp;
-import emu.grasscutter.net.proto.ItemParamOuterClass.ItemParam;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
 import emu.grasscutter.server.game.BaseGameSystem;
 import emu.grasscutter.server.game.GameServer;
 import emu.grasscutter.server.game.GameServerTickEvent;
@@ -36,7 +24,20 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.general.item.ItemParam;
+import org.anime_game_servers.multi_proto.gi.messages.wishing.GachaItem;
+import org.anime_game_servers.multi_proto.gi.messages.wishing.GachaTransferItem;
+import org.anime_game_servers.multi_proto.gi.messages.wishing.GetGachaInfoRsp;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 public class GachaSystem extends BaseGameSystem {
     private final Int2ObjectMap<GachaBanner> gachaBanners;
@@ -301,9 +302,11 @@ public class GachaSystem extends BaseGameSystem {
             DatabaseHelper.saveGachaRecord(gachaRecord);
 
             // Create gacha item
-            GachaItem.Builder gachaItem = GachaItem.newBuilder();
+            val gachaItem = new GachaItem();
             int addStardust = 0, addStarglitter = 0;
             boolean isTransferItem = false;
+            val transferItemsList = new ArrayList<GachaTransferItem>();
+            val tokenItemList = new ArrayList<ItemParam>();
 
             // Const check
             int constellation = InventorySystem.checkPlayerAvatarConstellationLevel(player, itemId);
@@ -316,7 +319,7 @@ public class GachaSystem extends BaseGameSystem {
                     }
                     break;
                 case -1:  // New character
-                    gachaItem.setIsGachaItemNew(true);
+                    gachaItem.setGachaItemNew(true);
                     break;
                 default:
                     if (constellation >= 6) {  // C6, give consolation starglitter
@@ -328,7 +331,13 @@ public class GachaSystem extends BaseGameSystem {
                         addStarglitter = (itemData.getRankLevel()==5)? 10 : 2;
                         int constItemId = itemId + 100;  // This may not hold true for future characters. Examples of strictly correct constellation item lookup are elsewhere for now.
                         boolean haveConstItem = inventory.getInventoryTab(ItemType.ITEM_MATERIAL).getItemById(constItemId) == null;
-                        gachaItem.addTransferItems(GachaTransferItem.newBuilder().setItem(ItemParam.newBuilder().setItemId(constItemId).setCount(1)).setIsTransferItemNew(haveConstItem));
+                        val gachaTransferItem = new GachaTransferItem();
+                        val itemParam = new ItemParam();
+                        itemParam.setItemId(constItemId);
+                        itemParam.setCount(1);
+                        gachaTransferItem.setItem(itemParam);
+                        gachaTransferItem.setTransferItemNew(haveConstItem);
+                        transferItemsList.add(gachaTransferItem);
                         //inventory.addItem(constItemId, 1);  // This is now managed by the avatar card item itself
                     }
                     isTransferItem = true;
@@ -337,24 +346,34 @@ public class GachaSystem extends BaseGameSystem {
 
             // Create item
             GameItem item = new GameItem(itemData);
-            gachaItem.setGachaItem(item.toItemParamOld());
+            gachaItem.setGachaItem(item.toItemParam());
             inventory.addItem(item);
 
             stardust += addStardust;
             starglitter += addStarglitter;
 
             if (addStardust > 0) {
-                gachaItem.addTokenItemList(ItemParam.newBuilder().setItemId(stardustId).setCount(addStardust));
+                val itemParam = new ItemParam();
+                itemParam.setItemId(stardustId);
+                itemParam.setCount(addStardust);
+                tokenItemList.add(itemParam);
             }
             if (addStarglitter > 0) {
-                ItemParam starglitterParam = ItemParam.newBuilder().setItemId(starglitterId).setCount(addStarglitter).build();
+                ItemParam starglitterParam = new ItemParam();
+                starglitterParam.setItemId(starglitterId);
+                starglitterParam.setCount(addStarglitter);
                 if (isTransferItem) {
-                    gachaItem.addTransferItems(GachaTransferItem.newBuilder().setItem(starglitterParam));
+                    val gachaTransferItem = new GachaTransferItem();
+                    gachaTransferItem.setItem(starglitterParam);
+                    transferItemsList.add(gachaTransferItem);
                 }
-                gachaItem.addTokenItemList(starglitterParam);
+                tokenItemList.add(starglitterParam);
             }
 
-            list.add(gachaItem.build());
+            gachaItem.setTransferItems(transferItemsList);
+            gachaItem.setTokenItemList(tokenItemList);
+
+            list.add(gachaItem);
         }
 
         // Add stardust/starglitter
@@ -412,18 +431,17 @@ public class GachaSystem extends BaseGameSystem {
     }
 
     private synchronized GetGachaInfoRsp createProto(Player player) {
-        GetGachaInfoRsp.Builder proto = GetGachaInfoRsp.newBuilder().setGachaRandom(12345);
+        val proto = new GetGachaInfoRsp();
+        proto.setGachaRandom(12345);
 
         long currentTime = System.currentTimeMillis() / 1000L;
 
-        for (GachaBanner banner : getGachaBanners().values()) {
-            if ((banner.getEndTime() >= currentTime && banner.getBeginTime() <= currentTime) || (banner.getBannerType() == BannerType.STANDARD))
-            {
-                proto.addGachaInfoList(banner.toProto(player));
-            }
-        }
+        proto.setGachaInfoList(getGachaBanners().values().stream()
+            .filter(banner -> (banner.getEndTime() >= currentTime && banner.getBeginTime() <= currentTime) || (banner.getBannerType() == BannerType.STANDARD))
+            .map(banner -> banner.toProto(player))
+            .toList());
 
-        return proto.build();
+        return proto;
     }
 
     public GetGachaInfoRsp toProto(Player player) {

@@ -2,8 +2,8 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
-import messages.battle.AiSyncInfo;
-import messages.battle.EntityAiSyncNotify;
+import org.anime_game_servers.multi_proto.gi.messages.battle.AiSyncInfo;
+import org.anime_game_servers.multi_proto.gi.messages.battle.EntityAiSyncNotify;
 
 public class PacketEntityAiSyncNotify extends BaseTypedPacket<EntityAiSyncNotify> {
 

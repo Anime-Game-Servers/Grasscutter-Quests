@@ -8,7 +8,6 @@ import emu.grasscutter.scripts.lua_engine.GroupEventLuaContext;
 import emu.grasscutter.scripts.scriptlib_handlers.BaseHandler;
 import lombok.Getter;
 import lombok.val;
-import org.anime_game_servers.lua.engine.LuaTable;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -24,7 +23,10 @@ public class GroupGadgetHandler extends BaseHandler implements org.anime_game_se
     public int ChangeGroupGadget(GroupEventLuaContext context, int configId, int state) {
         logger.debug("[LUA] Call ChangeGroupGadget with {} {}", configId, state);
 
-        var entity = context.getSceneScriptManager().getScene().getEntityByConfigId(configId, context.getCurrentGroup().getGroupInfo().getId());
+        val scene = context.getSceneScriptManager().getScene();
+        val groupId = context.getCurrentGroup().getGroupInfo().getId();
+        val entity = scene.getEntityByConfigId(configId, groupId);
+
         if(entity == null){
             return 1;
         }
@@ -58,8 +60,12 @@ public class GroupGadgetHandler extends BaseHandler implements org.anime_game_se
     }
 
     @Override
-    public int GetGadgetHpPercent(@NotNull GroupEventLuaContext groupEventLuaContext, int groupId, int configId) {
-        val entity = groupEventLuaContext.getSceneScriptManager().getScene().getEntityByConfigId(configId, groupId);
+    public int GetGadgetHpPercent(@NotNull GroupEventLuaContext context, int groupId, int configId) {
+
+        val scene = context.getSceneScriptManager().getScene();
+        val actualGroupId = getGroupIdOrCurrentId(context, groupId);
+        val entity = scene.getEntityByConfigId(configId, actualGroupId);
+
         if(entity == null){
             return INVALID_PARAMETER.getValue();
         }
@@ -91,6 +97,7 @@ public class GroupGadgetHandler extends BaseHandler implements org.anime_game_se
         val scene = context.getSceneScriptManager().getScene();
         val actualGroupId = getGroupIdOrCurrentId(context, groupId);
         val gadget = scene.getEntityByConfigId(configId, actualGroupId);
+
         if(!(gadget instanceof EntityGadget)){
             return -1;
         }
@@ -101,7 +108,10 @@ public class GroupGadgetHandler extends BaseHandler implements org.anime_game_se
     public int SetGadgetStateByConfigId(GroupEventLuaContext context, int configId, int gadgetState) {
         logger.debug("[LUA] Call SetGadgetStateByConfigId with {},{}",
             configId,gadgetState);
-        val entity = context.getSceneScriptManager().getScene().getEntityByConfigId(configId, context.getCurrentGroup().getGroupInfo().getId());
+
+        val scene = context.getSceneScriptManager().getScene();
+        val groupId = context.getCurrentGroup().getGroupInfo().getId();
+        val entity = scene.getEntityByConfigId(configId, groupId);
 
         if (!(entity instanceof EntityGadget)) {
             return 1;
@@ -116,7 +126,10 @@ public class GroupGadgetHandler extends BaseHandler implements org.anime_game_se
         logger.debug("[LUA] Call SetGroupGadgetStateByConfigId with {},{},{}",
             groupId,configId,gadgetState);
 
-        val entity = context.getSceneScriptManager().getScene().getEntityByConfigId(configId, groupId);
+        val scene = context.getSceneScriptManager().getScene();
+        val actualGroupId = getGroupIdOrCurrentId(context, groupId);
+        val entity = scene.getEntityByConfigId(configId, actualGroupId);
+
         if(!(entity instanceof EntityGadget)){
             return -1;
         }

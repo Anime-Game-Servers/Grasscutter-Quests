@@ -1,20 +1,15 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.PlayerDieTypeOuterClass.PlayerDieType;
-import emu.grasscutter.net.proto.WorldPlayerDieNotifyOuterClass.WorldPlayerDieNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.PlayerDieType;
+import org.anime_game_servers.multi_proto.gi.messages.scene.WorldPlayerDieNotify;
 
-public class PacketWorldPlayerDieNotify extends BasePacket {
-	
+public class PacketWorldPlayerDieNotify extends BaseTypedPacket<WorldPlayerDieNotify> {
+
 	public PacketWorldPlayerDieNotify(PlayerDieType playerDieType, int killerId) {
-		super(PacketOpcodes.WorldPlayerDieNotify);
-
-		WorldPlayerDieNotify proto = WorldPlayerDieNotify.newBuilder()
-				.setDieType(playerDieType)
-				.setMonsterId(killerId)
-				.build();
-		
-		this.setData(proto);
+        super(new WorldPlayerDieNotify());
+        proto.setDieType(playerDieType);
+        WorldPlayerDieNotify.Entity.MonsterId monsterId = new WorldPlayerDieNotify.Entity.MonsterId(killerId);
+        proto.setEntity(monsterId);
 	}
 }

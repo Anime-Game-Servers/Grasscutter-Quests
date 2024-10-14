@@ -10,21 +10,23 @@ import emu.grasscutter.game.props.FightProperty;
 import emu.grasscutter.game.props.LifeState;
 import emu.grasscutter.game.props.PlayerProperty;
 import emu.grasscutter.game.props.WeaponType;
-import emu.grasscutter.net.proto.PlayerDieTypeOuterClass.PlayerDieType;
-import emu.grasscutter.net.proto.VectorOuterClass.Vector;
 import emu.grasscutter.server.game.GameSession;
-import emu.grasscutter.server.packet.send.*;
+import emu.grasscutter.server.packet.send.PacketAvatarLifeStateChangeNotify;
+import emu.grasscutter.server.packet.send.PacketEntityFightPropUpdateNotify;
+import emu.grasscutter.server.packet.send.PacketLifeStateChangeNotify;
+import emu.grasscutter.server.packet.send.PacketVehicleStaminaNotify;
 import emu.grasscutter.utils.Position;
 import lombok.val;
-import messages.gadget.VehicleInteractType;
-import messages.general.entity.EntityMoveInfo;
-import messages.scene.entity.MotionState;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.VehicleInteractType;
+import org.anime_game_servers.multi_proto.gi.messages.general.PlayerDieType;
+import org.anime_game_servers.multi_proto.gi.messages.general.entity.EntityMoveInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.MotionState;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
-import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
-
 import java.util.*;
+
+import static emu.grasscutter.config.Configuration.GAME_OPTIONS;
 
 public class StaminaManager extends BasePlayerManager {
 
@@ -518,7 +520,7 @@ public class StaminaManager extends BasePlayerManager {
             logger.trace(getCurrentCharacterStamina() + "/" +
                     getMaxCharacterStamina() + "\t" + currentState);
             if (currentState != MotionState.MOTION_SWIM_IDLE) {
-                killAvatar(cachedSession, cachedEntity, PlayerDieType.PLAYER_DIE_TYPE_DRAWN);
+                killAvatar(cachedSession, cachedEntity, PlayerDieType.PLAYER_DIE_DRAWN);
             }
         }
     }

@@ -1,18 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.UnlockNameCardNotifyOuterClass.UnlockNameCardNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.community.player_presentation.UnlockNameCardNotify;
 
-public class PacketUnlockNameCardNotify extends BasePacket {
-	
+public class PacketUnlockNameCardNotify extends BaseTypedPacket<UnlockNameCardNotify> {
+
 	public PacketUnlockNameCardNotify(int nameCard) {
-		super(PacketOpcodes.UnlockNameCardNotify);
-
-		UnlockNameCardNotify proto = UnlockNameCardNotify.newBuilder()
-				.setNameCardId(nameCard)
-				.build();
-		
-		this.setData(proto);
+        super(new UnlockNameCardNotify());
+        proto.setNameCardId(nameCard);
 	}
 }

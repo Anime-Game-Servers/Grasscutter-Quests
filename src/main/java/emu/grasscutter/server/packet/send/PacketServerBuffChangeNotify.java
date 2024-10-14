@@ -1,38 +1,26 @@
 package emu.grasscutter.server.packet.send;
 
-import java.util.Collection;
-import java.util.stream.Stream;
-
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.player.PlayerBuffManager.PlayerBuff;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ServerBuffChangeNotifyOuterClass.ServerBuffChangeNotify;
-import emu.grasscutter.net.proto.ServerBuffChangeNotifyOuterClass.ServerBuffChangeNotify.ServerBuffChangeType;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.battle.ServerBuffChangeNotify;
+import org.anime_game_servers.multi_proto.gi.messages.battle.ServerBuffChangeType;
 
-public class PacketServerBuffChangeNotify extends BasePacket {
+import java.util.List;
 
+public class PacketServerBuffChangeNotify extends BaseTypedPacket<ServerBuffChangeNotify> {
     public PacketServerBuffChangeNotify(Player player, ServerBuffChangeType changeType, PlayerBuff buff) {
-        this(player, changeType, Stream.of(buff));
+        this(player, changeType, List.of(buff));
     }
 
-    public PacketServerBuffChangeNotify(Player player, ServerBuffChangeType changeType, Collection<PlayerBuff> buffs) {
-        this(player, changeType, buffs.stream());
-    }
-
-    public PacketServerBuffChangeNotify(Player player, ServerBuffChangeType changeType, Stream<PlayerBuff> buffs) {
-        super(PacketOpcodes.ServerBuffChangeNotify);
-
-        var proto = ServerBuffChangeNotify.newBuilder();
-
-        player.getTeamManager().getActiveTeam().stream()
-            .mapToLong(entity -> entity.getAvatar().getGuid())
-            .forEach(proto::addAvatarGuidList);
-
+    public PacketServerBuffChangeNotify(Player player, ServerBuffChangeType changeType, List<PlayerBuff> buffs) {
+        super(new ServerBuffChangeNotify());
+        proto.setAvatarGuidList(player.getTeamManager().getActiveTeam().stream()
+            .map(entity -> entity.getAvatar().getGuid())
+            .toList());
         proto.setServerBuffChangeType(changeType);
-        buffs.map(PlayerBuff::toProto)
-            .forEach(proto::addServerBuffList);
-
-        this.setData(proto);
+        proto.setServerBuffList(buffs.stream()
+            .map(PlayerBuff::toProto)
+            .toList());
     }
 }

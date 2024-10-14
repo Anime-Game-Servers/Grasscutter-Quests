@@ -1,42 +1,22 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.WidgetGadgetDataNotifyOuterClass;
-import emu.grasscutter.net.proto.WidgetGadgetDataOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.manage_gadget.WidgetGadgetData;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.manage_gadget.WidgetGadgetDataNotify;
 
-import java.io.IOException;
 import java.util.List;
 
-public class PacketWidgetGadgetDataNotify extends BasePacket {
-    
-    public PacketWidgetGadgetDataNotify(int gadgetId, List<Integer> gadgetEntityIdList) throws IOException {
-        super(PacketOpcodes.WidgetGadgetDataNotify);
-
-        WidgetGadgetDataNotifyOuterClass.WidgetGadgetDataNotify proto = WidgetGadgetDataNotifyOuterClass.WidgetGadgetDataNotify.newBuilder()
-                .setWidgetGadgetData(
-                        WidgetGadgetDataOuterClass.WidgetGadgetData.newBuilder()
-                                .setGadgetId(gadgetId)
-                                .addAllGadgetEntityIdList(gadgetEntityIdList)
-                                .build()
-                )
-                .build();
-
-        this.setData(proto);
+public class PacketWidgetGadgetDataNotify extends BaseTypedPacket<WidgetGadgetDataNotify> {
+    public PacketWidgetGadgetDataNotify(int gadgetId, List<Integer> gadgetEntityIdList) {
+        super(new WidgetGadgetDataNotify());
+        val widgetGadgetData = new WidgetGadgetData();
+        widgetGadgetData.setGadgetId(gadgetId);
+        widgetGadgetData.setGadgetEntityIdList(gadgetEntityIdList);
+        proto.setWidgetGadgetData(widgetGadgetData);
     }
-    
-    public PacketWidgetGadgetDataNotify(int gadgetId, int gadgetEntityIdList) throws IOException {
-        super(PacketOpcodes.WidgetGadgetDataNotify);
 
-        WidgetGadgetDataNotifyOuterClass.WidgetGadgetDataNotify proto = WidgetGadgetDataNotifyOuterClass.WidgetGadgetDataNotify.newBuilder()
-                .setWidgetGadgetData(
-                        WidgetGadgetDataOuterClass.WidgetGadgetData.newBuilder()
-                                .setGadgetId(gadgetId)
-                                .addGadgetEntityIdList(gadgetEntityIdList)
-                                .build()
-                )
-                .build();
-
-        this.setData(proto);
+    public PacketWidgetGadgetDataNotify(int gadgetId, int gadgetEntityIdList) {
+        this(gadgetId, List.of(gadgetEntityIdList));
     }
 }

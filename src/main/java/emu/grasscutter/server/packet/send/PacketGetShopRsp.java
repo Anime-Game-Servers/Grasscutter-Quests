@@ -7,10 +7,10 @@ import emu.grasscutter.game.shop.ShopSystem;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import emu.grasscutter.utils.Utils;
 import lombok.val;
-import messages.general.item.ItemParam;
-import messages.shop.GetShopRsp;
-import messages.shop.Shop;
-import messages.shop.ShopGoods;
+import org.anime_game_servers.multi_proto.gi.messages.general.item.ItemParam;
+import org.anime_game_servers.multi_proto.gi.messages.shop.GetShopRsp;
+import org.anime_game_servers.multi_proto.gi.messages.shop.Shop;
+import org.anime_game_servers.multi_proto.gi.messages.shop.ShopGoods;
 
 import java.util.ArrayList;
 

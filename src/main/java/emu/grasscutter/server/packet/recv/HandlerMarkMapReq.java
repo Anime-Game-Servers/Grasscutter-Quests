@@ -1,17 +1,13 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.MarkMapReqOuterClass.MarkMapReq;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
+import org.anime_game_servers.multi_proto.gi.messages.scene.map.MarkMapReq;
 
-@Opcodes(PacketOpcodes.MarkMapReq)
-public class HandlerMarkMapReq extends PacketHandler {
+public class HandlerMarkMapReq extends TypedPacketHandler<MarkMapReq> {
 
 	@Override
-	public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-		MarkMapReq req = MarkMapReq.parseFrom(payload);
+    public void handle(GameSession session, byte[] header, MarkMapReq req) throws Exception {
 		session.getPlayer().getMapMarksManager().handleMapMarkReq(req);
 	}
 }

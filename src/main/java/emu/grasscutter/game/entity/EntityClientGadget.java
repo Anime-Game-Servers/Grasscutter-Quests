@@ -14,10 +14,10 @@ import emu.grasscutter.utils.ProtoHelper;
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
 import lombok.Getter;
 import lombok.val;
-import messages.battle.EvtCreateGadgetNotify;
-import messages.general.Vector;
-import messages.general.ability.AbilitySyncStateInfo;
-import messages.scene.entity.*;
+import org.anime_game_servers.multi_proto.gi.messages.battle.event.EvtCreateGadgetNotify;
+import org.anime_game_servers.multi_proto.gi.messages.general.Vector;
+import org.anime_game_servers.multi_proto.gi.messages.general.ability.AbilitySyncStateInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.*;
 
 import java.util.Collection;
 import java.util.List;

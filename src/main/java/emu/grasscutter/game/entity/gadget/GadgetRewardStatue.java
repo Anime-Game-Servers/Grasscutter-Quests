@@ -4,12 +4,12 @@ import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.server.packet.send.PacketGadgetInteractRsp;
 import lombok.val;
-import messages.gadget.GadgetInteractReq;
-import messages.gadget.InterOpType;
-import messages.gadget.InteractType;
-import messages.gadget.ResinCostType;
-import messages.scene.entity.SceneGadgetInfo;
-import messages.scene.entity.StatueGadgetInfo;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.GadgetInteractReq;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.InterOpType;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.InteractType;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.ResinCostType;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.SceneGadgetInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.StatueGadgetInfo;
 
 import java.util.Optional;
 

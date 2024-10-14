@@ -6,7 +6,7 @@ import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketSelectWorktopOptionRsp;
-import messages.gadget.SelectWorktopOptionReq;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.SelectWorktopOptionReq;
 import org.anime_game_servers.gi_lua.models.ScriptArgs;
 import org.anime_game_servers.gi_lua.models.constants.EventType;
 

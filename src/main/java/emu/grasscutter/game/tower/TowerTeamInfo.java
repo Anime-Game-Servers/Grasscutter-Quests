@@ -4,7 +4,7 @@ import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Transient;
 import emu.grasscutter.game.avatar.TowerAvatar;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.proto.TowerTeamOuterClass.TowerTeam;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.TowerTeam;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.val;
@@ -22,7 +22,7 @@ public class TowerTeamInfo {
 
     public static TowerTeamInfo create(TowerTeam newTeam, Player player) {
         val info = TowerTeamInfo.of().teamId(newTeam.getTowerTeamId()).build();
-        info.getAvatars().addAll(newTeam.getAvatarGuidListList().stream()
+        info.getAvatars().addAll(newTeam.getAvatarGuidList().stream()
             .map(player.getAvatars()::getAvatarByGuid).filter(Objects::nonNull).map(TowerAvatar::new).toList());
         return info;
     }
@@ -41,10 +41,11 @@ public class TowerTeamInfo {
     }
 
     public TowerTeam toProto() {
-        return TowerTeam.newBuilder()
-            .setTowerTeamId(this.teamId)
-            .addAllAvatarGuidList(Optional.ofNullable(this.tempAvatars).orElse(this.avatars)
-                .stream().map(TowerAvatar::getGuid).toList())
-            .build();
+        val proto = new TowerTeam();
+        proto.setTowerTeamId(this.teamId);
+        proto.setAvatarGuidList(Optional.ofNullable(this.tempAvatars)
+            .orElse(this.avatars).stream()
+            .map(TowerAvatar::getGuid).toList());
+        return proto;
     }
 }

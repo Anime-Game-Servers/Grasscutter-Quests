@@ -1,21 +1,18 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
-import emu.grasscutter.net.proto.ReceivedTrialAvatarActivityRewardRspOuterClass.ReceivedTrialAvatarActivityRewardRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.activity.trial.ReceivedTrialAvatarActivityRewardRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
-public class PacketReceivedTrialAvatarActivityRewardRsp extends BasePacket {
-
+public class PacketReceivedTrialAvatarActivityRewardRsp extends BaseTypedPacket<ReceivedTrialAvatarActivityRewardRsp> {
 	public PacketReceivedTrialAvatarActivityRewardRsp(int activityId, int trialAvatarId, boolean success) {
-		this(activityId, trialAvatarId, success ? Retcode.RET_SUCC_VALUE : Retcode.RET_FAIL_VALUE);
+		this(activityId, trialAvatarId, success ? Retcode.RET_SUCC : Retcode.RET_FAIL);
 	}
-	public PacketReceivedTrialAvatarActivityRewardRsp(int activityId, int trialAvatarId, int retcodeVal) {
-		super(PacketOpcodes.ReceivedTrialAvatarActivityRewardRsp);
-		this.setData(ReceivedTrialAvatarActivityRewardRsp.newBuilder()
-			.setActivityId(activityId)
-			.setTrialAvatarIndexId(trialAvatarId)
-			.setRetcode(retcodeVal)
-			.build());
+
+	public PacketReceivedTrialAvatarActivityRewardRsp(int activityId, int trialAvatarId, Retcode retcode) {
+        super(new ReceivedTrialAvatarActivityRewardRsp());
+        proto.setActivityId(activityId);
+        proto.setTrialAvatarIndexId(trialAvatarId);
+        proto.setRetcode(retcode);
 	}
 }

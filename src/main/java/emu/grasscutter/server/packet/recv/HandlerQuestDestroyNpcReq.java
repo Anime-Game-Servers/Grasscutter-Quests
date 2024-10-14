@@ -1,20 +1,14 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.game.entity.EntityNPC;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketQuestDestroyNpcRsp;
-import lombok.val;
-import emu.grasscutter.net.proto.QuestDestroyNpcReqOuterClass.QuestDestroyNpcReq;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.quest.entities.QuestDestroyNpcReq;
 
-@Opcodes(PacketOpcodes.QuestDestroyNpcReq)
-public class HandlerQuestDestroyNpcReq extends PacketHandler {
+public class HandlerQuestDestroyNpcReq extends TypedPacketHandler<QuestDestroyNpcReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        val req = QuestDestroyNpcReq.parseFrom(payload);
-
-        session.send(new PacketQuestDestroyNpcRsp(req.getNpcId(), req.getParentQuestId(), 0));
+    public void handle(GameSession session, byte[] header, QuestDestroyNpcReq req) throws Exception {
+        session.send(new PacketQuestDestroyNpcRsp(req.getNpcId(), req.getParentQuestId(), Retcode.RET_SUCC));
     }
 }

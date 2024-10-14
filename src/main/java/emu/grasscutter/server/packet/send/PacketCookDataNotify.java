@@ -1,21 +1,14 @@
 package emu.grasscutter.server.packet.send;
 
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.item.cooking.CookDataNotify;
+import org.anime_game_servers.multi_proto.gi.messages.item.cooking.CookRecipeData;
+
 import java.util.List;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.CookDataNotifyOuterClass.CookDataNotify;
-import emu.grasscutter.net.proto.CookRecipeDataOuterClass.CookRecipeData;
-
-public class PacketCookDataNotify extends BasePacket {
-
+public class PacketCookDataNotify extends BaseTypedPacket<CookDataNotify> {
     public PacketCookDataNotify(List<CookRecipeData> recipes) {
-        super(PacketOpcodes.CookDataNotify);
-
-        CookDataNotify proto = CookDataNotify.newBuilder()
-                .addAllRecipeDataList(recipes)
-                .build();
-
-        this.setData(proto);
+        super(new CookDataNotify());
+        proto.setRecipeDataList(recipes);
     }
 }

@@ -4,8 +4,8 @@ import emu.grasscutter.game.activity.ActivityConfigItem;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import emu.grasscutter.utils.DateHelper;
 import lombok.val;
-import messages.activity.ActivityScheduleInfo;
-import messages.activity.ActivityScheduleInfoNotify;
+import org.anime_game_servers.multi_proto.gi.messages.activity.general.ActivityScheduleInfo;
+import org.anime_game_servers.multi_proto.gi.messages.activity.general.ActivityScheduleInfoNotify;
 
 import java.util.Collection;
 

@@ -1,7 +1,7 @@
 package emu.grasscutter.game.props;
 
 
-import messages.battle_pass.MissionStatus;
+import org.anime_game_servers.multi_proto.gi.messages.battle_pass.MissionStatus;
 
 public enum BattlePassMissionStatus {
 	MISSION_STATUS_INVALID (0, MissionStatus.MISSION_INVALID),

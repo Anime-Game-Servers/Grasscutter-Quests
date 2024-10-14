@@ -1,19 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.SetPlayerNameRspOuterClass.SetPlayerNameRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.player.SetPlayerNameRsp;
 
-public class PacketSetPlayerNameRsp extends BasePacket {
-	
+public class PacketSetPlayerNameRsp extends BaseTypedPacket<SetPlayerNameRsp> {
 	public PacketSetPlayerNameRsp(Player player) {
-		super(PacketOpcodes.SetPlayerNameRsp);
-
-		SetPlayerNameRsp proto = SetPlayerNameRsp.newBuilder()
-				.setNickName(player.getNickname())
-				.build();
-		
-		this.setData(proto);
+        super(new SetPlayerNameRsp());
+        proto.setNickName(player.getNickname());
 	}
 }

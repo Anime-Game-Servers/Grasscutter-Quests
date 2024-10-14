@@ -1,18 +1,10 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.TowerMiddleLevelChangeTeamNotifyOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.run.TowerMiddleLevelChangeTeamNotify;
 
-public class PacketTowerMiddleLevelChangeTeamNotify extends BasePacket {
-
+public class PacketTowerMiddleLevelChangeTeamNotify extends BaseTypedPacket<TowerMiddleLevelChangeTeamNotify> {
 	public PacketTowerMiddleLevelChangeTeamNotify() {
-		super(PacketOpcodes.TowerMiddleLevelChangeTeamNotify);
-
-		TowerMiddleLevelChangeTeamNotifyOuterClass.TowerMiddleLevelChangeTeamNotify proto =
-				TowerMiddleLevelChangeTeamNotifyOuterClass.TowerMiddleLevelChangeTeamNotify.newBuilder()
-				.build();
-		
-		this.setData(proto);
+        super(new TowerMiddleLevelChangeTeamNotify());
 	}
 }

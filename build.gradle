@@ -72,8 +72,8 @@ dependencies {
     implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.8'
 
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.36'
-    implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.11'
-    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.11'
+    implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.5.8'
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.8'
 
     implementation group: 'org.jline', name: 'jline', version: '3.21.0'
     implementation group: 'org.jline', name: 'jline-terminal-jna', version: '3.21.0'
@@ -89,7 +89,7 @@ dependencies {
 
     implementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
 
-    implementation group: 'dev.morphia.morphia', name: 'morphia-core', version: '2.2.7'
+    implementation group: 'dev.morphia.morphia', name: 'morphia-core', version: '2.3.8'
 
     implementation group: 'org.greenrobot', name: 'eventbus-java', version: '3.3.1'
     //implementation group: 'org.danilopianini', name: 'java-quadtree', version: '0.1.9'
@@ -106,7 +106,7 @@ dependencies {
     implementation("org.anime_game_servers.lua:LuaJEngine:0.1")
     implementation("org.anime_game_servers.lua:JNLuaEngine:0.1")
 
-    implementation("org.anime_game_servers.multi_proto:gi-jvm:0.1.32")
+    implementation("org.anime_game_servers.multi_proto:gi-jvm:0.2.32")
 
     implementation group:  'com.esotericsoftware', name : 'reflectasm', version: '1.11.9'
     implementation group:  'com.github.davidmoten', name : 'rtree-multi', version: '0.1'

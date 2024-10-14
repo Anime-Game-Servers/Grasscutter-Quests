@@ -1,36 +1,36 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.managers.mapmark.MapMark;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.*;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.scene.map.MapMarkPoint;
+import org.anime_game_servers.multi_proto.gi.messages.scene.map.MarkMapRsp;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class PacketMarkMapRsp extends BasePacket {
+public class PacketMarkMapRsp extends BaseTypedPacket<MarkMapRsp> {
 
     public PacketMarkMapRsp(Map<String, MapMark> mapMarks) {
-        super(PacketOpcodes.MarkMapRsp);
-
-        MarkMapRspOuterClass.MarkMapRsp.Builder proto = MarkMapRspOuterClass.MarkMapRsp.newBuilder();
-        proto.setRetcode(0);
+        super(new MarkMapRsp());
+        proto.setRetcode(Retcode.RET_SUCC);
 
         if (mapMarks != null) {
+            List<MapMarkPoint> markPointList = new ArrayList<>();
             for (MapMark mapMark: mapMarks.values()) {
-                MapMarkPointOuterClass.MapMarkPoint.Builder markPoint = MapMarkPointOuterClass.MapMarkPoint.newBuilder();
+                val markPoint = new MapMarkPoint();
                 markPoint.setSceneId(mapMark.getSceneId());
                 markPoint.setName(mapMark.getName());
-                markPoint.setPos(mapMark.getPosition().toProtoOld());
+                markPoint.setPos(mapMark.getPosition().toProto());
                 markPoint.setPointType(mapMark.getMapMarkPointType());
                 markPoint.setFromType(mapMark.getMapMarkFromType());
                 markPoint.setMonsterId(mapMark.getMonsterId());
                 markPoint.setQuestId(mapMark.getQuestId());
-
-                proto.addMarkList(markPoint.build());
+                markPointList.add(markPoint);
             }
+            proto.setMarkList(markPointList);
         }
-
-        MarkMapRspOuterClass.MarkMapRsp data = proto.build();
-        this.setData(data);
     }
 }

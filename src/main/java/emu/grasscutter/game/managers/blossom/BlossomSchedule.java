@@ -8,24 +8,25 @@ import emu.grasscutter.data.common.BaseBlossomROSData;
 import emu.grasscutter.data.excels.*;
 import emu.grasscutter.game.managers.blossom.enums.BlossomRefreshType;
 import emu.grasscutter.game.world.World;
-import emu.grasscutter.net.proto.BlossomBriefInfoOuterClass.BlossomBriefInfo;
-import emu.grasscutter.net.proto.BlossomScheduleInfoOuterClass.BlossomScheduleInfo;
+import org.anime_game_servers.multi_proto.gi.messages.blossom.BlossomBriefInfo;
+import org.anime_game_servers.multi_proto.gi.messages.blossom.BlossomScheduleInfo;
 import emu.grasscutter.scripts.ScriptSystem;
 import emu.grasscutter.utils.Position;
 import lombok.*;
-import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup;
-import org.anime_game_servers.core.gi.models.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Getter
 @Builder(builderMethodName="of", setterPrefix="set")
 @ToString
 @Entity
+@AllArgsConstructor
 public class BlossomSchedule implements BaseBlossomROSData {
     // brief info related
     private final int sceneId;
@@ -167,31 +168,31 @@ public class BlossomSchedule implements BaseBlossomROSData {
      * Works like challenge but blossom style
      * */
     public BlossomScheduleInfo toScheduleProto() {
-        return BlossomScheduleInfo.newBuilder()
-            .setFinishProgress(this.finishProgress)
-            .setRefreshId(this.refreshId)
-            .setState(this.state)
-            .setRound(this.round)
-            .setCircleCampId(this.circleCampId)
-            .setProgress(this.progress)
-            .build();
+        val proto = new BlossomScheduleInfo();
+        proto.setFinishProgress(this.finishProgress);
+        proto.setRefreshId(this.refreshId);
+        proto.setState(this.state);
+        proto.setRound(this.round);
+        proto.setCircleCampId(this.circleCampId);
+        proto.setProgress(this.progress);
+        return proto;
     }
 
     /**
      * Blossom camp information, updates the map's icon, I think...
      * */
     public BlossomBriefInfo toBriefProto() {
-        return BlossomBriefInfo.newBuilder()
-            .setSceneId(this.sceneId)
-            .setCityId(this.cityId)
-            .setPos(this.position.toProtoOld())
-            .setResin(this.resin)
-            .setMonsterLevel(this.monsterLevel)
-            .setRewardId(this.rewardId)
-            .setCircleCampId(this.circleCampId)
-            .setRefreshId(this.refreshId)
-            .setState(this.state) // 0: loaded, 1: spawned, 2:started, 3: finished
-            .build();
+        val proto = new BlossomBriefInfo();
+        proto.setSceneId(this.sceneId);
+        proto.setCityId(this.cityId);
+        proto.setPos(this.position.toProto());
+        proto.setResin(this.resin);
+        proto.setMonsterLevel(this.monsterLevel);
+        proto.setRewardId(this.rewardId);
+        proto.setCircleCampId(this.circleCampId);
+        proto.setRefreshId(this.refreshId);
+        proto.setState(this.state); // 0: loaded, 1: spawned, 2:started, 3: finished
+        return proto;
     }
 
     /**

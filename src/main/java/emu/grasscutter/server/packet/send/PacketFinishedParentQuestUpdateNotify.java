@@ -1,33 +1,19 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.quest.GameMainQuest;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.FinishedParentQuestUpdateNotifyOuterClass.FinishedParentQuestUpdateNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.quest.parent.FinishedParentQuestUpdateNotify;
 
 import java.util.List;
 
-public class PacketFinishedParentQuestUpdateNotify extends BasePacket {
+public class PacketFinishedParentQuestUpdateNotify extends BaseTypedPacket<FinishedParentQuestUpdateNotify> {
 
     public PacketFinishedParentQuestUpdateNotify(GameMainQuest quest) {
-        super(PacketOpcodes.FinishedParentQuestUpdateNotify);
-
-        FinishedParentQuestUpdateNotify proto = FinishedParentQuestUpdateNotify.newBuilder()
-                .addParentQuestList(quest.toProto(true))
-                .build();
-
-        this.setData(proto);
+        this(List.of(quest));
     }
 
     public PacketFinishedParentQuestUpdateNotify(List<GameMainQuest> quests) {
-        super(PacketOpcodes.FinishedParentQuestUpdateNotify);
-
-        var proto = FinishedParentQuestUpdateNotify.newBuilder();
-
-        for (GameMainQuest mainQuest : quests) {
-            proto.addParentQuestList(mainQuest.toProto(true));
-        }
-        proto.build();
-        this.setData(proto);
+        super(new FinishedParentQuestUpdateNotify());
+        proto.setParentQuestList(quests.stream().map(mainQuest -> mainQuest.toProto(true)).toList());
     }
 }

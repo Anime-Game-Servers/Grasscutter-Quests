@@ -1,38 +1,32 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.game.home.GameHome;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.TryEnterHomeReqOuterClass.TryEnterHomeReq;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.event.player.PlayerTeleportEvent.TeleportType;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketTryEnterHomeRsp;
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.FriendEnterHomeOption;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.player.TryEnterHomeReq;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
-import static emu.grasscutter.net.proto.FriendEnterHomeOptionOuterClass.FriendEnterHomeOption.*;
-import static emu.grasscutter.net.proto.RetcodeOuterClass.Retcode.*;
-
-@Opcodes(PacketOpcodes.TryEnterHomeReq)
-public class HandlerTryEnterHomeReq extends PacketHandler {
-
+public class HandlerTryEnterHomeReq extends TypedPacketHandler<TryEnterHomeReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        val req = TryEnterHomeReq.parseFrom(payload);
+    public void handle(GameSession session, byte[] header, TryEnterHomeReq req) throws Exception {
         val targetPlayer = session.getServer().getPlayerByUid(req.getTargetUid(), true);
 
         if (req.getTargetUid() != session.getPlayer().getUid() && targetPlayer != null) {
             // I hope that tomorrow there will be a hero who can support multiplayer mode and write code like a poem
             val targetHome = GameHome.getByUid(req.getTargetUid());
-            switch (targetHome.getEnterHomeOption()) {
-                case FRIEND_ENTER_HOME_OPTION_NEED_CONFIRM_VALUE -> {
+            switch (FriendEnterHomeOption.values()[targetHome.getEnterHomeOption()]) {
+                case FRIEND_ENTER_HOME_OPTION_NEED_CONFIRM -> {
                     if (targetPlayer.isOnline()) break;
 
-                    session.send(new PacketTryEnterHomeRsp(RET_HOME_OWNER_OFFLINE_VALUE, req.getTargetUid()));
+                    session.send(new PacketTryEnterHomeRsp(Retcode.RET_HOME_OWNER_OFFLINE, req.getTargetUid()));
                 }
-                case FRIEND_ENTER_HOME_OPTION_REFUSE_VALUE ->
-                    session.send(new PacketTryEnterHomeRsp(RET_HOME_HOME_REFUSE_GUEST_ENTER_VALUE, req.getTargetUid()));
-                case FRIEND_ENTER_HOME_OPTION_DIRECT_VALUE -> session.send(new PacketTryEnterHomeRsp());
+                case FRIEND_ENTER_HOME_OPTION_REFUSE ->
+                    session.send(new PacketTryEnterHomeRsp(Retcode.RET_HOME_HOME_REFUSE_GUEST_ENTER, req.getTargetUid()));
+                case FRIEND_ENTER_HOME_OPTION_DIRECT -> session.send(new PacketTryEnterHomeRsp());
             }
             return;
         }

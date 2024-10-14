@@ -1,7 +1,7 @@
 package emu.grasscutter.game.player;
 
 import dev.morphia.annotations.Entity;
-import messages.chat.Birthday;
+import org.anime_game_servers.multi_proto.gi.messages.community.player_presentation.Birthday;
 
 @Entity
 public class PlayerBirthday {

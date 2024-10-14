@@ -1,16 +1,13 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.DungeonSlipRevivePointActivateRspOuterClass.DungeonSlipRevivePointActivateRsp;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.DungeonSlipRevivePointActivateRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
-public class PacketDungeonSlipRevivePointActivateRsp extends BasePacket {
+public class PacketDungeonSlipRevivePointActivateRsp extends BaseTypedPacket<DungeonSlipRevivePointActivateRsp> {
 	public PacketDungeonSlipRevivePointActivateRsp(boolean success, int pointId) {
-		super(PacketOpcodes.DungeonSlipRevivePointActivateRsp);
-
-		this.setData(DungeonSlipRevivePointActivateRsp.newBuilder()
-            .setSlipRevivePointId(pointId)
-            .setRetcode(success ? RetcodeOuterClass.Retcode.RET_SUCC_VALUE : RetcodeOuterClass.Retcode.RET_FAIL_VALUE));
+        super(new DungeonSlipRevivePointActivateRsp());
+        proto.setSlipRevivePointId(pointId);
+        proto.setRetcode(success ? Retcode.RET_SUCC : Retcode.RET_FAIL);
 	}
 }

@@ -1,10 +1,5 @@
 package emu.grasscutter.game.managers.cooking;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.ItemData;
@@ -12,15 +7,20 @@ import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.player.BasePlayerManager;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
-import emu.grasscutter.net.proto.CookRecipeDataOuterClass;
-import emu.grasscutter.net.proto.PlayerCookArgsReqOuterClass.PlayerCookArgsReq;
-import emu.grasscutter.net.proto.PlayerCookReqOuterClass.PlayerCookReq;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
 import emu.grasscutter.server.packet.send.PacketCookDataNotify;
 import emu.grasscutter.server.packet.send.PacketCookRecipeDataNotify;
 import emu.grasscutter.server.packet.send.PacketPlayerCookArgsRsp;
 import emu.grasscutter.server.packet.send.PacketPlayerCookRsp;
 import io.netty.util.internal.ThreadLocalRandom;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.item.cooking.CookRecipeData;
+import org.anime_game_servers.multi_proto.gi.messages.item.cooking.PlayerCookArgsReq;
+import org.anime_game_servers.multi_proto.gi.messages.item.cooking.PlayerCookReq;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class CookingManager extends BasePlayerManager {
     private static final int MANUAL_PERFECT_COOK_QUALITY = 3;
@@ -171,12 +171,13 @@ public class CookingManager extends BasePlayerManager {
         var unlockedRecipes = this.player.getUnlockedRecipies();
 
         // Construct CookRecipeData protos.
-        List<CookRecipeDataOuterClass.CookRecipeData> data = new ArrayList<>();
-        unlockedRecipes.forEach((recipeId, proficiency) ->
-            data.add(CookRecipeDataOuterClass.CookRecipeData.newBuilder()
-                .setRecipeId(recipeId)
-                .setProficiency(proficiency)
-                .build()));
+        List<CookRecipeData> data = new ArrayList<>();
+        unlockedRecipes.forEach((recipeId, proficiency) -> {
+            var cookRecipeData = new CookRecipeData();
+            cookRecipeData.setRecipeId(recipeId);
+            cookRecipeData.setProficiency(proficiency);
+            data.add(cookRecipeData);
+        });
 
         // Send packet.
         this.player.sendPacket(new PacketCookDataNotify(data));

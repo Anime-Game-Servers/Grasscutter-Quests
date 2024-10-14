@@ -3,8 +3,8 @@ package emu.grasscutter.server.packet.recv;
 import emu.grasscutter.net.packet.*;
 import emu.grasscutter.server.game.GameSession;
 import lombok.val;
-import messages.chat.GetPlayerBlacklistReq;
-import messages.chat.GetPlayerBlacklistRsp;
+import org.anime_game_servers.multi_proto.gi.messages.community.blocking.GetPlayerBlacklistReq;
+import org.anime_game_servers.multi_proto.gi.messages.community.blocking.GetPlayerBlacklistRsp;
 
 public class HandlerGetPlayerBlacklistReq extends TypedPacketHandler<GetPlayerBlacklistReq> {
 

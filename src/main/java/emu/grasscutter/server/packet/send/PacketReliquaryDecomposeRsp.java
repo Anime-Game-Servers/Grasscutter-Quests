@@ -1,30 +1,19 @@
 package emu.grasscutter.server.packet.send;
 
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.item.management.ReliquaryDecomposeRsp;
+
 import java.util.List;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ReliquaryDecomposeRspOuterClass.ReliquaryDecomposeRsp;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
-
-public class PacketReliquaryDecomposeRsp extends BasePacket {
+public class PacketReliquaryDecomposeRsp extends BaseTypedPacket<ReliquaryDecomposeRsp> {
 	public PacketReliquaryDecomposeRsp(Retcode retcode) {
-		super(PacketOpcodes.ReliquaryDecomposeRsp);
-
-		ReliquaryDecomposeRsp proto = ReliquaryDecomposeRsp.newBuilder()
-				.setRetcode(retcode.getNumber())
-				.build();
-		
-		this.setData(proto);
+        super(new ReliquaryDecomposeRsp());
+        proto.setRetCode(retcode);
 	}
 
 	public PacketReliquaryDecomposeRsp(List<Long> output) {
-		super(PacketOpcodes.ReliquaryDecomposeRsp);
-
-		ReliquaryDecomposeRsp proto = ReliquaryDecomposeRsp.newBuilder()
-				.addAllGuidList(output)
-				.build();
-		
-		this.setData(proto);
+        super(new ReliquaryDecomposeRsp());
+        proto.setGuidList(output);
 	}
 }

@@ -1,21 +1,15 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.QuestUpdateQuestVarNotifyOuterClass.QuestUpdateQuestVarNotify;
-import lombok.val;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.quest.variable.QuestUpdateQuestVarNotify;
 
 import java.util.stream.IntStream;
 
-@Opcodes(PacketOpcodes.QuestUpdateQuestVarNotify)
-public class PacketQuestUpdateQuestVarNotify extends BasePacket {
+public class PacketQuestUpdateQuestVarNotify extends BaseTypedPacket<QuestUpdateQuestVarNotify> {
 
     public PacketQuestUpdateQuestVarNotify(int mainQuestId, int... questVars) {
-        super(PacketOpcodes.QuestUpdateQuestVarNotify);
-        val questVarList = IntStream.of(questVars).boxed().toList();
-        this.setData(QuestUpdateQuestVarNotify.newBuilder()
-            .setParentQuestId(mainQuestId)
-            .addAllQuestVar(questVarList));
+        super(new QuestUpdateQuestVarNotify());
+        proto.setParentQuestId(mainQuestId);
+        proto.setQuestVar(IntStream.of(questVars).boxed().toList());
     }
 }

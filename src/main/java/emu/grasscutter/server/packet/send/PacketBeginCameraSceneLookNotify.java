@@ -1,36 +1,38 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.BeginCameraSceneLookNotifyOuterClass.BeginCameraSceneLookNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
 import emu.grasscutter.utils.Position;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.scene.camera.BeginCameraSceneLookNotify;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class PacketBeginCameraSceneLookNotify extends BasePacket {
+public class PacketBeginCameraSceneLookNotify extends BaseTypedPacket<BeginCameraSceneLookNotify> {
 
 	public PacketBeginCameraSceneLookNotify(CameraSceneLookNotify parameters) {
-		super(PacketOpcodes.BeginCameraSceneLookNotify);
-        val builder = BeginCameraSceneLookNotify.newBuilder()
-            .setLookPos(parameters.lookPos.toProtoOld())
-            .setFollowPos(parameters.followPos.toProtoOld())
-            .setDuration(parameters.duration)
-            .setIsAllowInput(parameters.isAllowInput)
-            .setIsSetFollowPos(parameters.setFollowPos)
-            .setIsSetScreenXy(parameters.isScreenXY)
-            .setIsRecoverKeepCurrent(parameters.recoverKeepCurrent)
-            .setIsChangePlayMode(parameters.isChangePlayMode)
-            .setScreenY(parameters.screenY)
-            .setScreenX(parameters.screenX)
-            .setIsForce(parameters.isForce)
-            .setIsForce(parameters.isForceWalk)
-            .setEntityId(parameters.entityId)
-            .addAllOtherParams(parameters.otherParams);
-		this.setData(builder);
+        super(new BeginCameraSceneLookNotify());
+        proto.setLookPos(parameters.lookPos.toProto());
+        proto.setFollowPos(parameters.followPos.toProto());
+        proto.setDuration(parameters.duration);
+        proto.setAllowInput(parameters.isAllowInput);
+        proto.setSetFollowPos(parameters.setFollowPos);
+        proto.setSetScreenXy(parameters.isScreenXY);
+        proto.setRecoverKeepCurrent(parameters.recoverKeepCurrent);
+        proto.setChangePlayMode(parameters.isChangePlayMode);
+        proto.setScreenY(parameters.screenY);
+        proto.setScreenX(parameters.screenX);
+        proto.setForce(parameters.isForce);
+        proto.setForceWalk(parameters.isForceWalk);
+        proto.setEntityId(parameters.entityId);
+        proto.setOtherParams(parameters.otherParams.stream().toList());
+        //proto.setKeepRotType(); //KeepRotType
+        //proto.setCustomRadius(); //Float
+        //proto.setBlendType(); //Int
+        //proto.setAbsFollowPos(); //Boolean
+        //proto.setDisableProtect(); //Int
+        //proto.setBlendDuration(); //Float
 	}
 
     // TODO check default values

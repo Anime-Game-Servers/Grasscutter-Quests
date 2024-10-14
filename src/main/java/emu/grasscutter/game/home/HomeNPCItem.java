@@ -1,13 +1,13 @@
 package emu.grasscutter.game.home;
 
 import dev.morphia.annotations.Entity;
-import emu.grasscutter.net.proto.HomeAnimalDataOuterClass;
-import emu.grasscutter.net.proto.HomeNpcDataOuterClass;
 import emu.grasscutter.utils.Position;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.HomeNpcData;
 
 @Entity
 @Data
@@ -19,16 +19,16 @@ public class HomeNPCItem {
     Position spawnRot;
     int costumeId;
 
-    public HomeNpcDataOuterClass.HomeNpcData toProto(){
-        return HomeNpcDataOuterClass.HomeNpcData.newBuilder()
-                .setAvatarId(avatarId)
-                .setSpawnPos(spawnPos.toProtoOld())
-                .setSpawnRot(spawnRot.toProtoOld())
-                .setCostumeId(costumeId)
-                .build();
+    public HomeNpcData toProto() {
+        val proto = new HomeNpcData();
+        proto.setAvatarId(avatarId);
+        proto.setSpawnPos(spawnPos.toProto());
+        proto.setSpawnRot(spawnRot.toProto());
+        proto.setCostumeId(costumeId);
+        return proto;
     }
 
-    public static HomeNPCItem parseFrom(HomeNpcDataOuterClass.HomeNpcData homeNpcData) {
+    public static HomeNPCItem parseFrom(HomeNpcData homeNpcData) {
         return HomeNPCItem.of()
                 .avatarId(homeNpcData.getAvatarId())
                 .spawnPos(new Position(homeNpcData.getSpawnPos()))

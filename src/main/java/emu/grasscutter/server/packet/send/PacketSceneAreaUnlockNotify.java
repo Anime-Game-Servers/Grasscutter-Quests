@@ -1,27 +1,18 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.SceneAreaUnlockNotifyOuterClass.SceneAreaUnlockNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.scene.SceneAreaUnlockNotify;
 
-public class PacketSceneAreaUnlockNotify extends BasePacket {
+import java.util.Set;
+
+public class PacketSceneAreaUnlockNotify extends BaseTypedPacket<SceneAreaUnlockNotify> {
     public PacketSceneAreaUnlockNotify(int sceneId, int areaId) {
-        super(PacketOpcodes.SceneAreaUnlockNotify);
-
-        SceneAreaUnlockNotify.Builder p = SceneAreaUnlockNotify.newBuilder()
-                .setSceneId(sceneId)
-                .addAreaList(areaId);
-
-        this.setData(p);
+        this(sceneId, Set.of(areaId));
     }
 
-    public PacketSceneAreaUnlockNotify(int sceneId, Iterable<Integer> areaIds) {
-        super(PacketOpcodes.SceneAreaUnlockNotify);
-
-        SceneAreaUnlockNotify.Builder p = SceneAreaUnlockNotify.newBuilder()
-                .setSceneId(sceneId)
-                .addAllAreaList(areaIds);
-
-        this.setData(p);
+    public PacketSceneAreaUnlockNotify(int sceneId, Set<Integer> areaIds) {
+        super(new SceneAreaUnlockNotify());
+        proto.setSceneId(sceneId);
+        proto.setAreaList(areaIds.stream().toList());
     }
 }

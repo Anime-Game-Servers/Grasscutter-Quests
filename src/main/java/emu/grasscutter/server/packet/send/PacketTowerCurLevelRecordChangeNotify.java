@@ -1,17 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.TowerCurLevelRecordChangeNotifyOuterClass.TowerCurLevelRecordChangeNotify;
-import emu.grasscutter.net.proto.TowerCurLevelRecordOuterClass.TowerCurLevelRecord;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.rotation.TowerCurLevelRecord;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.rotation.TowerCurLevelRecordChangeNotify;
 
-public class PacketTowerCurLevelRecordChangeNotify extends BasePacket {
-
+public class PacketTowerCurLevelRecordChangeNotify extends BaseTypedPacket<TowerCurLevelRecordChangeNotify> {
     public PacketTowerCurLevelRecordChangeNotify(TowerCurLevelRecord recordProto) {
-        super(PacketOpcodes.TowerCurLevelRecordChangeNotify);
-
-        this.setData(TowerCurLevelRecordChangeNotify.newBuilder()
-            .setCurLevelRecord(recordProto)
-            .build());
+        super(new TowerCurLevelRecordChangeNotify());
+        proto.setCurLevelRecord(recordProto);
     }
 }

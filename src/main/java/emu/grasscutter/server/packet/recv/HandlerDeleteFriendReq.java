@@ -1,19 +1,12 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.DeleteFriendReqOuterClass.DeleteFriendReq;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.management.DeleteFriendReq;
 
-@Opcodes(PacketOpcodes.DeleteFriendReq)
-public class HandlerDeleteFriendReq extends PacketHandler {
-	
+public class HandlerDeleteFriendReq extends TypedPacketHandler<DeleteFriendReq> {
 	@Override
-	public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-		DeleteFriendReq req = DeleteFriendReq.parseFrom(payload);
-		
+    public void handle(GameSession session, byte[] header, DeleteFriendReq req) throws Exception {
 		session.getPlayer().getFriendsList().deleteFriend(req.getTargetUid());
 	}
-
 }

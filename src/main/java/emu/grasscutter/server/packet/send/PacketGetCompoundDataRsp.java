@@ -1,22 +1,18 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.CompoundQueueDataOuterClass.CompoundQueueData;
-import emu.grasscutter.net.proto.GetCompoundDataRspOuterClass.GetCompoundDataRsp;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.item.cooking.CompoundQueueData;
+import org.anime_game_servers.multi_proto.gi.messages.item.cooking.GetCompoundDataRsp;
 
 import java.util.List;
 import java.util.Set;
 
-public class PacketGetCompoundDataRsp extends BasePacket {
+public class PacketGetCompoundDataRsp extends BaseTypedPacket<GetCompoundDataRsp> {
     public PacketGetCompoundDataRsp(Set<Integer> unlockedCompounds, List<CompoundQueueData> compoundQueueData) {
-        super(PacketOpcodes.GetCompoundDataRsp);
-        var proto = GetCompoundDataRsp.newBuilder()
-            .addAllUnlockCompoundList(unlockedCompounds)
-            .addAllCompoundQueDataList(compoundQueueData)
-            .setRetcode(Retcode.RET_SUCC_VALUE)
-            .build();
-        setData(proto);
+        super(new GetCompoundDataRsp());
+        proto.setUnlockCompoundList(unlockedCompounds.stream().toList());
+        proto.setCompoundQueDataList(compoundQueueData);
+        proto.setRetcode(Retcode.RET_SUCC);
     }
 }

@@ -4,7 +4,7 @@ import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketSkipPlayerGameTimeRsp;
 import lombok.val;
-import messages.player.SkipPlayerGameTimeReq;
+import org.anime_game_servers.multi_proto.gi.messages.player.game_time.SkipPlayerGameTimeReq;
 
 public class HandlerSkipPlayerGameTimeReq extends TypedPacketHandler<SkipPlayerGameTimeReq> {
 

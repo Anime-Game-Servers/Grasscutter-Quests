@@ -2,51 +2,40 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.data.binout.SceneNpcBornEntry;
 import emu.grasscutter.game.quest.QuestGroupSuite;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.GroupSuiteNotifyOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.scene.group.GroupSuiteNotify;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class PacketGroupSuiteNotify extends BasePacket {
+public class PacketGroupSuiteNotify extends BaseTypedPacket<GroupSuiteNotify> {
 
 	/**
 	 * Real control which npc suite is loaded
      * EntityNPC is useless
 	 */
 	public PacketGroupSuiteNotify(List<SceneNpcBornEntry> npcBornEntries) {
-		super(PacketOpcodes.GroupSuiteNotify);
-
-		var proto = GroupSuiteNotifyOuterClass.GroupSuiteNotify.newBuilder();
-
+        super(new GroupSuiteNotify());
+        Map<Integer, Integer> groupMap = new HashMap<>();
         npcBornEntries.stream()
             .filter(x -> x.getGroupId() > 0 && x.getSuiteIdList() != null)
             .forEach(x -> x.getSuiteIdList().forEach(y ->
-                proto.putGroupMap(x.getGroupId(), y)
+                groupMap.put(x.getGroupId(), y) //TODO: this only saves one value of y??
             ));
-
-		this.setData(proto);
-
+        proto.setGroupMap(groupMap);
 	}
 
     public PacketGroupSuiteNotify(int groupId, int suiteId) {
-        super(PacketOpcodes.GroupSuiteNotify);
-
-        var proto = GroupSuiteNotifyOuterClass.GroupSuiteNotify.newBuilder();
-
-        proto.putGroupMap(groupId, suiteId);
-
-        this.setData(proto);
+        super(new GroupSuiteNotify());
+        proto.setGroupMap(Map.of(groupId, suiteId));
     }
 
     public PacketGroupSuiteNotify(Collection<QuestGroupSuite> questGroupSuites) {
-        super(PacketOpcodes.GroupSuiteNotify);
-
-        var proto = GroupSuiteNotifyOuterClass.GroupSuiteNotify.newBuilder();
-
-        questGroupSuites.forEach(i -> proto.putGroupMap(i.getGroup(), i.getSuite()));
-
-        this.setData(proto);
+        super(new GroupSuiteNotify());
+        Map<Integer, Integer> groupMap = new HashMap<>();
+        questGroupSuites.forEach(i -> groupMap.put(i.getGroup(), i.getSuite()));
+        proto.setGroupMap(groupMap);
     }
 }

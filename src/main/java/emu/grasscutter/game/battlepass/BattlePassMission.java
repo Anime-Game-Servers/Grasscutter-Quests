@@ -58,8 +58,8 @@ public class BattlePassMission {
 		return getStatus().getValue() >= 2;
 	}
 
-	public messages.battle_pass.BattlePassMission toProto() {
-		var proto = new messages.battle_pass.BattlePassMission(getProgress(), getId(),
+	public org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassMission toProto() {
+		var proto = new org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassMission(getProgress(), getId(),
             getStatus().getMissionStatus());
 
         proto.setTotalProgress(getData().getRefreshType() == null ? 0 : getData().getRefreshType().getValue());

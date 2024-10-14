@@ -28,15 +28,15 @@ import emu.grasscutter.game.player.Player;
 import io.netty.util.concurrent.FastThreadLocalThread;
 import lombok.Getter;
 import lombok.val;
-import messages.ability.AbilityInvokeEntry;
-import messages.ability.ModifierAction;
-import messages.ability.meta.AbilityMetaAddAbility;
-import messages.ability.meta.AbilityMetaModifierChange;
-import messages.ability.meta.AbilityMetaReInitOverrideMap;
-import messages.ability.meta.AbilityMetaTriggerElementReaction;
-import messages.general.ability.AbilityScalarType;
-import messages.general.ability.AbilityScalarValueEntry;
-import messages.general.ability.AbilityString;
+import org.anime_game_servers.multi_proto.gi.messages.ability.AbilityInvokeEntry;
+import org.anime_game_servers.multi_proto.gi.messages.ability.ModifierAction;
+import org.anime_game_servers.multi_proto.gi.messages.ability.meta.AbilityMetaAddAbility;
+import org.anime_game_servers.multi_proto.gi.messages.ability.meta.AbilityMetaModifierChange;
+import org.anime_game_servers.multi_proto.gi.messages.ability.meta.AbilityMetaReInitOverrideMap;
+import org.anime_game_servers.multi_proto.gi.messages.ability.meta.AbilityMetaTriggerElementReaction;
+import org.anime_game_servers.multi_proto.gi.messages.general.ability.AbilityScalarType;
+import org.anime_game_servers.multi_proto.gi.messages.general.ability.AbilityScalarValueEntry;
+import org.anime_game_servers.multi_proto.gi.messages.general.ability.AbilityString;
 import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
@@ -372,7 +372,11 @@ public final class AbilityManager extends BasePlayerManager {
                 //Search for the parent ability
 
                 //TODO: Research about hash
-                instancedAbilityData = GameData.getAbilityData(getAbilityName(modChange.getParentAbilityName()));
+
+                val abilityName = modChange.getParentAbilityName();
+                if(abilityName != null) {
+                    instancedAbilityData = GameData.getAbilityData(getAbilityName(abilityName));
+                }
             }
 
             if(instancedAbilityData == null ||  instancedAbilityData.modifiers == null) {

@@ -1,37 +1,20 @@
 package emu.grasscutter.server.packet.send;
 
-import java.util.Collection;
-
 import emu.grasscutter.game.inventory.GameItem;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.StoreItemDelNotifyOuterClass.StoreItemDelNotify;
-import emu.grasscutter.net.proto.StoreTypeOuterClass.StoreType;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.storage.StoreType;
+import org.anime_game_servers.multi_proto.gi.messages.item.StoreItemDelNotify;
 
-public class PacketStoreItemDelNotify extends BasePacket {
-	
-	private PacketStoreItemDelNotify() {
-		super(PacketOpcodes.StoreItemDelNotify);
-	}
-	
+import java.util.List;
+
+public class PacketStoreItemDelNotify extends BaseTypedPacket<StoreItemDelNotify> {
 	public PacketStoreItemDelNotify(GameItem item) {
-		this();
-		
-		StoreItemDelNotify.Builder proto = StoreItemDelNotify.newBuilder()
-				.setStoreType(StoreType.STORE_TYPE_PACK)
-				.addGuidList(item.getGuid());
-		
-		this.setData(proto);
+        this(List.of(item));
 	}
-	
-	public PacketStoreItemDelNotify(Collection<GameItem> items) {
-		this();
 
-		StoreItemDelNotify.Builder proto = StoreItemDelNotify.newBuilder()
-				.setStoreType(StoreType.STORE_TYPE_PACK);
-		
-		items.stream().forEach(item -> proto.addGuidList(item.getGuid()));
-		
-		this.setData(proto);
+    public PacketStoreItemDelNotify(List<GameItem> items) {
+        super(new StoreItemDelNotify());
+        proto.setStoreType(StoreType.STORE_PACK);
+        proto.setGuidList(items.stream().map(GameItem::getGuid).toList());
 	}
 }

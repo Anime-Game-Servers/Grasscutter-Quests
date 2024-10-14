@@ -3,7 +3,7 @@ package emu.grasscutter.server.packet.recv;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketEvtAvatarSitDownNotify;
-import messages.battle.EvtAvatarSitDownNotify;
+import org.anime_game_servers.multi_proto.gi.messages.battle.event.EvtAvatarSitDownNotify;
 
 public class HandlerEvtAvatarSitDownNotify extends TypedPacketHandler<EvtAvatarSitDownNotify> {
 

@@ -1,21 +1,14 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.inventory.GameItem;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.WeaponPromoteRspOuterClass.WeaponPromoteRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.item.upgrade.WeaponPromoteRsp;
 
-public class PacketWeaponPromoteRsp extends BasePacket {
-	
+public class PacketWeaponPromoteRsp extends BaseTypedPacket<WeaponPromoteRsp> {
 	public PacketWeaponPromoteRsp(GameItem item, int oldPromoteLevel) {
-		super(PacketOpcodes.WeaponPromoteRsp);
-
-		WeaponPromoteRsp proto = WeaponPromoteRsp.newBuilder()
-				.setTargetWeaponGuid(item.getGuid())
-				.setCurPromoteLevel(item.getPromoteLevel())
-				.setOldPromoteLevel(oldPromoteLevel)
-				.build();
-		
-		this.setData(proto);
+        super(new WeaponPromoteRsp());
+        proto.setTargetWeaponGuid(item.getGuid());
+        proto.setCurPromoteLevel(item.getPromoteLevel());
+        proto.setOldPromoteLevel(oldPromoteLevel);
 	}
 }

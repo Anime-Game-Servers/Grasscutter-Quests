@@ -5,8 +5,8 @@ import emu.grasscutter.game.mail.Mail;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
-import messages.general.item.EquipParam;
-import messages.mail.*;
+import org.anime_game_servers.multi_proto.gi.messages.general.item.EquipParam;
+import org.anime_game_servers.multi_proto.gi.messages.mail.*;
 
 import java.util.ArrayList;
 import java.util.List;

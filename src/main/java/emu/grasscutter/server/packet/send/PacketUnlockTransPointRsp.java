@@ -1,19 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.game.avatar.Avatar;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
-import emu.grasscutter.net.proto.UnlockTransPointRspOuterClass.UnlockTransPointRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.scene.UnlockTransPointRsp;
 
-public class PacketUnlockTransPointRsp extends BasePacket {
-    public PacketUnlockTransPointRsp(Retcode retcode) {
-        super(PacketOpcodes.UnlockTransPointRsp);
-
-        UnlockTransPointRsp proto = UnlockTransPointRsp.newBuilder()
-                .setRetcode(retcode.getNumber())
-                .build();
-
-        this.setData(proto);
+public class PacketUnlockTransPointRsp extends BaseTypedPacket<UnlockTransPointRsp> {
+    public PacketUnlockTransPointRsp(boolean unlocked) {
+        super(new UnlockTransPointRsp());
+        proto.setRetcode(unlocked ? Retcode.RET_SUCC : Retcode.RET_FAIL);
     }
 }

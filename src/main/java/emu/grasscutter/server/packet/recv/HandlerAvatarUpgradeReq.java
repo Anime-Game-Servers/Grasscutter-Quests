@@ -1,18 +1,13 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarUpgradeReqOuterClass.AvatarUpgradeReq;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.upgrade.AvatarUpgradeReq;
 
-@Opcodes(PacketOpcodes.AvatarUpgradeReq)
-public class HandlerAvatarUpgradeReq extends PacketHandler {
+public class HandlerAvatarUpgradeReq extends TypedPacketHandler<AvatarUpgradeReq> {
 
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        AvatarUpgradeReq req = AvatarUpgradeReq.parseFrom(payload);
-
+    public void handle(GameSession session, byte[] header, AvatarUpgradeReq req) throws Exception {
         // Level up avatar
         session.getServer().getInventorySystem().upgradeAvatar(
                 session.getPlayer(),

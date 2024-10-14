@@ -8,10 +8,10 @@ import emu.grasscutter.game.player.Player;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import lombok.val;
-import messages.gadget.GadgetInteractReq;
-import messages.gadget.SelectWorktopOptionReq;
-import messages.scene.entity.SceneGadgetInfo;
-import messages.scene.entity.WorktopInfo;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.GadgetInteractReq;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.SelectWorktopOptionReq;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.SceneGadgetInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.WorktopInfo;
 
 public class GadgetWorktop extends GadgetContent {
     private IntSet worktopOptions;

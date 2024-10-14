@@ -6,9 +6,9 @@ import emu.grasscutter.utils.Position;
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
 import lombok.Getter;
 import lombok.val;
-import messages.general.Vector;
-import messages.general.ability.AbilitySyncStateInfo;
-import messages.scene.entity.*;
+import org.anime_game_servers.multi_proto.gi.messages.general.Vector;
+import org.anime_game_servers.multi_proto.gi.messages.general.ability.AbilitySyncStateInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.*;
 import org.anime_game_servers.gi_lua.models.scene.group.SceneNPC;
 
 import java.util.List;

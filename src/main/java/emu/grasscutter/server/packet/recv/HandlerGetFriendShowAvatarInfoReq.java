@@ -4,7 +4,7 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketGetFriendShowAvatarInfoRsp;
-import messages.chat.GetFriendShowAvatarInfoReq;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.GetFriendShowAvatarInfoReq;
 
 public class HandlerGetFriendShowAvatarInfoReq extends TypedPacketHandler<GetFriendShowAvatarInfoReq> {
 

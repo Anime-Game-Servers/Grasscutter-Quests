@@ -6,8 +6,8 @@ import java.util.List;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.BaseTypedPacket;
-import messages.scene.SceneEntityAppearNotify;
-import messages.scene.VisionType;
+import org.anime_game_servers.multi_proto.gi.messages.scene.SceneEntityAppearNotify;
+import org.anime_game_servers.multi_proto.gi.messages.scene.VisionType;
 
 public class PacketSceneEntityAppearNotify extends BaseTypedPacket<SceneEntityAppearNotify> {
 

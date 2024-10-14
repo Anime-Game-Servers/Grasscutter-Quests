@@ -2,23 +2,19 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.binout.ScenePointEntry;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.SceneTransToPointReqOuterClass.SceneTransToPointReq;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.event.player.PlayerTeleportEvent.TeleportType;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketSceneTransToPointRsp;
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.scene.SceneTransToPointReq;
 
 import java.util.Optional;
 
-@Opcodes(PacketOpcodes.SceneTransToPointReq)
-public class HandlerSceneTransToPointReq extends PacketHandler {
+public class HandlerSceneTransToPointReq extends TypedPacketHandler<SceneTransToPointReq> {
 
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        val req = SceneTransToPointReq.parseFrom(payload);
+    public void handle(GameSession session, byte[] header, SceneTransToPointReq req) throws Exception {
         val player = session.getPlayer();
         val result = Optional.ofNullable(GameData.getScenePointEntryById(req.getSceneId(), req.getPointId()))
             .map(ScenePointEntry::getPointData)

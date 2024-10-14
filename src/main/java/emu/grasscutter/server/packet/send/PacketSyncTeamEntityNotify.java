@@ -3,9 +3,9 @@ package emu.grasscutter.server.packet.send;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
-import messages.general.ability.AbilitySyncStateInfo;
-import messages.team.SyncTeamEntityNotify;
-import messages.team.TeamEntityInfo;
+import org.anime_game_servers.multi_proto.gi.messages.general.ability.AbilitySyncStateInfo;
+import org.anime_game_servers.multi_proto.gi.messages.team.SyncTeamEntityNotify;
+import org.anime_game_servers.multi_proto.gi.messages.team.TeamEntityInfo;
 
 import java.util.ArrayList;
 

@@ -5,7 +5,7 @@ import emu.grasscutter.game.player.Player.SceneLoadState;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.*;
-import messages.scene.EnterSceneDoneReq;
+import org.anime_game_servers.multi_proto.gi.messages.scene.EnterSceneDoneReq;
 
 public class HandlerEnterSceneDoneReq extends TypedPacketHandler<EnterSceneDoneReq> {
 

@@ -6,7 +6,7 @@ import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketPostEnterSceneRsp;
 
 import lombok.val;
-import messages.scene.PostEnterSceneReq;
+import org.anime_game_servers.multi_proto.gi.messages.scene.PostEnterSceneReq;
 
 public class HandlerPostEnterSceneReq extends TypedPacketHandler<PostEnterSceneReq> {
 

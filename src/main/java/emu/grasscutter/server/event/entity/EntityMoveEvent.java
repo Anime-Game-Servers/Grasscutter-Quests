@@ -4,7 +4,7 @@ import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.server.event.types.EntityEvent;
 import emu.grasscutter.utils.Position;
 import lombok.Getter;
-import messages.scene.entity.MotionState;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.MotionState;
 
 import javax.annotation.Nullable;
 

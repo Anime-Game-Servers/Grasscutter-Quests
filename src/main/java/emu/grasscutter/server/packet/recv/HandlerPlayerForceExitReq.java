@@ -1,17 +1,17 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
+import org.anime_game_servers.multi_proto.gi.messages.player.PlayerForceExitReq;
+import org.anime_game_servers.multi_proto.gi.messages.player.PlayerForceExitRsp;
 
-@Opcodes(PacketOpcodes.PlayerForceExitReq)
-public class HandlerPlayerForceExitReq extends PacketHandler {
+public class HandlerPlayerForceExitReq extends TypedPacketHandler<PlayerForceExitReq> {
 	@Override
-	public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
+    public void handle(GameSession session, byte[] header, PlayerForceExitReq req) throws Exception {
 		// Client should auto disconnect right now
-        session.send(new BasePacket(session.getPackageIdProvider().getPacketId("PlayerForceExitRsp")));
+        session.send(new BaseTypedPacket<>(new PlayerForceExitRsp()) {
+        });
 		new Thread(){
 			@Override
 			public void run() {

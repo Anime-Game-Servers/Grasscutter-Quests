@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.BaseTypedPacket;
-import messages.scene.GetSceneAreaRsp;
+import org.anime_game_servers.multi_proto.gi.messages.scene.GetSceneAreaRsp;
 
 public class PacketGetSceneAreaRsp extends BaseTypedPacket<GetSceneAreaRsp> {
 

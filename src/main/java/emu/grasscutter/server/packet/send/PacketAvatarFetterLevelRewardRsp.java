@@ -1,35 +1,23 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarFetterLevelRewardRspOuterClass.AvatarFetterLevelRewardRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.friendship.AvatarFetterLevelRewardRsp;
 
-public class PacketAvatarFetterLevelRewardRsp extends BasePacket {
-	
+public class PacketAvatarFetterLevelRewardRsp extends BaseTypedPacket<AvatarFetterLevelRewardRsp> {
 	public PacketAvatarFetterLevelRewardRsp(long guid, int fetterLevel, int rewardId) {
-		super(PacketOpcodes.AvatarFetterLevelRewardRsp);
-		
-		AvatarFetterLevelRewardRsp proto = AvatarFetterLevelRewardRsp.newBuilder()
-                .setAvatarGuid(guid)
-                .setFetterLevel(fetterLevel)
-                .setRetcode(0)
-                .setRewardId(rewardId)
-                .build();
-		
-		this.setData(proto);
+        super(new AvatarFetterLevelRewardRsp());
+        proto.setAvatarGuid(guid);
+        proto.setFetterLevel(fetterLevel);
+        proto.setRetcode(Retcode.RET_SUCC);
+        proto.setRewardId(rewardId);
 	}
 
     public PacketAvatarFetterLevelRewardRsp(long guid, int fetterLevel) {
-		super(PacketOpcodes.AvatarFetterLevelRewardRsp);
-		
-		AvatarFetterLevelRewardRsp proto = AvatarFetterLevelRewardRsp.newBuilder()
-                .setAvatarGuid(guid)
-                .setFetterLevel(fetterLevel)
-                .setRetcode(1)
-                .setRewardId(0)
-                .build();
-		
-		this.setData(proto);
+        super(new AvatarFetterLevelRewardRsp());
+        proto.setAvatarGuid(guid);
+        proto.setFetterLevel(fetterLevel);
+        proto.setRetcode(Retcode.RET_SVR_ERROR);
+        proto.setRewardId(0);
 	}
-
 }

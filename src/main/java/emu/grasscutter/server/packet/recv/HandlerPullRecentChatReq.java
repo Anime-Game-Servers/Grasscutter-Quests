@@ -1,15 +1,12 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
-import emu.grasscutter.server.packet.send.PacketPullRecentChatRsp;
+import org.anime_game_servers.multi_proto.gi.messages.community.chat.PullRecentChatReq;
 
-@Opcodes(PacketOpcodes.PullRecentChatReq)
-public class HandlerPullRecentChatReq extends PacketHandler {
+public class HandlerPullRecentChatReq extends TypedPacketHandler<PullRecentChatReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
+    public void handle(GameSession session, byte[] header, PullRecentChatReq req) throws Exception {
         session.getServer().getChatSystem().handlePullRecentChatReq(session.getPlayer());
     }
 }

@@ -4,7 +4,7 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import lombok.val;
-import messages.ability.ClientAbilityInitFinishNotify;
+import org.anime_game_servers.multi_proto.gi.messages.ability.ClientAbilityInitFinishNotify;
 
 public class HandlerClientAbilityInitFinishNotify extends TypedPacketHandler<ClientAbilityInitFinishNotify> {
 

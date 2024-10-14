@@ -7,8 +7,8 @@ import emu.grasscutter.game.quest.GameQuest;
 import emu.grasscutter.game.quest.enums.LogicType;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
-import messages.dungeon.DailyDungeonEntryInfo;
-import messages.dungeon.GetDailyDungeonEntryInfoRsp;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.entry.DailyDungeonEntryInfo;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.entry.GetDailyDungeonEntryInfoRsp;
 import org.anime_game_servers.core.gi.enums.QuestState;
 
 import java.util.*;

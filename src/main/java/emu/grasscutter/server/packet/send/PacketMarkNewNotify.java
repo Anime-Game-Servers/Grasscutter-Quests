@@ -1,25 +1,14 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.*;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.scene.map.MarkNewNotify;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class PacketMarkNewNotify extends BasePacket {
-
-    public PacketMarkNewNotify(Player player, int markNewType, ArrayList<Integer> idList) {
-        super(PacketOpcodes.MarkNewNotify);
-
-        MarkNewNotifyOuterClass.MarkNewNotify.Builder proto = MarkNewNotifyOuterClass.MarkNewNotify.newBuilder();
+public class PacketMarkNewNotify extends BaseTypedPacket<MarkNewNotify> {
+    public PacketMarkNewNotify(int markNewType, List<Integer> idList) {
+        super(new MarkNewNotify());
         proto.setMarkNewType(markNewType);
-        for (Integer id: idList) {
-            proto.addIdList(id);
-        }
-
-        MarkNewNotifyOuterClass.MarkNewNotify data = proto.build();
-        this.setData(data);
+        proto.setIdList(idList);
     }
 }

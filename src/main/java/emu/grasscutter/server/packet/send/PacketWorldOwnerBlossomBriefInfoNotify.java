@@ -1,16 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.world.World;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.WorldOwnerBlossomBriefInfoNotifyOuterClass.WorldOwnerBlossomBriefInfoNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.blossom.WorldOwnerBlossomBriefInfoNotify;
 
-public class PacketWorldOwnerBlossomBriefInfoNotify extends BasePacket {
+public class PacketWorldOwnerBlossomBriefInfoNotify extends BaseTypedPacket<WorldOwnerBlossomBriefInfoNotify> {
     public PacketWorldOwnerBlossomBriefInfoNotify(World world) {
-        super(PacketOpcodes.WorldOwnerBlossomBriefInfoNotify);
-
-        this.setData(WorldOwnerBlossomBriefInfoNotify.newBuilder()
-            .addAllBriefInfoList(world.getOwner().getBlossomManager().getBriefInfo())
-            .build());
+        super(new WorldOwnerBlossomBriefInfoNotify());
+        proto.setBriefInfoList(world.getOwner().getBlossomManager().getBriefInfo());
     }
 }

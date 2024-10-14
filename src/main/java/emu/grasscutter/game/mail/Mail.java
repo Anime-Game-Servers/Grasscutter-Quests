@@ -14,10 +14,11 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import messages.general.item.EquipParam;
-import messages.mail.MailCollectState;
-import messages.mail.MailData;
-import messages.mail.MailTextContent;
+import org.anime_game_servers.multi_proto.gi.messages.general.item.EquipParam;
+import org.anime_game_servers.multi_proto.gi.messages.mail.MailCollectState;
+import org.anime_game_servers.multi_proto.gi.messages.mail.MailData;
+import org.anime_game_servers.multi_proto.gi.messages.mail.MailItem;
+import org.anime_game_servers.multi_proto.gi.messages.mail.MailTextContent;
 import org.bson.types.ObjectId;
 
 @Entity(value = "mail", useDiscriminator = false)
@@ -58,7 +59,8 @@ public class Mail {
     }
 
     public MailData toProto(Player player) {
-        val proto = new MailData(player.getMailId(this));
+        val proto = new MailData();
+        proto.setMailId(player.getMailId(this));
         proto.setMailTextContent(this.mailContent.toProto());
         proto.setItemList(this.itemList.stream().map(MailItem::toProto).toList());
         proto.setSendTime((int) this.sendTime);
@@ -125,8 +127,9 @@ public class Mail {
             this.itemLevel = itemLevel;
         }
 
-        public messages.mail.MailItem toProto() {
-            return new messages.mail.MailItem(
+        public org.anime_game_servers.multi_proto.gi.messages.mail.MailItem toProto() {
+            return new org.anime_game_servers.multi_proto.gi.messages.mail.MailItem(
+                null,
                 new EquipParam(this.itemId, this.itemCount, this.itemLevel,
                     0 //mock promote level
                     )

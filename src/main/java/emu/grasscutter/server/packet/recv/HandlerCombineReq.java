@@ -1,26 +1,17 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.data.common.ItemParamData;
-import emu.grasscutter.data.excels.CombineData;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.CombineReqOuterClass;
-import emu.grasscutter.net.proto.ItemParamOuterClass;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketCombineRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.item.ItemParam;
+import org.anime_game_servers.multi_proto.gi.messages.item.combine.CombineReq;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Opcodes(PacketOpcodes.CombineReq)
-public class HandlerCombineReq extends PacketHandler {
-
+public class HandlerCombineReq extends TypedPacketHandler<CombineReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-
-        CombineReqOuterClass.CombineReq req = CombineReqOuterClass.CombineReq.parseFrom(payload);
-
+    public void handle(GameSession session, byte[] header, CombineReq req) throws Exception {
         var result = session.getServer().getCombineSystem()
                 .combineItem(session.getPlayer(), req.getCombineId(), req.getCombineCount());
 
@@ -36,13 +27,10 @@ public class HandlerCombineReq extends PacketHandler {
                 toItemParamList(result.getBack())));
     }
 
-    private List<ItemParamOuterClass.ItemParam> toItemParamList(List<ItemParamData> list) {
+    private List<ItemParam> toItemParamList(List<ItemParamData> list) {
         return list.stream()
-                .map(item -> ItemParamOuterClass.ItemParam.newBuilder()
-                        .setItemId(item.getId())
-                        .setCount(item.getCount())
-                        .build())
-                .collect(Collectors.toList());
+            .map(item -> new ItemParam(item.getId(), item.getCount()))
+            .toList();
     }
 }
 

@@ -1,18 +1,14 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.DungeonSlipRevivePointActivateReqOuterClass.DungeonSlipRevivePointActivateReq;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketDungeonSlipRevivePointActivateRsp;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.DungeonSlipRevivePointActivateReq;
 
-@Opcodes(PacketOpcodes.DungeonSlipRevivePointActivateReq)
-public class HandlerDungeonSlipRevivePointActivateReq extends PacketHandler {
+public class HandlerDungeonSlipRevivePointActivateReq extends TypedPacketHandler<DungeonSlipRevivePointActivateReq> {
 
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        var req = DungeonSlipRevivePointActivateReq.parseFrom(payload);
+    public void handle(GameSession session, byte[] header, DungeonSlipRevivePointActivateReq req) throws Exception {
         var dungeonManager = session.getPlayer().getScene().getDungeonManager();
 
         boolean success = false;

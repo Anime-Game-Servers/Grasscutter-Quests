@@ -1,22 +1,15 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.Grasscutter;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.UpdatePlayerShowAvatarListReqOuterClass;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketUpdatePlayerShowAvatarListRsp;
+import org.anime_game_servers.multi_proto.gi.messages.community.player_presentation.UpdatePlayerShowAvatarListReq;
 
-@Opcodes(PacketOpcodes.UpdatePlayerShowAvatarListReq)
-public class HandlerUpdatePlayerShowAvatarListReq extends PacketHandler {
+public class HandlerUpdatePlayerShowAvatarListReq extends TypedPacketHandler<UpdatePlayerShowAvatarListReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        UpdatePlayerShowAvatarListReqOuterClass.UpdatePlayerShowAvatarListReq req = UpdatePlayerShowAvatarListReqOuterClass.UpdatePlayerShowAvatarListReq.parseFrom(payload);
-
-        session.getPlayer().setShowAvatars(req.getIsShowAvatar());
-        session.getPlayer().setShowAvatarList(req.getShowAvatarIdListList());
-
-        session.send(new PacketUpdatePlayerShowAvatarListRsp(req.getIsShowAvatar(), req.getShowAvatarIdListList()));
+    public void handle(GameSession session, byte[] header, UpdatePlayerShowAvatarListReq req) throws Exception {
+        session.getPlayer().setShowAvatars(req.isShowAvatar());
+        session.getPlayer().setShowAvatarList(req.getShowAvatarIdList());
+        session.send(new PacketUpdatePlayerShowAvatarListRsp(req.isShowAvatar(), req.getShowAvatarIdList()));
     }
 }

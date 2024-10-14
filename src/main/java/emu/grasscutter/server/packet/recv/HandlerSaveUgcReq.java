@@ -6,16 +6,16 @@ import emu.grasscutter.game.activity.musicgame.MusicGameBeatmap;
 import emu.grasscutter.game.activity.musicgame.MusicGamePlayerData;
 import emu.grasscutter.game.props.ActivityType;
 import emu.grasscutter.net.packet.TypedPacketHandler;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketActivityInfoNotify;
 import emu.grasscutter.server.packet.send.PacketMusicGameCreateBeatmapRsp;
 import emu.grasscutter.utils.Utils;
 import lombok.val;
-import messages.activity.user_generated_content.SaveUgcReq;
-import messages.activity.user_generated_content.UgcType;
-import messages.activity.user_generated_content.music_game.UgcMusicBriefInfo;
-import messages.activity.user_generated_content.music_game.UgcMusicRecord;
+import org.anime_game_servers.multi_proto.gi.messages.activity.user_generated_content.SaveUgcReq;
+import org.anime_game_servers.multi_proto.gi.messages.activity.user_generated_content.UgcType;
+import org.anime_game_servers.multi_proto.gi.messages.activity.user_generated_content.music_game.UgcMusicBriefInfo;
+import org.anime_game_servers.multi_proto.gi.messages.activity.user_generated_content.music_game.UgcMusicRecord;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
 import java.util.Objects;
 
@@ -26,7 +26,7 @@ public class HandlerSaveUgcReq extends TypedPacketHandler<SaveUgcReq> {
 
         // We only support music game user generated content
         if(req.getUgcType() != UgcType.UGC_TYPE_MUSIC_GAME){
-            session.send(new PacketMusicGameCreateBeatmapRsp(RetcodeOuterClass.Retcode.RET_UGC_DISABLED, req.getUgcType()));
+            session.send(new PacketMusicGameCreateBeatmapRsp(Retcode.RET_UGC_DISABLED, req.getUgcType()));
             return;
         }
         val briefInfo = (UgcMusicBriefInfo)req.getBrief().getValue();
@@ -52,7 +52,7 @@ public class HandlerSaveUgcReq extends TypedPacketHandler<SaveUgcReq> {
 
         val playerData = session.getPlayer().getActivityManager().getPlayerActivityDataByActivityType(ActivityType.NEW_ACTIVITY_MUSIC_GAME);
         if(playerData.isEmpty()){
-            session.send(new PacketMusicGameCreateBeatmapRsp(RetcodeOuterClass.Retcode.RET_UGC_DATA_NOT_FOUND, req.getUgcType()));
+            session.send(new PacketMusicGameCreateBeatmapRsp(Retcode.RET_UGC_DATA_NOT_FOUND, req.getUgcType()));
             return;
         }
 

@@ -1,14 +1,13 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.TowerGetFloorStarRewardRspOuterClass.TowerGetFloorStarRewardRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.rotation.TowerGetFloorStarRewardRsp;
 
-public class PacketTowerGetFloorStarRewardRsp extends BasePacket {
+public class PacketTowerGetFloorStarRewardRsp extends BaseTypedPacket<TowerGetFloorStarRewardRsp> {
     public PacketTowerGetFloorStarRewardRsp(boolean result, int floorId) {
-        super(PacketOpcodes.TowerGetFloorStarRewardRsp);
-        this.setData(TowerGetFloorStarRewardRsp.newBuilder()
-            .setFloorId(floorId)
-            .setRetcode(result ? 0 : 1));
+        super(new TowerGetFloorStarRewardRsp());
+        proto.setFloorId(floorId);
+        proto.setRetcode(result ? Retcode.RET_SUCC : Retcode.RET_SVR_ERROR);
     }
 }

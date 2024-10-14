@@ -1,28 +1,15 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.WidgetDoBagRspOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.item.widget.use.WidgetDoBagRsp;
 
-public class PacketWidgetDoBagRsp extends BasePacket {
-
+public class PacketWidgetDoBagRsp extends BaseTypedPacket<WidgetDoBagRsp> {
     public PacketWidgetDoBagRsp(int materialId) {
-        super(PacketOpcodes.WidgetDoBagRsp);
-
-        WidgetDoBagRspOuterClass.WidgetDoBagRsp proto = WidgetDoBagRspOuterClass.WidgetDoBagRsp.newBuilder()
-                .setMaterialId(materialId)
-                .setRetcode(0)
-                .build();
-
-        this.setData(proto);
+        super(new WidgetDoBagRsp());
+        proto.setMaterialId(materialId);
     }
 
     public PacketWidgetDoBagRsp() {
-        super(PacketOpcodes.WidgetDoBagRsp);
-
-        WidgetDoBagRspOuterClass.WidgetDoBagRsp proto = WidgetDoBagRspOuterClass.WidgetDoBagRsp.newBuilder()
-                .build();
-
-        this.setData(proto);
+        super(new WidgetDoBagRsp());
     }
 }

@@ -1,30 +1,23 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.tower.TowerData;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.TowerLevelStarCondDataOuterClass.TowerLevelStarCondData;
-import emu.grasscutter.net.proto.TowerLevelStarCondNotifyOuterClass.TowerLevelStarCondNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.run.TowerLevelStarCondData;
+import org.anime_game_servers.multi_proto.gi.messages.spiral_abyss.run.TowerLevelStarCondNotify;
 
-public class PacketTowerLevelStarCondNotify extends BasePacket {
+import java.util.stream.Stream;
 
+public class PacketTowerLevelStarCondNotify extends BaseTypedPacket<TowerLevelStarCondNotify> {
     public PacketTowerLevelStarCondNotify(TowerData data) {
-        super(PacketOpcodes.TowerLevelStarCondNotify);
-
-        TowerLevelStarCondNotify proto = TowerLevelStarCondNotify.newBuilder()
-            .setFloorId(data.getCurrentFloorId())
-            .setLevelIndex(data.getCurrentLevelIndex())
-            .addCondDataList(TowerLevelStarCondData.newBuilder()
-                .setCondValue(1)
-                .build())
-            .addCondDataList(TowerLevelStarCondData.newBuilder()
-                .setCondValue(2)
-                .build())
-            .addCondDataList(TowerLevelStarCondData.newBuilder()
-                .setCondValue(3)
-                .build())
-            .build();
-
-        this.setData(proto);
+        super(new TowerLevelStarCondNotify());
+        proto.setFloorId(data.getCurrentFloorId());
+        proto.setLevelIndex(data.getCurrentLevelIndex());
+        proto.setCondDataList(Stream.of(1, 2, 3)
+            .map(i -> {
+                val towerLevelStarCondData = new TowerLevelStarCondData();
+                towerLevelStarCondData.setCondValue(i);
+                return towerLevelStarCondData;
+            }).toList());
     }
 }

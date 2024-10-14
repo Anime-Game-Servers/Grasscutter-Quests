@@ -1,23 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
-import java.util.Map;
-
-import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.MonsterForceAlertNotifyOuterClass.MonsterForceAlertNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.battle.MonsterForceAlertNotify;
 
 //Sets openState to value
-public class PacketMonsterForceAlertNotify extends BasePacket {
-
+public class PacketMonsterForceAlertNotify extends BaseTypedPacket<MonsterForceAlertNotify> {
     public PacketMonsterForceAlertNotify(int monsterId) {
-        super(PacketOpcodes.MonsterForceAlertNotify);
-
-        MonsterForceAlertNotify proto = MonsterForceAlertNotify.newBuilder()
-            .setMonsterEntityId(monsterId)
-            .build();
-
-        this.setData(proto);
+        super(new MonsterForceAlertNotify());
+        proto.setMonsterEntityId(monsterId);
     }
-
 }

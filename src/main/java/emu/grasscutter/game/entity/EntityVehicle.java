@@ -15,11 +15,11 @@ import it.unimi.dsi.fastutil.ints.Int2FloatOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import messages.general.Vector;
-import messages.general.ability.AbilitySyncStateInfo;
-import messages.general.vehicle.VehicleInfo;
-import messages.general.vehicle.VehicleMember;
-import messages.scene.entity.*;
+import org.anime_game_servers.multi_proto.gi.messages.general.Vector;
+import org.anime_game_servers.multi_proto.gi.messages.general.ability.AbilitySyncStateInfo;
+import org.anime_game_servers.multi_proto.gi.messages.general.vehicle.VehicleInfo;
+import org.anime_game_servers.multi_proto.gi.messages.general.vehicle.VehicleMember;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.*;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

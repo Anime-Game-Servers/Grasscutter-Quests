@@ -2,21 +2,15 @@ package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.game.activity.trialavatar.TrialAvatarActivityHandler;
 import emu.grasscutter.game.props.ActivityType;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.packet.send.PacketEnterTrialAvatarActivityDungeonRsp;
-import emu.grasscutter.net.proto.EnterTrialAvatarActivityDungeonReqOuterClass.EnterTrialAvatarActivityDungeonReq;
+import org.anime_game_servers.multi_proto.gi.messages.activity.trial.EnterTrialAvatarActivityDungeonReq;
 import emu.grasscutter.server.game.GameSession;
 import lombok.val;
 
-@Opcodes(PacketOpcodes.EnterTrialAvatarActivityDungeonReq)
-public class HandlerEnterTrialAvatarActivityDungeonReq extends PacketHandler {
-
+public class HandlerEnterTrialAvatarActivityDungeonReq extends TypedPacketHandler<EnterTrialAvatarActivityDungeonReq> {
 	@Override
-	public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        val req = EnterTrialAvatarActivityDungeonReq.parseFrom(payload);
-
+    public void handle(GameSession session, byte[] header, EnterTrialAvatarActivityDungeonReq req) throws Exception {
         val handler = session.getPlayer().getActivityManager()
             .getActivityHandlerAs(ActivityType.NEW_ACTIVITY_TRIAL_AVATAR, TrialAvatarActivityHandler.class);
 
@@ -27,5 +21,4 @@ public class HandlerEnterTrialAvatarActivityDungeonReq extends PacketHandler {
             req.getTrialAvatarIndexId(),
             result));
 	}
-
 }

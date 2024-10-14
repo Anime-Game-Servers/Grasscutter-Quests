@@ -1,18 +1,11 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarGainCostumeNotifyOuterClass.AvatarGainCostumeNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.cosmetic.AvatarGainCostumeNotify;
 
-public class PacketAvatarGainCostumeNotify extends BasePacket {
-	
+public class PacketAvatarGainCostumeNotify extends BaseTypedPacket<AvatarGainCostumeNotify> {
 	public PacketAvatarGainCostumeNotify(int costumeId) {
-		super(PacketOpcodes.AvatarGainCostumeNotify);
-
-		AvatarGainCostumeNotify proto = AvatarGainCostumeNotify.newBuilder()
-				.setCostumeId(costumeId)
-				.build();
-		
-		this.setData(proto);
+        super(new AvatarGainCostumeNotify());
+        proto.setCostumeId(costumeId);
 	}
 }

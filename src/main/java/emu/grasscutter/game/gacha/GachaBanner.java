@@ -1,14 +1,18 @@
 package emu.grasscutter.game.gacha;
 
-import static emu.grasscutter.config.Configuration.*;
-
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.proto.GachaInfoOuterClass.GachaInfo;
-import emu.grasscutter.net.proto.GachaUpInfoOuterClass.GachaUpInfo;
 import emu.grasscutter.utils.Utils;
 import lombok.Getter;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.wishing.GachaInfo;
+import org.anime_game_servers.multi_proto.gi.messages.wishing.GachaUpInfo;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static emu.grasscutter.config.Configuration.*;
 
 public class GachaBanner {
     @Getter private int gachaType = -1;
@@ -174,60 +178,62 @@ public class GachaBanner {
             case Integer.MAX_VALUE -> Integer.MAX_VALUE;
             default -> Math.max(gachaTimesLimit - gachaInfo.getTotalPulls(), 0);
         };
-        GachaInfo.Builder info = GachaInfo.newBuilder()
-                .setGachaType(this.getGachaType())
-                .setScheduleId(this.getScheduleId())
-                .setBeginTime(this.getBeginTime())
-                .setEndTime(this.getEndTime())
-                .setCostItemId(this.costItemId)
-                .setCostItemNum(this.costItemAmount)
-                .setTenCostItemId(this.costItemId10)
-                .setTenCostItemNum(this.costItemAmount10)
-                .setGachaPrefabPath(this.getPrefabPath())
-                .setGachaPreviewPrefabPath(this.getPreviewPrefabPath())
-                .setGachaProbUrl(details)
-                .setGachaProbUrlOversea(details)
-                .setGachaRecordUrl(record)
-                .setGachaRecordUrlOversea(record)
-                .setLeftGachaTimes(leftGachaTimes)
-                .setGachaTimesLimit(gachaTimesLimit)
-                .setGachaSortId(this.getSortId());
+        val info = new GachaInfo();
+        info.setGachaType(this.getGachaType());
+        info.setScheduleId(this.getScheduleId());
+        info.setBeginTime(this.getBeginTime());
+        info.setEndTime(this.getEndTime());
+        info.setCostItemId(this.costItemId);
+        info.setCostItemNum(this.costItemAmount);
+        info.setTenCostItemId(this.costItemId10);
+        info.setTenCostItemNum(this.costItemAmount10);
+        info.setGachaPrefabPath(this.getPrefabPath());
+        info.setGachaPreviewPrefabPath(this.getPreviewPrefabPath());
+        info.setGachaProbUrl(details);
+        info.setGachaProbUrlOversea(details);
+        info.setGachaRecordUrl(record);
+        info.setGachaRecordUrlOversea(record);
+        info.setLeftGachaTimes(leftGachaTimes);
+        info.setGachaTimesLimit(gachaTimesLimit);
+        info.setGachaSortId(this.getSortId());
 
         if (hasEpitomized()) {
-            info.setWishItemId(gachaInfo.getWishItemId())
-                .setWishProgress(gachaInfo.getFailedChosenItemPulls())
-                .setWishMaxProgress(this.getWishMaxProgress());
+            info.setWishItemId(gachaInfo.getWishItemId());
+            info.setWishProgress(gachaInfo.getFailedChosenItemPulls());
+            info.setWishMaxProgress(this.getWishMaxProgress());
         }
 
         if (this.getTitlePath() != null) {
             info.setTitleTextmap(this.getTitlePath());
         }
 
+        val gachaUpInfoList = new ArrayList<GachaUpInfo>();
         if (this.getRateUpItems5().length > 0) {
-            GachaUpInfo.Builder upInfo = GachaUpInfo.newBuilder().setItemParentType(1);
+            val upInfo = new GachaUpInfo();
+            upInfo.setItemParentType(1);
 
-            for (int id : getRateUpItems5()) {
-                upInfo.addItemIdList(id);
-                info.addDisplayUp5ItemList(id);
-            }
+            val rateUpItems5List = Arrays.stream(getRateUpItems5()).boxed().toList();
+            upInfo.setItemIdList(rateUpItems5List);
+            info.setDisplayUp5ItemList(rateUpItems5List);
 
-            info.addGachaUpInfoList(upInfo);
+            gachaUpInfoList.add(upInfo);
         }
 
         if (this.getRateUpItems4().length > 0) {
-            GachaUpInfo.Builder upInfo = GachaUpInfo.newBuilder().setItemParentType(2);
+            val upInfo = new GachaUpInfo();
+            upInfo.setItemParentType(2);
 
-            for (int id : getRateUpItems4()) {
-                upInfo.addItemIdList(id);
-                if (info.getDisplayUp4ItemListCount() == 0) {
-                    info.addDisplayUp4ItemList(id);
-                }
+            val rateUpItems4List = Arrays.stream(getRateUpItems4()).boxed().toList();
+            upInfo.setItemIdList(rateUpItems4List);
+            if (info.getDisplayUp4ItemList().isEmpty()) {
+                info.setDisplayUp4ItemList(rateUpItems4List);
             }
 
-            info.addGachaUpInfoList(upInfo);
+            gachaUpInfoList.add(upInfo);
         }
+        info.setGachaUpInfoList(gachaUpInfoList);
 
-        return info.build();
+        return info;
     }
 
     public enum BannerType {

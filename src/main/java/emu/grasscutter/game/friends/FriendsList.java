@@ -1,18 +1,14 @@
 package emu.grasscutter.game.friends;
 
-import java.util.List;
-
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.player.BasePlayerManager;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.proto.DealAddFriendResultTypeOuterClass.DealAddFriendResultType;
-import emu.grasscutter.server.packet.send.PacketAskAddFriendNotify;
-import emu.grasscutter.server.packet.send.PacketAskAddFriendRsp;
-import emu.grasscutter.server.packet.send.PacketDealAddFriendRsp;
-import emu.grasscutter.server.packet.send.PacketDeleteFriendNotify;
-import emu.grasscutter.server.packet.send.PacketDeleteFriendRsp;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.management.DealAddFriendResultType;
+import emu.grasscutter.server.packet.send.*;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+
+import java.util.List;
 
 public class FriendsList extends BasePlayerManager {
     private final Int2ObjectMap<Friendship> friends;
@@ -99,9 +95,9 @@ public class FriendsList extends BasePlayerManager {
         }
 
         // Handle
-        if (result == DealAddFriendResultType.DEAL_ADD_FRIEND_RESULT_TYPE_ACCEPT) { // Request accepted
-            myFriendship.setIsFriend(true);
-            theirFriendship.setIsFriend(true);
+        if (result == DealAddFriendResultType.DEAL_ADD_FRIEND_ACCEPT) { // Request accepted
+            myFriendship.setFriend(true);
+            theirFriendship.setFriend(true);
 
             this.getPendingFriends().remove(myFriendship.getOwnerId());
             this.addFriend(myFriendship);

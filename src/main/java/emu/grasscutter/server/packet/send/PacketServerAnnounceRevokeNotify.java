@@ -1,18 +1,13 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ServerAnnounceRevokeNotifyOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.activity.announce.ServerAnnounceRevokeNotify;
 
-public class PacketServerAnnounceRevokeNotify extends BasePacket {
+import java.util.List;
 
+public class PacketServerAnnounceRevokeNotify extends BaseTypedPacket<ServerAnnounceRevokeNotify> {
 	public PacketServerAnnounceRevokeNotify(int tplId) {
-		super(PacketOpcodes.ServerAnnounceRevokeNotify);
-
-        var proto = ServerAnnounceRevokeNotifyOuterClass.ServerAnnounceRevokeNotify.newBuilder();
-
-        proto.addConfigIdList(tplId);
-
-        this.setData(proto);
+        super(new ServerAnnounceRevokeNotify());
+        proto.setConfigIdList(List.of(tplId));
 	}
 }

@@ -1,7 +1,5 @@
 package emu.grasscutter.game.entity;
 
-import java.util.*;
-
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.game.ability.Ability;
 import emu.grasscutter.game.ability.AbilityModifierController;
@@ -10,7 +8,6 @@ import emu.grasscutter.game.props.*;
 import emu.grasscutter.game.world.Scene;
 import emu.grasscutter.game.world.SpawnDataEntry;
 import emu.grasscutter.game.world.World;
-import emu.grasscutter.net.proto.VectorOuterClass.Vector;
 import emu.grasscutter.scripts.data.controller.EntityController;
 import emu.grasscutter.server.event.entity.EntityDamageEvent;
 import emu.grasscutter.server.event.entity.EntityDeathEvent;
@@ -22,13 +19,14 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import messages.gadget.GadgetInteractReq;
-import messages.scene.entity.FightPropPair;
-import messages.scene.entity.MotionInfo;
-import messages.scene.entity.MotionState;
-import messages.scene.entity.SceneEntityInfo;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.GadgetInteractReq;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.FightPropPair;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.MotionInfo;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.MotionState;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.SceneEntityInfo;
 
 import javax.annotation.Nullable;
+import java.util.*;
 
 public abstract class GameEntity {
     @Getter private final Scene scene;
@@ -121,7 +119,7 @@ public abstract class GameEntity {
     }
 
     protected MotionInfo getMotionInfo() {
-        val speed = new messages.general.Vector();
+        val speed = new org.anime_game_servers.multi_proto.gi.messages.general.Vector();
         return new MotionInfo(this.getPosition().toProto(), this.getRotation().toProto(), speed, this.getMotionState());
     }
 

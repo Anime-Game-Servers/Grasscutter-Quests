@@ -1,21 +1,15 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.PlayerEnterDungeonReqOuterClass.PlayerEnterDungeonReq;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketPlayerEnterDungeonRsp;
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.PlayerEnterDungeonReq;
 
-@Opcodes(PacketOpcodes.PlayerEnterDungeonReq)
-public class HandlerPlayerEnterDungeonReq extends PacketHandler {
+public class HandlerPlayerEnterDungeonReq extends TypedPacketHandler<PlayerEnterDungeonReq> {
 
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        // Auto template
-        PlayerEnterDungeonReq req = PlayerEnterDungeonReq.parseFrom(payload);
-
+    public void handle(GameSession session, byte[] header, PlayerEnterDungeonReq req) throws Exception {
         val success = session.getServer().getDungeonSystem().enterDungeon(session.getPlayer(), req.getPointId(), req.getDungeonId());
         session.getPlayer().sendPacket(new PacketPlayerEnterDungeonRsp(req.getPointId(), req.getDungeonId(), success));
     }

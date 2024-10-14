@@ -1,17 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.GetAuthkeyRspOuterClass.GetAuthkeyRsp;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.mail.GetAuthkeyRsp;
 
-public class PacketGetAuthkeyRsp extends BasePacket {
-	
+public class PacketGetAuthkeyRsp extends BaseTypedPacket<GetAuthkeyRsp> {
 	public PacketGetAuthkeyRsp() {
-		super(PacketOpcodes.GetAuthkeyRsp);
-		
-		GetAuthkeyRsp proto = GetAuthkeyRsp.newBuilder().setRetcode(RetcodeOuterClass.Retcode.RET_SVR_ERROR_VALUE).build();
-		
-		this.setData(proto);
+        super(new GetAuthkeyRsp());
+        proto.setRetCode(Retcode.RET_SVR_ERROR);
 	}
 }

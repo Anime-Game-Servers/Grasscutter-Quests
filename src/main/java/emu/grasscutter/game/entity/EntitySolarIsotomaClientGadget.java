@@ -4,7 +4,7 @@ import emu.grasscutter.game.entity.platform.EntitySolarIsotomaElevatorPlatform;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.world.Scene;
 import lombok.Getter;
-import messages.battle.EvtCreateGadgetNotify;
+import org.anime_game_servers.multi_proto.gi.messages.battle.event.EvtCreateGadgetNotify;
 
 public class EntitySolarIsotomaClientGadget extends EntityClientGadget {
     public static final int GADGET_ID = 41038001;

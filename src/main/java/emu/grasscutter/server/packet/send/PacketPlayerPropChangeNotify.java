@@ -2,23 +2,15 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.PlayerProperty;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.PlayerPropChangeNotifyOuterClass.PlayerPropChangeNotify;
-import emu.grasscutter.utils.ProtoHelper;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.player.PlayerPropChangeNotify;
 
-public class PacketPlayerPropChangeNotify extends BasePacket {
+public class PacketPlayerPropChangeNotify extends BaseTypedPacket<PlayerPropChangeNotify> {
 
     public PacketPlayerPropChangeNotify(Player player, PlayerProperty prop, int delta) {
-        super(PacketOpcodes.PlayerPropChangeNotify);
-
+        super(new PlayerPropChangeNotify());
         this.buildHeader(0);
-
-        PlayerPropChangeNotify proto = PlayerPropChangeNotify.newBuilder()
-                .setPropType(prop.getId())
-                .setPropDelta(delta)
-                .build();
-
-        this.setData(proto);
+        proto.setPropType(prop.getId());
+        proto.setPropDelta(delta);
     }
 }

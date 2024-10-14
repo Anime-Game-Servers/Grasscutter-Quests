@@ -8,10 +8,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-import messages.activity.user_generated_content.music_game.UgcMusicBriefInfo;
-import messages.activity.user_generated_content.music_game.UgcMusicNote;
-import messages.activity.user_generated_content.music_game.UgcMusicRecord;
-import messages.activity.user_generated_content.music_game.UgcMusicTrack;
+import org.anime_game_servers.multi_proto.gi.messages.activity.user_generated_content.music_game.UgcMusicBriefInfo;
+import org.anime_game_servers.multi_proto.gi.messages.activity.user_generated_content.music_game.UgcMusicNote;
+import org.anime_game_servers.multi_proto.gi.messages.activity.user_generated_content.music_game.UgcMusicRecord;
+import org.anime_game_servers.multi_proto.gi.messages.activity.user_generated_content.music_game.UgcMusicTrack;
 
 import java.util.List;
 import java.util.Random;

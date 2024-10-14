@@ -1,32 +1,32 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.game.home.GameHome;
 import emu.grasscutter.game.home.HomeBlockItem;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.HomeMarkPointNotifyOuterClass;
-import emu.grasscutter.net.proto.HomeMarkPointSceneDataOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.mark_point.HomeMarkPointNotify;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.mark_point.HomeMarkPointSceneData;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-public class PacketHomeMarkPointNotify extends BasePacket {
+public class PacketHomeMarkPointNotify extends BaseTypedPacket<HomeMarkPointNotify> {
 
 	public PacketHomeMarkPointNotify(Player player) {
-		super(PacketOpcodes.HomeMarkPointNotify);
-
-		var proto = HomeMarkPointNotifyOuterClass.HomeMarkPointNotify.newBuilder();
+        super(new HomeMarkPointNotify());
 
 		if(player.getRealmList() == null){
 			return;
 		}
+
+        List<HomeMarkPointSceneData> markPointDataList = new ArrayList<>();
 		for(var moduleId : player.getRealmList()){
 			var homeScene = player.getHome().getHomeSceneItem(moduleId + 2000);
 
-			var markPointData = HomeMarkPointSceneDataOuterClass.HomeMarkPointSceneData.newBuilder()
-					.setModuleId(moduleId)
-					.setSceneId(moduleId + 2000)
-					.setTeapotSpiritPos(homeScene.getDjinnPos().toProtoOld());
+            var markPointData = new HomeMarkPointSceneData();
+            markPointData.setModuleId(moduleId);
+            markPointData.setSceneId(moduleId + 2000);
+            markPointData.setTeapotSpiritPos(homeScene.getDjinnPos().toProto());
 
 			// Now it only supports the teleport point
 			// TODO add more types
@@ -37,10 +37,9 @@ public class PacketHomeMarkPointNotify extends BasePacket {
 					.map(x -> x.toMarkPointProto(3))
 					.toList();
 
-			markPointData.addAllFurnitureList(marks);
-			proto.addMarkPointDataList(markPointData);
+            markPointData.setFurnitureList(marks);
+            markPointDataList.add(markPointData);
 		}
-
-		this.setData(proto);
+        proto.setMarkPointDataList(markPointDataList);
 	}
 }

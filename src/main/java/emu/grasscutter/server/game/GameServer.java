@@ -36,7 +36,7 @@ import emu.grasscutter.task.TaskMap;
 import kcp.highway.ChannelConfig;
 import kcp.highway.KcpServer;
 import lombok.Getter;
-import messages.chat.SocialDetail;
+import org.anime_game_servers.multi_proto.gi.messages.community.player_presentation.SocialDetail;
 
 import java.net.InetSocketAddress;
 import java.time.Instant;

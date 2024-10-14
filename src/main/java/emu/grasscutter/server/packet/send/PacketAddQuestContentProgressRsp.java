@@ -1,19 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AddQuestContentProgressRspOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.quest.child.AddQuestContentProgressRsp;
 
-public class PacketAddQuestContentProgressRsp extends BasePacket {
+public class PacketAddQuestContentProgressRsp extends BaseTypedPacket<AddQuestContentProgressRsp> {
 
 	public PacketAddQuestContentProgressRsp(int contentType) {
-		super(PacketOpcodes.AddQuestContentProgressRsp);
-
-        var proto = AddQuestContentProgressRspOuterClass.AddQuestContentProgressRsp.newBuilder();
-
+        super(new AddQuestContentProgressRsp());
         proto.setContentType(contentType);
-
-        this.setData(proto);
-
 	}
 }

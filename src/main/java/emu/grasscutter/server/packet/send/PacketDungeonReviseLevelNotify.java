@@ -1,15 +1,13 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.data.excels.DungeonData;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.DungeonReviseLevelNotifyOuterClass.DungeonReviseLevelNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.DungeonReviseLevelNotify;
 
-public class PacketDungeonReviseLevelNotify extends BasePacket {
+public class PacketDungeonReviseLevelNotify extends BaseTypedPacket<DungeonReviseLevelNotify> {
     public PacketDungeonReviseLevelNotify(DungeonData dungeonData) {
-        super(PacketOpcodes.DungeonReviseLevelNotify);
-        this.setData(DungeonReviseLevelNotify.newBuilder()
-            .setDungeonId(dungeonData.getId())
-            .setReviseLevel(dungeonData.getLevelRevise()));
+        super(new DungeonReviseLevelNotify());
+        proto.setDungeonId(dungeonData.getId());
+        proto.setReviseLevel(dungeonData.getLevelRevise());
     }
 }

@@ -1,27 +1,19 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.proto.QueryPathReqOuterClass;
-import emu.grasscutter.net.proto.QueryPathReqOuterClass.QueryPathReq;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketQueryPathRsp;
+import org.anime_game_servers.multi_proto.gi.messages.pathfinding.QueryPathReq;
 
-@Opcodes(PacketOpcodes.QueryPathReq)
-public class HandlerQueryPathReq extends PacketHandler {
-
+public class HandlerQueryPathReq extends TypedPacketHandler<QueryPathReq> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        var req = QueryPathReq.parseFrom(payload);
-
+    public void handle(GameSession session, byte[] header, QueryPathReq req) throws Exception {
         /**
          * It is not the actual work
          */
 
-        if (req.getDestinationPosList().size() > 0) {
+        if (!req.getDestinationPos().isEmpty()) {
             session.send(new PacketQueryPathRsp(req));
         }
     }
-
 }

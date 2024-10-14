@@ -1,27 +1,17 @@
 package emu.grasscutter.server.packet.send;
 
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.item.forge.ForgeDataNotify;
+import org.anime_game_servers.multi_proto.gi.messages.item.forge.ForgeQueueData;
+
 import java.util.Map;
+import java.util.Set;
 
-import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ForgeDataNotifyOuterClass.ForgeDataNotify;
-import emu.grasscutter.net.proto.ForgeQueueDataOuterClass.ForgeQueueData;
-
-public class PacketForgeDataNotify extends BasePacket {
-	
-	public PacketForgeDataNotify(Iterable<Integer> unlockedItem, int numQueues, Map<Integer, ForgeQueueData> queueData) {
-		super(PacketOpcodes.ForgeDataNotify);
-		
-		ForgeDataNotify.Builder builder = ForgeDataNotify.newBuilder()
-			.addAllForgeIdList(unlockedItem)
-			.setMaxQueueNum(numQueues);
-
-		for (int queueId : queueData.keySet()) {
-			var data = queueData.get(queueId);
-			builder.putForgeQueueMap(queueId, data);
-		}
-
-		this.setData(builder.build());
+public class PacketForgeDataNotify extends BaseTypedPacket<ForgeDataNotify> {
+    public PacketForgeDataNotify(Set<Integer> unlockedItem, int numQueues, Map<Integer, ForgeQueueData> queueData) {
+        super(new ForgeDataNotify());
+        proto.setForgeIdList(unlockedItem.stream().toList());
+        proto.setMaxQueueNum(numQueues);
+        proto.setForgeQueueMap(queueData);
 	}
 }

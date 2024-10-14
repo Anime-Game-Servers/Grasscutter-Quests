@@ -1,18 +1,11 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.HomeChangeEditModeRspOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.serenitea_pot.edit.HomeChangeEditModeRsp;
 
-public class PacketHomeChangeEditModeRsp extends BasePacket {
-
+public class PacketHomeChangeEditModeRsp extends BaseTypedPacket<HomeChangeEditModeRsp> {
 	public PacketHomeChangeEditModeRsp(boolean enterEditMode) {
-		super(PacketOpcodes.HomeChangeEditModeRsp);
-
-		var proto = HomeChangeEditModeRspOuterClass.HomeChangeEditModeRsp.newBuilder();
-
-		proto.setIsEnterEditMode(enterEditMode);
-
-		this.setData(proto);
+        super(new HomeChangeEditModeRsp());
+        proto.setEnterEditMode(enterEditMode);
 	}
 }

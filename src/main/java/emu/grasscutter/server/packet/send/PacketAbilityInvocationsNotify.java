@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 import emu.grasscutter.net.packet.BaseTypedPacket;
-import messages.ability.AbilityInvocationsNotify;
-import messages.ability.AbilityInvokeEntry;
+import org.anime_game_servers.multi_proto.gi.messages.ability.AbilityInvocationsNotify;
+import org.anime_game_servers.multi_proto.gi.messages.ability.AbilityInvokeEntry;
 
 public class PacketAbilityInvocationsNotify extends BaseTypedPacket<AbilityInvocationsNotify> {
 

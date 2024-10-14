@@ -1,21 +1,16 @@
 package emu.grasscutter.server.packet.send;
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.GetFriendShowNameCardInfoRspOuterClass;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.community.friends.GetFriendShowNameCardInfoRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
 import java.util.List;
 
-public class PacketGetFriendShowNameCardInfoRsp extends BasePacket {
+public class PacketGetFriendShowNameCardInfoRsp extends BaseTypedPacket<GetFriendShowNameCardInfoRsp> {
     public PacketGetFriendShowNameCardInfoRsp(int uid, List<Integer> cardIds) {
-        super(PacketOpcodes.GetFriendShowNameCardInfoRsp);
-
-        var rsp = GetFriendShowNameCardInfoRspOuterClass.GetFriendShowNameCardInfoRsp.newBuilder()
-            .setUid(uid)
-            .addAllShowNameCardIdList(cardIds)
-            .setRetcode(0)
-            .build();
-
-        this.setData(rsp);
+        super(new GetFriendShowNameCardInfoRsp());
+        proto.setUid(uid);
+        proto.setShowNameCardIdList(cardIds);
+        proto.setRetcode(Retcode.RET_SUCC);
     }
 }

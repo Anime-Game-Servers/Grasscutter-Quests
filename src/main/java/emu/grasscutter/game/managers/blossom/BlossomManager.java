@@ -1,31 +1,34 @@
 package emu.grasscutter.game.managers.blossom;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
 import dev.morphia.annotations.Entity;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
-import emu.grasscutter.data.excels.*;
-import emu.grasscutter.data.excels.BlossomRefreshData.*;
+import emu.grasscutter.data.excels.BlossomGroupsData;
+import emu.grasscutter.data.excels.BlossomOpenData;
+import emu.grasscutter.data.excels.BlossomRefreshData;
+import emu.grasscutter.data.excels.BlossomRefreshData.RefreshCond;
+import emu.grasscutter.data.excels.BlossomSectionOrderData;
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.managers.blossom.enums.BlossomRefreshType;
 import emu.grasscutter.game.player.BasePlayerDataManager;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
-import emu.grasscutter.net.proto.BlossomBriefInfoOuterClass;
 import emu.grasscutter.server.packet.send.PacketBlossomBriefInfoNotify;
 import emu.grasscutter.server.packet.send.PacketWorldOwnerBlossomScheduleInfoNotify;
 import emu.grasscutter.utils.Utils;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
-import messages.gadget.BlossomChestInfo;
 import org.anime_game_servers.gi_lua.models.ScriptArgs;
 import org.anime_game_servers.gi_lua.models.constants.EventType;
+import org.anime_game_servers.multi_proto.gi.messages.blossom.BlossomBriefInfo;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.BlossomChestInfo;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Getter
 @Entity
@@ -55,11 +58,11 @@ public class BlossomManager extends BasePlayerDataManager {
     /**
      * BlossomBriefInfo proto
      * */
-    public List<BlossomBriefInfoOuterClass.BlossomBriefInfo> getBriefInfo() {
+    public List<BlossomBriefInfo> getBriefInfo() {
         return this.blossomSchedule.values().stream()
             .map(BlossomSchedule::toBriefProto)
-            .sorted(Comparator.comparing(BlossomBriefInfoOuterClass.BlossomBriefInfo::getRefreshId)
-                .thenComparing(BlossomBriefInfoOuterClass.BlossomBriefInfo::getCircleCampId))
+            .sorted(Comparator.comparing(BlossomBriefInfo::getRefreshId)
+                .thenComparing(BlossomBriefInfo::getCircleCampId))
             .toList();
     }
 
@@ -135,8 +138,11 @@ public class BlossomManager extends BasePlayerDataManager {
             .map(this.blossomSchedule::get);
         scheduleOption.ifPresent(schedule -> schedule.getRemainingUid().addAll(playersUid));
         return scheduleOption.map(schedule -> {
-            val proto = new BlossomChestInfo(schedule.getResin(), playersUid, playersUid);
+            val proto = new BlossomChestInfo();
 
+            proto.setQualifyUidList(playersUid);
+            proto.setRemainUidList(playersUid);
+            proto.setResin(schedule.getResin());
             proto.setRefreshId(schedule.getRefreshId());
             proto.setBlossomRefreshType(schedule.getRefreshType().getValue());
             return proto;

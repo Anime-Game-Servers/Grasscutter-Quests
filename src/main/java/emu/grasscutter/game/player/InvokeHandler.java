@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import emu.grasscutter.net.packet.BasePacket;
-import messages.battle.ForwardType;
+import org.anime_game_servers.multi_proto.gi.messages.battle.ForwardType;
 
 public class InvokeHandler<T> {
 	private final List<T> entryListForwardAll;

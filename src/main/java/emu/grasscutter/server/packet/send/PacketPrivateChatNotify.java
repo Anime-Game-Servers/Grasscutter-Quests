@@ -2,8 +2,8 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import lombok.val;
-import messages.chat.ChatInfo;
-import messages.chat.PrivateChatNotify;
+import org.anime_game_servers.multi_proto.gi.messages.community.chat.ChatInfo;
+import org.anime_game_servers.multi_proto.gi.messages.community.chat.PrivateChatNotify;
 
 public class PacketPrivateChatNotify extends BaseTypedPacket<PrivateChatNotify> {
     private ChatInfo info;

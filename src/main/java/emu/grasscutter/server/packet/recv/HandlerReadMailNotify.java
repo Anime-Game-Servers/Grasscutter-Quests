@@ -1,26 +1,20 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.game.mail.Mail;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.ReadMailNotifyOuterClass;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketMailChangeNotify;
+import org.anime_game_servers.multi_proto.gi.messages.mail.ReadMailNotify;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Opcodes(PacketOpcodes.ReadMailNotify)
-public class HandlerReadMailNotify extends PacketHandler {
-
+public class HandlerReadMailNotify extends TypedPacketHandler<ReadMailNotify> {
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-        ReadMailNotifyOuterClass.ReadMailNotify req = ReadMailNotifyOuterClass.ReadMailNotify.parseFrom(payload);
-
+    public void handle(GameSession session, byte[] header, ReadMailNotify req) throws Exception {
         List<Mail> updatedMail = new ArrayList<>();
 
-        for (int mailId : req.getMailIdListList()) {
+        for (int mailId : req.getMailIdList()) {
             Mail message = session.getPlayer().getMail(mailId);
 
             message.isRead = true;

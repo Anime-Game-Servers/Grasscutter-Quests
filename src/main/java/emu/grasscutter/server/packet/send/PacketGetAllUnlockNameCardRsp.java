@@ -1,19 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.GetAllUnlockNameCardRspOuterClass.GetAllUnlockNameCardRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.community.player_presentation.GetAllUnlockNameCardRsp;
 
-public class PacketGetAllUnlockNameCardRsp extends BasePacket {
-	
+public class PacketGetAllUnlockNameCardRsp extends BaseTypedPacket<GetAllUnlockNameCardRsp> {
 	public PacketGetAllUnlockNameCardRsp(Player player) {
-		super(PacketOpcodes.GetAllUnlockNameCardRsp);
-		
-		GetAllUnlockNameCardRsp proto = GetAllUnlockNameCardRsp.newBuilder()
-				.addAllNameCardList(player.getNameCardList())
-				.build();
-
-		this.setData(proto);
+        super(new GetAllUnlockNameCardRsp());
+        proto.setNameCardList(player.getNameCardList().stream().toList());
 	}
 }

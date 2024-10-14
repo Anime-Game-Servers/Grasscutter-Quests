@@ -11,8 +11,9 @@ import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.props.FightProperty;
 import emu.grasscutter.game.props.PlayerProperty;
 import emu.grasscutter.game.quest.enums.QuestContent;
-import emu.grasscutter.net.proto.ChangeHpReasonOuterClass.ChangeHpReason;
-import emu.grasscutter.net.proto.PropChangeReasonOuterClass.PropChangeReason;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.scene.entity.ChangeHpReason;
+import org.anime_game_servers.multi_proto.gi.messages.general.PropChangeReason;
 import emu.grasscutter.server.packet.send.PacketEntityFightPropChangeReasonNotify;
 import emu.grasscutter.server.packet.send.PacketEntityFightPropUpdateNotify;
 import emu.grasscutter.server.packet.send.PacketSceneForceUnlockNotify;
@@ -167,8 +168,8 @@ public class SotSManager extends BasePlayerManager {
                 logger.trace("Healing avatar " + entity.getAvatar().getAvatarData().getName() + " +" + needHP);
                 player.getTeamManager().healAvatar(entity.getAvatar(), 0, needHP);
                 player.getSession().send(new PacketEntityFightPropChangeReasonNotify(entity, FightProperty.FIGHT_PROP_CUR_HP,
-                        ((float) needHP / 100), List.of(3), PropChangeReason.PROP_CHANGE_REASON_STATUE_RECOVER,
-                        ChangeHpReason.CHANGE_HP_REASON_ADD_STATUE));
+                    ((float) needHP / 100), List.of(3), PropChangeReason.PROP_CHANGE_STATUE_RECOVER,
+                    ChangeHpReason.CHANGE_HP_ADD_STATUE));
                 player.getSession().send(new PacketEntityFightPropUpdateNotify(entity, FightProperty.FIGHT_PROP_CUR_HP));
 
             }
@@ -283,6 +284,6 @@ public class SotSManager extends BasePlayerManager {
         // Packets
         player.sendPacket(
                 new PacketLevelupCityRsp(
-                        sceneId, cityInfo.getLevel(), cityId, cityInfo.getNumCrystal(), areaId, 0));
+                        sceneId, cityInfo.getLevel(), cityId, cityInfo.getNumCrystal(), areaId, Retcode.RET_SUCC));
     }
 }

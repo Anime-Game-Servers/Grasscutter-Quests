@@ -3,8 +3,8 @@ package emu.grasscutter.server.packet.send;
 import java.util.List;
 
 import emu.grasscutter.net.packet.BaseTypedPacket;
-import messages.ability.AbilityInvokeEntry;
-import messages.ability.ClientAbilityInitFinishNotify;
+import org.anime_game_servers.multi_proto.gi.messages.ability.AbilityInvokeEntry;
+import org.anime_game_servers.multi_proto.gi.messages.ability.ClientAbilityInitFinishNotify;
 
 public class PacketClientAbilityInitFinishNotify extends BaseTypedPacket<ClientAbilityInitFinishNotify> {
 

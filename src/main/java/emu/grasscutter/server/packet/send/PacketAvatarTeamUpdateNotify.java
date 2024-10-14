@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.BaseTypedPacket;
-import messages.team.AvatarTeamUpdateNotify;
+import org.anime_game_servers.multi_proto.gi.messages.team.AvatarTeamUpdateNotify;
 
 public class PacketAvatarTeamUpdateNotify extends BaseTypedPacket<AvatarTeamUpdateNotify> {
 

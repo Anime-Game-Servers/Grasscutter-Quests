@@ -1,10 +1,5 @@
 package emu.grasscutter.game.managers.forging;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.ForgeData;
@@ -14,18 +9,18 @@ import emu.grasscutter.game.player.BasePlayerManager;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.props.WatcherTriggerType;
-import emu.grasscutter.net.proto.ForgeQueueDataOuterClass.ForgeQueueData;
-import emu.grasscutter.net.proto.ForgeQueueManipulateReqOuterClass.ForgeQueueManipulateReq;
-import emu.grasscutter.net.proto.ForgeQueueManipulateTypeOuterClass.ForgeQueueManipulateType;
-import emu.grasscutter.net.proto.ForgeStartReqOuterClass.ForgeStartReq;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
-import emu.grasscutter.server.packet.send.PacketForgeDataNotify;
-import emu.grasscutter.server.packet.send.PacketForgeFormulaDataNotify;
-import emu.grasscutter.server.packet.send.PacketForgeGetQueueDataRsp;
-import emu.grasscutter.server.packet.send.PacketForgeQueueDataNotify;
-import emu.grasscutter.server.packet.send.PacketForgeQueueManipulateRsp;
-import emu.grasscutter.server.packet.send.PacketForgeStartRsp;
+import emu.grasscutter.server.packet.send.*;
 import emu.grasscutter.utils.Utils;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.item.forge.ForgeQueueData;
+import org.anime_game_servers.multi_proto.gi.messages.item.forge.ForgeQueueManipulateReq;
+import org.anime_game_servers.multi_proto.gi.messages.item.forge.ForgeQueueManipulateType;
+import org.anime_game_servers.multi_proto.gi.messages.item.forge.ForgeStartReq;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ForgingManager extends BasePlayerManager {
 
@@ -65,15 +60,14 @@ public class ForgingManager extends BasePlayerManager {
         for (int i = 0; i < this.player.getActiveForges().size(); i++) {
             ActiveForgeData activeForge = this.player.getActiveForges().get(i);
 
-            ForgeQueueData data = ForgeQueueData.newBuilder()
-                .setQueueId(i + 1)
-                .setForgeId(activeForge.getForgeId())
-                .setFinishCount(activeForge.getFinishedCount(currentTime))
-                .setUnfinishCount(activeForge.getUnfinishedCount(currentTime))
-                .setTotalFinishTimestamp(activeForge.getTotalFinishTimestamp())
-                .setNextFinishTimestamp(activeForge.getNextFinishTimestamp(currentTime))
-                .setAvatarId(activeForge.getAvatarId())
-                .build();
+            ForgeQueueData data = new ForgeQueueData();
+            data.setQueueId(i + 1);
+            data.setForgeId(activeForge.getForgeId());
+            data.setFinishCount(activeForge.getFinishedCount(currentTime));
+            data.setUnfinishCount(activeForge.getUnfinishedCount(currentTime));
+            data.setTotalFinishTimestamp(activeForge.getTotalFinishTimestamp());
+            data.setNextFinishTimestamp(activeForge.getNextFinishTimestamp(currentTime));
+            data.setAvatarId(activeForge.getAvatarId());
 
             res.put(i + 1, data);
         }

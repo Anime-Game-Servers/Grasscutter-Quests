@@ -1,30 +1,20 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.inventory.GameItem;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
-import emu.grasscutter.net.proto.UseItemRspOuterClass.UseItemRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.item.UseItemRsp;
 
-public class PacketUseItemRsp extends BasePacket {
-	
+public class PacketUseItemRsp extends BaseTypedPacket<UseItemRsp> {
 	public PacketUseItemRsp(long targetGuid, GameItem useItem) {
-		super(PacketOpcodes.UseItemRsp);
-		
-		UseItemRsp proto = UseItemRsp.newBuilder()
-				.setTargetGuid(targetGuid)
-				.setItemId(useItem.getItemId())
-				.setGuid(useItem.getGuid())
-				.build();
-		
-		this.setData(proto);
+        super(new UseItemRsp());
+        proto.setTargetGuid(targetGuid);
+        proto.setItemId(useItem.getItemId());
+        proto.setGuid(useItem.getGuid());
 	}
-	
+
 	public PacketUseItemRsp() {
-		super(PacketOpcodes.UseItemRsp);
-		
-		UseItemRsp proto = UseItemRsp.newBuilder().setRetcode(RetcodeOuterClass.Retcode.RET_SVR_ERROR_VALUE).build();
-		
-		this.setData(proto);
+        super(new UseItemRsp());
+        proto.setRetCode(Retcode.RET_SVR_ERROR);
 	}
 }

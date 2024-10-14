@@ -3,8 +3,8 @@ package emu.grasscutter.server.packet.recv;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketPlayerChatRsp;
-import messages.chat.ChatInfo;
-import messages.chat.PlayerChatReq;
+import org.anime_game_servers.multi_proto.gi.messages.community.chat.ChatInfo;
+import org.anime_game_servers.multi_proto.gi.messages.community.chat.PlayerChatReq;
 
 public class HandlerPlayerChatReq extends TypedPacketHandler<PlayerChatReq> {
 

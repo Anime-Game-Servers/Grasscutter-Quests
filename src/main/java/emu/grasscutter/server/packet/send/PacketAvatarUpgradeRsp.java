@@ -1,27 +1,20 @@
 package emu.grasscutter.server.packet.send;
 
+import emu.grasscutter.game.avatar.Avatar;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.upgrade.AvatarUpgradeRsp;
+
 import java.util.Map;
 
-import emu.grasscutter.game.avatar.Avatar;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.AvatarUpgradeRspOuterClass.AvatarUpgradeRsp;
+public class PacketAvatarUpgradeRsp extends BaseTypedPacket<AvatarUpgradeRsp> {
 
-public class PacketAvatarUpgradeRsp extends BasePacket {
-	
 	public PacketAvatarUpgradeRsp(Avatar avatar, int oldLevel, Map<Integer, Float> oldFightPropMap) {
-		super(PacketOpcodes.AvatarUpgradeRsp);
-		
+        super(new AvatarUpgradeRsp());
 		this.buildHeader(0);
-
-		AvatarUpgradeRsp proto = AvatarUpgradeRsp.newBuilder()
-				.setAvatarGuid(avatar.getGuid())
-				.setOldLevel(oldLevel)
-				.setCurLevel(avatar.getLevel())
-				.putAllOldFightPropMap(oldFightPropMap)
-				.putAllCurFightPropMap(avatar.getFightProperties())
-				.build();
-		
-		this.setData(proto);
+        proto.setAvatarGuid(avatar.getGuid());
+        proto.setOldLevel(oldLevel);
+        proto.setCurLevel(avatar.getLevel());
+        proto.setOldFightPropMap(oldFightPropMap);
+        proto.setCurFightPropMap(avatar.getFightProperties());
 	}
 }

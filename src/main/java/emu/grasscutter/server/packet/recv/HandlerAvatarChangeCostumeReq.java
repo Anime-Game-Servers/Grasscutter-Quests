@@ -3,7 +3,7 @@ package emu.grasscutter.server.packet.recv;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketAvatarChangeCostumeRsp;
-import messages.team.avatar.AvatarChangeCostumeReq;
+import org.anime_game_servers.multi_proto.gi.messages.team.avatar.cosmetic.AvatarChangeCostumeReq;
 
 public class HandlerAvatarChangeCostumeReq extends TypedPacketHandler<AvatarChangeCostumeReq> {
 

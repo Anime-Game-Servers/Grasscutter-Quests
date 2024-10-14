@@ -1,23 +1,17 @@
 package emu.grasscutter.server.packet.recv;
 
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.EnterWorldAreaReqOuterClass.EnterWorldAreaReq;
-import emu.grasscutter.net.proto.PacketHeadOuterClass.PacketHead;
-import emu.grasscutter.net.packet.PacketHandler;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketEnterWorldAreaRsp;
+import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.packet_head.PacketHead;
+import org.anime_game_servers.multi_proto.gi.messages.scene.EnterWorldAreaReq;
 
-@Opcodes(PacketOpcodes.EnterWorldAreaReq)
-public class HandlerEnterWorldAreaReq extends PacketHandler {
-	
-	@Override
-	public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
-		PacketHead head = PacketHead.parseFrom(header);
-		EnterWorldAreaReq enterWorld = EnterWorldAreaReq.parseFrom(payload);
-		
-		session.send(new PacketEnterWorldAreaRsp(head.getClientSequenceId(), enterWorld));
+public class HandlerEnterWorldAreaReq extends TypedPacketHandler<EnterWorldAreaReq> {
+    @Override
+    public void handle(GameSession session, byte[] header, EnterWorldAreaReq req) throws Exception {
+		val head = PacketHead.parseBy(header, session.getVersion());
+        session.send(new PacketEnterWorldAreaRsp(head.getClientSequenceId(), req));
 		//session.send(new PacketScenePlayerLocationNotify(session.getPlayer()));
 	}
-
 }

@@ -3,7 +3,7 @@ package emu.grasscutter.server.packet.recv;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketGetDailyDungeonEntryInfoRsp;
-import messages.dungeon.GetDailyDungeonEntryInfoReq;
+import org.anime_game_servers.multi_proto.gi.messages.dungeon.entry.GetDailyDungeonEntryInfoReq;
 
 public class HandlerGetDailyDungeonEntryInfoReq extends TypedPacketHandler<GetDailyDungeonEntryInfoReq> {
 

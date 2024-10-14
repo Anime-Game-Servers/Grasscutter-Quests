@@ -1,24 +1,16 @@
 package emu.grasscutter.server.packet.send;
 
 
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.CardProductRewardNotifyOuterClass.CardProductRewardNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.shop.micro_transaction.CardProductRewardNotify;
 
-public class PacketCardProductRewardNotify extends BasePacket {
-
+public class PacketCardProductRewardNotify extends BaseTypedPacket<CardProductRewardNotify> {
     public PacketCardProductRewardNotify(int remainsDay) {
-        super(PacketOpcodes.CardProductRewardNotify);
-
-        CardProductRewardNotify proto = CardProductRewardNotify.newBuilder()
-                .setProductId("ys_chn_blessofmoon_tier5")
-                .setHcoin(90)
-                .setRemainDays(remainsDay)
-                .build();
+        super(new CardProductRewardNotify());
+        proto.setProductId("ys_chn_blessofmoon_tier5");
+        proto.setHcoin(90);
+        proto.setRemainDays(remainsDay);
 
         // Hard code Product id keep cool 😎
-
-        this.setData(proto);
     }
-
 }

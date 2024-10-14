@@ -1,19 +1,12 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.SetPlayerSignatureRspOuterClass.SetPlayerSignatureRsp;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.community.player_presentation.SetPlayerSignatureRsp;
 
-public class PacketSetPlayerSignatureRsp extends BasePacket {
-	
+public class PacketSetPlayerSignatureRsp extends BaseTypedPacket<SetPlayerSignatureRsp> {
 	public PacketSetPlayerSignatureRsp(Player player) {
-		super(PacketOpcodes.SetPlayerSignatureRsp);
-
-		SetPlayerSignatureRsp proto = SetPlayerSignatureRsp.newBuilder()
-				.setSignature(player.getSignature())
-				.build();
-		
-		this.setData(proto);
+        super(new SetPlayerSignatureRsp());
+        proto.setSignature(player.getSignature());
 	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 import emu.grasscutter.game.battlepass.BattlePassMission;
 import emu.grasscutter.net.packet.BaseTypedPacket;
-import messages.battle_pass.BattlePassMissionUpdateNotify;
+import org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassMissionUpdateNotify;
 
 public class PacketBattlePassMissionUpdateNotify extends BaseTypedPacket<BattlePassMissionUpdateNotify> {
 
@@ -17,7 +17,7 @@ public class PacketBattlePassMissionUpdateNotify extends BaseTypedPacket<BattleP
         this(missions.stream().map(BattlePassMission::toProto).toList());
     }
 
-    protected PacketBattlePassMissionUpdateNotify(List<messages.battle_pass.BattlePassMission> protoMissions) {
+    protected PacketBattlePassMissionUpdateNotify(List<org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassMission> protoMissions) {
         super(new BattlePassMissionUpdateNotify(protoMissions));
     }
 

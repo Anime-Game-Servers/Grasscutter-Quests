@@ -4,7 +4,7 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.net.packet.BaseTypedPacket;
 import emu.grasscutter.utils.Utils;
 import lombok.val;
-import messages.mail.GetAllMailResultNotify;
+import org.anime_game_servers.multi_proto.gi.messages.mail.GetAllMailResultNotify;
 
 import java.time.Instant;
 import java.util.List;

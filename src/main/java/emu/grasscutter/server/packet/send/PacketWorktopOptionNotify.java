@@ -2,22 +2,18 @@ package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.game.entity.EntityGadget;
 import emu.grasscutter.game.entity.gadget.GadgetWorktop;
-import emu.grasscutter.net.packet.BasePacket;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.WorktopOptionNotifyOuterClass.WorktopOptionNotify;
+import emu.grasscutter.net.packet.BaseTypedPacket;
+import org.anime_game_servers.multi_proto.gi.messages.gadget.WorktopOptionNotify;
 
-public class PacketWorktopOptionNotify extends BasePacket {
-	
+import java.util.ArrayList;
+
+public class PacketWorktopOptionNotify extends BaseTypedPacket<WorktopOptionNotify> {
+
 	public PacketWorktopOptionNotify(EntityGadget gadget) {
-		super(PacketOpcodes.WorktopOptionNotify);
-		
-		WorktopOptionNotify.Builder proto = WorktopOptionNotify.newBuilder()
-				.setGadgetEntityId(gadget.getId());
-		
+        super(new WorktopOptionNotify());
+        proto.setGadgetEntityId(gadget.getId());
 		if (gadget.getContent() instanceof GadgetWorktop worktop) {
-			proto.addAllOptionList(worktop.getWorktopOptions());
+            proto.setOptionIdList(new ArrayList<>(worktop.getWorktopOptions()));
 		}
-		
-		this.setData(proto);
 	}
 }

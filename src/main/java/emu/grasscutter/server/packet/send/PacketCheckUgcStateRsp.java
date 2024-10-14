@@ -1,13 +1,13 @@
 package emu.grasscutter.server.packet.send;
 
 import emu.grasscutter.net.packet.BaseTypedPacket;
-import emu.grasscutter.net.proto.RetcodeOuterClass;
-import messages.activity.user_generated_content.CheckUgcStateRsp;
+import org.anime_game_servers.multi_proto.gi.messages.activity.user_generated_content.CheckUgcStateRsp;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
 public class PacketCheckUgcStateRsp extends BaseTypedPacket<CheckUgcStateRsp> {
 
-	public PacketCheckUgcStateRsp(RetcodeOuterClass.Retcode ret) {
-		super(new CheckUgcStateRsp(ret.getNumber()));
+	public PacketCheckUgcStateRsp(Retcode ret) {
+		super(new CheckUgcStateRsp(ret));
 	}
 
 }

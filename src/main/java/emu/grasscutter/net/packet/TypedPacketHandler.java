@@ -1,9 +1,9 @@
 package emu.grasscutter.net.packet;
 
 import emu.grasscutter.server.game.GameSession;
-import interfaces.ProtoModel;
 import lombok.val;
 import org.anime_game_servers.core.base.Version;
+import org.anime_game_servers.multi_proto.core.interfaces.ProtoModel;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Method;

@@ -2,8 +2,8 @@ package emu.grasscutter.net.packet;
 
 import com.google.protobuf.GeneratedMessageV3;
 import emu.grasscutter.server.game.GameSession;
-import interfaces.ProtoModel;
 import org.anime_game_servers.core.base.Version;
+import org.anime_game_servers.multi_proto.core.interfaces.ProtoModel;
 
 public abstract class BaseTypedPacket<Packet extends ProtoModel> extends BasePacket {
 

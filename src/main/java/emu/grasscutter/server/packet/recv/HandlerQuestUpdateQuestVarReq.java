@@ -1,25 +1,21 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.net.packet.Opcodes;
-import emu.grasscutter.net.packet.PacketHandler;
-import emu.grasscutter.net.packet.PacketOpcodes;
-import emu.grasscutter.net.proto.QuestUpdateQuestVarReqOuterClass.QuestUpdateQuestVarReq;
-import emu.grasscutter.net.proto.QuestVarOpOuterClass.QuestVarOp;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
+import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketQuestUpdateQuestVarRsp;
 import lombok.val;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.multi_proto.gi.messages.quest.variable.QuestUpdateQuestVarReq;
+import org.anime_game_servers.multi_proto.gi.messages.quest.variable.QuestVarOp;
 
 import java.util.List;
 
-@Opcodes(PacketOpcodes.QuestUpdateQuestVarReq)
-public class HandlerQuestUpdateQuestVarReq extends PacketHandler {
+public class HandlerQuestUpdateQuestVarReq extends TypedPacketHandler<QuestUpdateQuestVarReq> {
 
     @Override
-    public void handle(GameSession session, byte[] header, byte[] payload) throws Exception {
+    public void handle(GameSession session, byte[] header, QuestUpdateQuestVarReq req) throws Exception {
         //Client sends packets. One with the value, and one with the index and the new value to set/inc/dec
-        val req = QuestUpdateQuestVarReq.parseFrom(payload);
         val questManager = session.getPlayer().getQuestManager();
         val subQuest = questManager.getQuestById(req.getQuestId());
         var mainQuest = questManager.getMainQuestById(req.getParentQuestId());
@@ -32,7 +28,7 @@ public class HandlerQuestUpdateQuestVarReq extends PacketHandler {
             Grasscutter.getLogger().error("trying to update QuestVar for non existing quest s{} m{}", req.getQuestId(), req.getParentQuestId());
             return;
         }
-        List<QuestVarOp> questVars = req.getQuestVarOpListList();
+        List<QuestVarOp> questVars = req.getQuestVarOpList();
         val questVarUpdate = mainQuest.getQuestVarsUpdate();
         if (questVarUpdate.size() == 0) {
             for (QuestVarOp questVar : questVars) {
@@ -40,7 +36,7 @@ public class HandlerQuestUpdateQuestVarReq extends PacketHandler {
             }
         } else {
             for (QuestVarOp questVar : questVars) {
-                if (questVar.getIsAdd()) {
+                if (questVar.isAdd()) {
                     if (questVar.getValue() >= 0) {
                         mainQuest.incQuestVar(questVar.getIndex(), questVar.getValue());
                     } else {

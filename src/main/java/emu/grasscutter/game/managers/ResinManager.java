@@ -8,11 +8,11 @@ import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.game.props.PlayerProperty;
 import emu.grasscutter.game.props.WatcherTriggerType;
-import emu.grasscutter.net.proto.RetcodeOuterClass.Retcode;
 import emu.grasscutter.server.packet.send.PacketItemAddHintNotify;
 import emu.grasscutter.server.packet.send.PacketPlayerPropNotify;
 import emu.grasscutter.server.packet.send.PacketResinChangeNotify;
 import emu.grasscutter.utils.Utils;
+import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
 public class ResinManager extends BasePlayerManager {
     // todo check if there is a Excel file for this data
@@ -155,14 +155,14 @@ public class ResinManager extends BasePlayerManager {
         this.player.sendPacket(new PacketResinChangeNotify(this.player));
     }
 
-    public int buy() {
+    public Retcode buy() {
         if (this.player.getResinBuyCount() >= MAX_RESIN_BUYING_COUNT) {
-            return Retcode.RET_RESIN_BOUGHT_COUNT_EXCEEDED_VALUE;
+            return Retcode.RET_RESIN_BOUGHT_COUNT_EXCEEDED;
         }
 
         var res = this.player.getInventory().payItem(201, HCOIN_NUM_TO_BUY_RESIN[this.player.getResinBuyCount()]);
         if (!res) {
-            return Retcode.RET_HCOIN_NOT_ENOUGH_VALUE;
+            return Retcode.RET_HCOIN_NOT_ENOUGH;
         }
 
         this.player.setResinBuyCount(this.player.getResinBuyCount() + 1);
@@ -170,6 +170,6 @@ public class ResinManager extends BasePlayerManager {
         this.addResin(AMOUNT_TO_ADD);
         this.player.sendPacket(new PacketItemAddHintNotify(new GameItem(106, AMOUNT_TO_ADD), ActionReason.BuyResin));
 
-        return 0;
+        return Retcode.RET_SUCC;
     }
 }
