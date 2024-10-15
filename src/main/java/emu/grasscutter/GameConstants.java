@@ -1,12 +1,12 @@
 package emu.grasscutter;
 
+import emu.grasscutter.utils.Position;
+import emu.grasscutter.utils.Utils;
+
 import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-
-import emu.grasscutter.utils.Position;
-import emu.grasscutter.utils.Utils;
 
 public final class GameConstants {
     public static String VERSION = "3.2.0";
@@ -39,8 +39,16 @@ public final class GameConstants {
 
     // Default entity ability hashes.
     public static final String[] DEFAULT_ABILITY_STRINGS = {
-        "Avatar_DefaultAbility_VisionReplaceDieInvincible", "Avatar_DefaultAbility_AvartarInShaderChange", "Avatar_SprintBS_Invincible",
-        "Avatar_Freeze_Duration_Reducer", "Avatar_Attack_ReviveEnergy", "Avatar_Component_Initializer", "Avatar_FallAnthem_Achievement_Listener"
+        "Avatar_DefaultAbility_VisionReplaceDieInvincible",
+        "Avatar_DefaultAbility_AvartarInShaderChange",
+        "Avatar_SprintBS_Invincible",
+        "Avatar_Freeze_Duration_Reducer",
+        "Avatar_Attack_ReviveEnergy",
+        "Avatar_Component_Initializer",
+        "Avatar_HDMesh_Controller",
+        "Avatar_Trampoline_Jump_Controller",
+        "Avatar_ArkheGrade_CD_Controller",
+        "Avatar_TriggerNyxInstant"
     };
     public static final int[] DEFAULT_ABILITY_HASHES = Arrays.stream(DEFAULT_ABILITY_STRINGS).mapToInt(Utils::abilityHash).toArray();
     public static final int DEFAULT_ABILITY_NAME = Utils.abilityHash("Default");

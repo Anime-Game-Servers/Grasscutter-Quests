@@ -806,6 +806,42 @@ public class SceneScriptManager {
         }
     }
 
+    public boolean callGroupLuaFunction(String funcName, ScriptArgs params, Object... args) {
+        val groupId = params.groupId;
+        val group = getGroupById(groupId);
+        if(group == null){
+            logger.error("callLuaFunction group is null");
+            return false;
+        }
+
+        val script = group.getScript();
+        if(script==null){
+            logger.warn("callScriptFunc script is null");
+            return false;
+        }
+
+        if(funcName.isEmpty()){
+            logger.warn("callScriptFunc funcName is empty");
+            return false;
+        }
+        if(!script.hasMethod(funcName)){
+            logger.warn("callScriptFunc script has no method {}",funcName);
+            return false;
+        }
+
+        val context = new GroupEventLuaContext(script.getEngine(), group, params, this);
+        try{
+            val luaArgs = new Object[args.length+1];
+            luaArgs[0] = context;
+            System.arraycopy(args, 0, luaArgs, 1, args.length);
+            val result = script.callMethod(funcName, luaArgs);
+            return true;
+        } catch (RuntimeException | ScriptException | NoSuchMethodException error){
+            logger.error("[LUA] call trigger failed in group {} with {},{}", group.getGroupInfo().getId(),funcName,params,error);
+            return false;
+        }
+    }
+
     private LuaValue callScriptFunc(@Nonnull String funcName, SceneGroup group, ScriptArgs params) {
         val script = group.getScript();
         if(script==null){

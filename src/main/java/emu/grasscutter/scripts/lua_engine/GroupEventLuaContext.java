@@ -16,6 +16,9 @@ public class GroupEventLuaContext implements org.anime_game_servers.gi_lua.scrip
     @Getter
     final private ScriptArgs args;
 
+    public int target_entity_id;
+    public int source_entity_id;
+
     final private SceneScriptManager scriptManager;
 
     @Getter(onMethod = @__(@Override))
@@ -26,6 +29,8 @@ public class GroupEventLuaContext implements org.anime_game_servers.gi_lua.scrip
         this.args = args;
         this.scriptManager = scriptManager;
         this.engine = engine;
+        this.target_entity_id = args.getTargetEntityId();
+        this.source_entity_id = args.getSourceEntityId();
     }
 
     public SceneGroup getCurrentGroup() {

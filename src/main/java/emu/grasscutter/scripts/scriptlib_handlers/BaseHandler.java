@@ -3,10 +3,12 @@ package emu.grasscutter.scripts.scriptlib_handlers;
 import emu.grasscutter.Loggers;
 import emu.grasscutter.scripts.lua_engine.GroupEventLuaContext;
 import lombok.Getter;
+import lombok.val;
 import org.anime_game_servers.gi_lua.models.scene.group.SceneGroup;
 import org.slf4j.Logger;
 
 import java.util.Arrays;
+import java.util.Set;
 
 import static java.lang.StackWalker.Option.RETAIN_CLASS_REFERENCE;
 
@@ -15,7 +17,8 @@ public class BaseHandler {
     private static final Logger logger = Loggers.getScriptSystem();
 
     protected int handleUnimplemented(Object... args){
-        logger.warn("[LUA] Call unimplemented {} with {}", StackWalker.getInstance(RETAIN_CLASS_REFERENCE).getCallerClass(), Arrays.toString(args));
+        val methodName = StackWalker.getInstance(Set.of(RETAIN_CLASS_REFERENCE)).walk(s -> s.limit(2).toList().get(1)).getMethodName();
+        logger.warn("[LUA] Call unimplemented {} with {}", methodName, Arrays.toString(args));
         return 0;
     }
 

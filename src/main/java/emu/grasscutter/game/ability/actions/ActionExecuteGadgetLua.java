@@ -10,10 +10,21 @@ public class ActionExecuteGadgetLua extends AbilityActionHandler {
     public boolean execute(Ability ability, AbilityModifierAction action,byte[]  abilityData, GameEntity target) {
         GameEntity owner = ability.getOwner();
 
-        //Investigate if we need to use target
-
         if(owner.getEntityController() != null) {
-            owner.getEntityController().onClientExecuteRequest(owner, action.param1, action.param2, action.param3);
+            owner.getEntityController().onClientExecuteRequest(owner,
+                (int) action.param1.get(ability),
+                (int) action.param2.get(ability),
+                (int) action.param3.get(ability)
+            );
+            return true;
+        }
+
+        if (target.getEntityController() != null) {
+            target.getEntityController().onClientExecuteRequest(target,
+                (int) action.param1.get(ability),
+                (int) action.param2.get(ability),
+                (int) action.param3.get(ability)
+            );
             return true;
         }
 

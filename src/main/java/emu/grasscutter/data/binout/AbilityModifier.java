@@ -1,11 +1,10 @@
 package emu.grasscutter.data.binout;
 
-import java.io.Serializable;
-
 import com.google.gson.annotations.SerializedName;
-
 import emu.grasscutter.data.common.DynamicFloat;
 import emu.grasscutter.game.props.ElementType;
+
+import java.io.Serializable;
 
 public class AbilityModifier implements Serializable {
     private static final long serialVersionUID = -2001232313615923575L;
@@ -146,9 +145,16 @@ public class AbilityModifier implements Serializable {
         public DynamicFloat valueRangeMax;
         public String overrideMapKey;
 
-        public int param1;
-        public int param2;
-        public int param3;
+        public int paramNum;
+        public DynamicFloat param1 = DynamicFloat.ZERO;
+        public DynamicFloat param2 = DynamicFloat.ZERO;
+        public DynamicFloat param3 = DynamicFloat.ZERO;
+
+        public String luaCallType;
+        public String funcName;
+        public String sourceName;
+        @SerializedName(value = "callParamList", alternate = "CallParamList")
+        public int[] callParamList;
 
         public enum DropType {
             LevelControl,

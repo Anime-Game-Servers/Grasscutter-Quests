@@ -1,9 +1,5 @@
 package emu.grasscutter.server.game;
 
-import java.io.File;
-import java.net.InetSocketAddress;
-import java.nio.file.Path;
-
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Grasscutter.ServerDebugMode;
 import emu.grasscutter.game.Account;
@@ -23,7 +19,12 @@ import org.anime_game_servers.core.base.Version;
 import org.anime_game_servers.multi_proto.core.interfaces.PacketIdProvider;
 import org.anime_game_servers.multi_proto.gi.packet_id.PacketIds;
 
-import static emu.grasscutter.config.Configuration.*;
+import java.io.File;
+import java.net.InetSocketAddress;
+import java.nio.file.Path;
+
+import static emu.grasscutter.config.Configuration.GAME_INFO;
+import static emu.grasscutter.config.Configuration.SERVER;
 import static emu.grasscutter.utils.Language.translate;
 
 public class GameSession implements GameSessionManager.KcpChannel {
@@ -107,14 +108,16 @@ public class GameSession implements GameSessionManager.KcpChannel {
 
     public void send(BasePacket packet) {
         // Test
-        if (packet.getOpcode(this) <= 0) {
+        val opcode = packet.getOpcode(this);
+        if (opcode <= 0) {
             Grasscutter.getLogger().warn("Tried to send packet with missing cmd id!");
             return;
         }
 
         // DO NOT REMOVE (unless we find a way to validate code before sending to client which I don't think we can)
         // Stop WindSeedClientNotify from being sent for security purposes.
-        if (PacketOpcodesUtils.BANNED_PACKETS.contains(packet.getOpcode(this))) {
+        val paketName = PacketOpcodesUtils.getOpcodeName(opcode, this);
+        if (PacketOpcodesUtils.BANNED_PACKETS.contains(paketName)) {
             return;
         }
 
@@ -124,21 +127,20 @@ public class GameSession implements GameSessionManager.KcpChannel {
         }
 
         // Log
-        val paketName = PacketOpcodesUtils.getOpcodeName(packet.getOpcode(this), this);
         switch (GAME_INFO.logPackets) {
             case ALL -> {
                 if (!PacketOpcodesUtils.LOOP_PACKETS.contains(paketName) || GAME_INFO.isShowLoopPackets) {
-                    logPacket("SEND", packet.getOpcode(this), packet.getData(version));
+                    logPacket("SEND", opcode, packet.getData(version));
                 }
             }
             case WHITELIST -> {
                 if (SERVER.debugWhitelist.contains(paketName)) {
-                    logPacket("SEND", packet.getOpcode(this), packet.getData(version));
+                    logPacket("SEND", opcode, packet.getData(version));
                 }
             }
             case BLACKLIST -> {
                 if (!SERVER.debugBlacklist.contains(paketName)) {
-                    logPacket("SEND", packet.getOpcode(this), packet.getData(version));
+                    logPacket("SEND", opcode, packet.getData(version));
                 }
             }
             default -> {

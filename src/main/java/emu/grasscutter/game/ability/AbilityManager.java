@@ -1,18 +1,8 @@
 package emu.grasscutter.game.ability;
 
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
+import com.google.protobuf.InvalidProtocolBufferException;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Loggers;
-import emu.grasscutter.game.props.ElementReactionType;
-
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.binout.AbilityData;
 import emu.grasscutter.data.binout.AbilityMixinData;
@@ -25,6 +15,7 @@ import emu.grasscutter.game.ability.mixins.AbilityMixinHandler;
 import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.player.BasePlayerManager;
 import emu.grasscutter.game.player.Player;
+import emu.grasscutter.game.props.ElementReactionType;
 import io.netty.util.concurrent.FastThreadLocalThread;
 import lombok.Getter;
 import lombok.val;
@@ -40,6 +31,12 @@ import org.anime_game_servers.multi_proto.gi.messages.general.ability.AbilityStr
 import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public final class AbilityManager extends BasePlayerManager {
     @Getter
@@ -380,7 +377,7 @@ public final class AbilityManager extends BasePlayerManager {
             }
 
             if(instancedAbilityData == null ||  instancedAbilityData.modifiers == null) {
-                logger.info("No ability found");
+                logger.info("No ability found. modChange: {}", modChange);
                 return; //TODO: Display error message
             }
 
@@ -424,6 +421,10 @@ public final class AbilityManager extends BasePlayerManager {
 
     @Nullable
     private String getAbilityName(AbilityString protoString) {
+        if (protoString == null) {
+            Grasscutter.getLogger().error("null protoString!");
+            return null;
+        }
         if(protoString.getType() instanceof AbilityString.Type.Str str){
             return str.getValue();
         } else if (protoString.getType() instanceof AbilityString.Type.Hash hash){
