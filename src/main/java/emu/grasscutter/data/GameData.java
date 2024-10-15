@@ -1,45 +1,23 @@
 package emu.grasscutter.data;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.binout.*;
-import emu.grasscutter.data.binout.config.ConfigEntityAvatar;
-import emu.grasscutter.data.binout.config.ConfigEntityGadget;
-import emu.grasscutter.data.binout.config.ConfigEntityMonster;
-import emu.grasscutter.data.binout.config.ConfigGlobalCombat;
-import emu.grasscutter.data.binout.config.ConfigLevelEntity;
-import emu.grasscutter.game.dungeons.dungeon_entry.DungeonEntries;
+import emu.grasscutter.data.binout.config.*;
+import emu.grasscutter.data.binout.routes.Route;
+import emu.grasscutter.data.common.ScenePointArrayData;
 import emu.grasscutter.data.common.WeatherAreaPointData;
 import emu.grasscutter.data.common.quest.MainQuestData;
 import emu.grasscutter.data.common.quest.SubQuestData;
-import emu.grasscutter.data.binout.routes.Route;
-import emu.grasscutter.data.custom.*;
-import emu.grasscutter.data.server.ActivityCondGroup;
-import emu.grasscutter.data.server.DropSubfieldMapping;
-import emu.grasscutter.data.server.DropTableExcelConfigData;
-import emu.grasscutter.data.server.GadgetMapping;
-import emu.grasscutter.data.server.MonsterMapping;
-import emu.grasscutter.data.server.SubfieldMapping;
-import emu.grasscutter.data.server.WeatherMapping;
+import emu.grasscutter.data.custom.TrialAvatarActivityCustomData;
+import emu.grasscutter.data.custom.TrialAvatarCustomData;
+import emu.grasscutter.data.excels.*;
+import emu.grasscutter.data.server.*;
 import emu.grasscutter.game.dungeons.DungeonDropEntry;
+import emu.grasscutter.game.dungeons.dungeon_entry.DungeonEntries;
 import emu.grasscutter.game.quest.QuestEncryptionKey;
 import emu.grasscutter.game.quest.enums.QuestCond;
 import emu.grasscutter.utils.Utils;
-import emu.grasscutter.data.excels.*;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.ints.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Tolerate;
@@ -50,6 +28,8 @@ import org.anime_game_servers.gi_lua.models.scene.DummyPoint;
 import org.anime_game_servers.gi_lua.models.scene.SceneGroupReplacement;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
+import java.util.*;
 
 public class GameData {
     // BinOutputs
@@ -219,6 +199,7 @@ public class GameData {
     @Getter private static final Map<Integer, TrialAvatarActivityDataData> trialAvatarActivityDataCustomData = new HashMap<>();
     @Getter private static final Int2IntMap trialAvatarIndexIdTrialActivityDataDataMap = new Int2IntOpenHashMap();
     @Getter private static final Map<Integer, List<WeatherAreaPointData>> weatherAreaPointData = new HashMap<>();
+    @Getter private static final Map<Integer, List<ScenePointArrayData>> scenePointArrayData = new HashMap<>();
 
     // Getters with wrong names, remove later
     @Deprecated(forRemoval = true) public static Int2ObjectMap<CodexReliquaryData> getcodexReliquaryIdMap() {return codexReliquaryDataIdMap;}
@@ -334,6 +315,10 @@ public class GameData {
 
     public static Int2ObjectMap<Route> getSceneRoutes(int sceneId) {
         return sceneRouteData.computeIfAbsent(sceneId, k -> new Int2ObjectOpenHashMap<>());
+    }
+
+    public static List<ScenePointArrayData> getScenePointArrays(int sceneId) {
+        return scenePointArrayData.computeIfAbsent(sceneId, k -> List.of(new ScenePointArrayData()));
     }
 
     @Nullable

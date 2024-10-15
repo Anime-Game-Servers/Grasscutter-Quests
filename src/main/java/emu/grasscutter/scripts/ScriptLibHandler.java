@@ -7,24 +7,24 @@ import emu.grasscutter.game.dungeons.challenge.ChallengeInfo;
 import emu.grasscutter.game.dungeons.challenge.ChallengeScoreInfo;
 import emu.grasscutter.game.dungeons.challenge.WorldChallenge;
 import emu.grasscutter.game.dungeons.challenge.factory.ChallengeFactory;
-import emu.grasscutter.game.entity.*;
+import emu.grasscutter.game.entity.EntityAvatar;
+import emu.grasscutter.game.entity.EntityGadget;
+import emu.grasscutter.game.entity.EntityMonster;
+import emu.grasscutter.game.entity.GameEntity;
 import emu.grasscutter.game.entity.gadget.GadgetWorktop;
 import emu.grasscutter.game.entity.gadget.platform.ConfigRoute;
 import emu.grasscutter.game.entity.gadget.platform.PointArrayRoute;
 import emu.grasscutter.game.managers.blossom.BlossomSchedule;
 import emu.grasscutter.game.managers.blossom.enums.BlossomRefreshType;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.game.props.ClimateType;
 import emu.grasscutter.game.quest.enums.QuestCond;
 import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.game.world.SceneGroupInstance;
-import emu.grasscutter.game.world.WeatherArea;
 import emu.grasscutter.scripts.lua_engine.GroupEventLuaContext;
 import emu.grasscutter.scripts.scriptlib_handlers.BaseHandler;
 import emu.grasscutter.server.packet.send.*;
 import lombok.Getter;
 import lombok.val;
-import org.anime_game_servers.multi_proto.gi.messages.scene.EnterType;
 import org.anime_game_servers.core.gi.enums.QuestState;
 import org.anime_game_servers.core.gi.models.Vector;
 import org.anime_game_servers.gi_lua.models.ScriptArgs;
@@ -38,14 +38,15 @@ import org.anime_game_servers.gi_lua.script_lib.LuaContext;
 import org.anime_game_servers.gi_lua.script_lib.SealBattleParams;
 import org.anime_game_servers.gi_lua.script_lib.handler.parameter.KillByConfigIdParams;
 import org.anime_game_servers.lua.engine.LuaTable;
+import org.anime_game_servers.multi_proto.gi.messages.scene.EnterType;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 
 import java.util.*;
 
 import static emu.grasscutter.game.props.EnterReason.Lua;
-import static org.anime_game_servers.gi_lua.utils.ScriptUtils.luaToPos;
 import static org.anime_game_servers.gi_lua.models.constants.GroupKillPolicy.*;
+import static org.anime_game_servers.gi_lua.utils.ScriptUtils.luaToPos;
 
 public class ScriptLibHandler extends BaseHandler implements org.anime_game_servers.gi_lua.script_lib.ScriptLibHandler<GroupEventLuaContext> {
     @Getter
@@ -1456,7 +1457,7 @@ public class ScriptLibHandler extends BaseHandler implements org.anime_game_serv
      */
     @Override
     public int SetPlatformPointArray(GroupEventLuaContext context, int entityConfigId, int pointArrayId, LuaTable var3, LuaTable var4) {
-        logger.warn("[LUA] Call unimplemented SetPlatformPointArray with {} {} {} {}", entityConfigId, pointArrayId, printTable(var3), printTable(var4));
+        logger.warn("[LUA] Call half implemented SetPlatformPointArray with {} {} {} {}", entityConfigId, pointArrayId, printTable(var3), printTable(var4));
 
         val groupId = context.getCurrentGroup().getGroupInfo().getId();
         val scene = context.getSceneScriptManager().getScene();
@@ -1475,16 +1476,17 @@ public class ScriptLibHandler extends BaseHandler implements org.anime_game_serv
         }
 
         val configRoute = (PointArrayRoute) routeConfig;
-        //TODO also check targetPoint/targetPoints
         if(configRoute.getPointArrayId() == pointArrayId){
             return -1;
         }
 
         configRoute.setPointArrayId(pointArrayId);
-        //TODO also set targetPoint/targetPoints
+        val pointIndexList = Arrays.stream(var3.getAsIntArray()).boxed().toList();
+        if (!entityGadget.scheduleArrayPoints(pointArrayId, pointIndexList)) {
+            return -1;
+        }
         context.getSceneScriptManager().getScene().broadcastPacket(new PacketPlatformChangeRouteNotify(entityGadget));
-
-        return -1;
+        return 0;
     }
 
     @Override

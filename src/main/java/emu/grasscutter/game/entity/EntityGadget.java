@@ -9,6 +9,7 @@ import emu.grasscutter.game.ability.AbilityManager;
 import emu.grasscutter.game.entity.gadget.*;
 import emu.grasscutter.game.entity.gadget.platform.BaseRoute;
 import emu.grasscutter.game.entity.gadget.platform.ConfigRoute;
+import emu.grasscutter.game.entity.gadget.platform.PointArrayRoute;
 import emu.grasscutter.game.entity.interfaces.ConfigAbilityDataAbilityEntity;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.EntityIdType;
@@ -37,9 +38,7 @@ import org.anime_game_servers.multi_proto.gi.messages.scene.VisionType;
 import org.anime_game_servers.multi_proto.gi.messages.scene.entity.*;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @ToString(callSuper = true)
 public class EntityGadget extends EntityBaseGadget implements ConfigAbilityDataAbilityEntity {
@@ -160,7 +159,7 @@ public class EntityGadget extends EntityBaseGadget implements ConfigAbilityDataA
             case Worktop, SealGadget -> new GadgetWorktop(this);
             case RewardStatue -> new GadgetRewardStatue(this);
             case Chest -> new GadgetChest(this);
-            case Gadget -> new GadgetObject(this);
+            case Gadget, Platform -> new GadgetObject(this);
             case Screen -> new GadgetScreen(this);
             case ViewPoint -> new GadgetViewPoint(this);
             default -> null;
@@ -172,6 +171,8 @@ public class EntityGadget extends EntityBaseGadget implements ConfigAbilityDataA
         if(!interactEnabled) return;
 
         if (this.getContent() == null) {
+            val contentName = GameData.getGadgetDataMap().get(interactReq.getGadgetId()).getType().name();
+            Grasscutter.getLogger().warn("Missing Gadget content: {}", contentName);
             return;
         }
 
@@ -244,6 +245,33 @@ public class EntityGadget extends EntityBaseGadget implements ConfigAbilityDataA
         getScene().broadcastPacket(new PacketSceneTimeNotify(getScene()));
         routeConfig.startRoute(getScene());
         getScene().broadcastPacket(new PacketPlatformStartRouteNotify(this));
+
+        return true;
+    }
+
+    public boolean scheduleArrayPoints(int pointArrayId, List<Integer> platformPointList) {
+        if (platformPointList.size() > 1)
+            Grasscutter.getLogger().warn("Untested PointArrayRoute with multiple points! Keep an eye on Route {} at pos: {}", pointArrayId, bornPos);
+
+        if (!(routeConfig instanceof PointArrayRoute pointArrayRoute)) {
+            Grasscutter.getLogger().error("routeConfig not instance of PointArrayRoute");
+            return false;
+        }
+
+        var route = this.getScene().getPointArrayById(pointArrayId);
+
+        if (route == null) {
+            Grasscutter.getLogger().error("Cannot find route with ID {}", pointArrayId);
+            return false;
+        }
+
+        var points = route.getPlatformPointList();
+
+        val routePointList = platformPointList.stream().map(x -> Arrays.stream(points).filter(y -> y.getPointId() == x).findFirst().orElse(null).toProto()).toList();
+        pointArrayRoute.setRoutePoints(routePointList);
+
+        pointArrayRoute.startRoute(getScene());
+        pointArrayRoute.setStartSceneTime(getScene().getSceneTime() + 2000); //todo: read routePointList.get(0).getMoveParams() for this offest
 
         return true;
     }

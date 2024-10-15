@@ -5,8 +5,8 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
-
-import org.anime_game_servers.multi_proto.gi.messages.general.RoutePoint.MoveParams;
+import org.anime_game_servers.multi_proto.gi.messages.general.RoutePoint.MoveParams.Time;
+import org.anime_game_servers.multi_proto.gi.messages.general.RoutePoint.MoveParams.Velocity;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -23,9 +23,9 @@ public class RoutePoint {
     public org.anime_game_servers.multi_proto.gi.messages.general.RoutePoint toProto(){
         val proto = new org.anime_game_servers.multi_proto.gi.messages.general.RoutePoint(pos.toProto());
         if(waitTime!=0){
-            proto.setMoveParams(new MoveParams.Time(waitTime));
+            proto.setMoveParams(new Time(waitTime));
         } else if(targetVelocity!=0){
-            proto.setMoveParams(new MoveParams.Velocity(targetVelocity));
+            proto.setMoveParams(new Velocity(targetVelocity));
         }
 
         return proto;

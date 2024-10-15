@@ -6,6 +6,7 @@ import emu.grasscutter.data.GameDepot;
 import emu.grasscutter.data.binout.SceneNpcBornEntry;
 import emu.grasscutter.data.binout.routes.Route;
 import emu.grasscutter.data.binout.routes.RouteType;
+import emu.grasscutter.data.common.ScenePointArrayData;
 import emu.grasscutter.data.excels.CodexAnimalData;
 import emu.grasscutter.data.excels.DungeonData;
 import emu.grasscutter.data.excels.SceneData;
@@ -75,6 +76,7 @@ public class Scene {
     private final long startWorldTime;
     @Getter @Setter DungeonManager dungeonManager;
     @Getter Int2ObjectMap<Route> sceneRoutes;
+    @Getter List<ScenePointArrayData> pointArrays;
     private Set<SpawnDataEntry.GridBlockId> loadedGridBlocks = new HashSet<>();
     @Getter @Setter private boolean dontDestroyWhenEmpty;
     @Getter private final SceneScriptManager scriptManager;
@@ -106,6 +108,7 @@ public class Scene {
 
         this.prevScene = 3;
         this.sceneRoutes = GameData.getSceneRoutes(getId());
+        this.pointArrays = GameData.getScenePointArrays(getId());
 
         this.startWorldTime = world.getWorldTime();
 
@@ -160,6 +163,11 @@ public class Scene {
     @Nullable
     public Route getSceneRouteById(int routeId) {
         return this.sceneRoutes.get(routeId);
+    }
+
+    @Nullable
+    public ScenePointArrayData getPointArrayById(int routeId) {
+        return this.pointArrays.stream().filter(x -> x.getPointArrayId() == routeId).findFirst().orElse(null);
     }
 
     public void setPaused(boolean paused) {

@@ -2,29 +2,24 @@ package emu.grasscutter.data;
 
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
-
 import emu.grasscutter.Loggers;
 import emu.grasscutter.data.binout.*;
 import emu.grasscutter.data.binout.AbilityModifier.AbilityModifierAction;
 import emu.grasscutter.data.binout.config.*;
 import emu.grasscutter.data.binout.config.fields.ConfigAbilityData;
-import emu.grasscutter.game.dungeons.dungeon_entry.DungeonEntries;
-import emu.grasscutter.data.common.quest.MainQuestData;
-import emu.grasscutter.data.common.quest.SubQuestData;
 import emu.grasscutter.data.binout.routes.SceneRoutes;
 import emu.grasscutter.data.common.PointData;
+import emu.grasscutter.data.common.ScenePointArrayData;
 import emu.grasscutter.data.common.WeatherAreaPointData;
-import emu.grasscutter.data.custom.*;
+import emu.grasscutter.data.common.quest.MainQuestData;
+import emu.grasscutter.data.common.quest.SubQuestData;
+import emu.grasscutter.data.custom.TrialAvatarActivityCustomData;
+import emu.grasscutter.data.custom.TrialAvatarCustomData;
 import emu.grasscutter.data.excels.TrialAvatarActivityDataData;
-import emu.grasscutter.data.server.ActivityCondGroup;
-import emu.grasscutter.data.server.DropSubfieldMapping;
-import emu.grasscutter.data.server.DropTableExcelConfigData;
-import emu.grasscutter.data.server.GadgetMapping;
-import emu.grasscutter.data.server.MonsterMapping;
-import emu.grasscutter.data.server.SubfieldMapping;
-import emu.grasscutter.data.server.WeatherMapping;
+import emu.grasscutter.data.server.*;
 import emu.grasscutter.game.ability.Ability;
 import emu.grasscutter.game.dungeons.DungeonDrop;
+import emu.grasscutter.game.dungeons.dungeon_entry.DungeonEntries;
 import emu.grasscutter.game.dungeons.enums.DungeonType;
 import emu.grasscutter.game.managers.blossom.BlossomConfig;
 import emu.grasscutter.game.quest.QuestEncryptionKey;
@@ -33,7 +28,9 @@ import emu.grasscutter.game.quest.enums.QuestContent;
 import emu.grasscutter.game.world.SpawnDataEntry;
 import emu.grasscutter.game.world.SpawnDataEntry.GridBlockId;
 import emu.grasscutter.game.world.SpawnDataEntry.SpawnGroupEntry;
-import emu.grasscutter.scripts.*;
+import emu.grasscutter.scripts.EntityControllerScriptManager;
+import emu.grasscutter.scripts.SceneIndexManager;
+import emu.grasscutter.scripts.ScriptSystem;
 import emu.grasscutter.utils.FileUtils;
 import emu.grasscutter.utils.JsonUtils;
 import emu.grasscutter.utils.TsvUtils;
@@ -42,7 +39,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import lombok.val;
-
 import org.anime_game_servers.gi_lua.models.loader.SceneReplacementScriptLoadParams;
 import org.anime_game_servers.gi_lua.models.loader.ShardQuestScriptLoadParams;
 import org.anime_game_servers.gi_lua.models.quest.QuestData;
@@ -51,17 +47,18 @@ import org.anime_game_servers.gi_lua.models.scene.SceneGroupReplacement;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 import java.util.stream.Collectors;
-import java.util.Map.Entry;
+import java.util.stream.Stream;
 
 import static emu.grasscutter.utils.FileUtils.getDataPath;
 import static emu.grasscutter.utils.FileUtils.getResourcePath;
@@ -126,6 +123,7 @@ public class ResourceLoader {
         GameDepot.load();
         // Load spawn data and quests
         loadSceneRoutes();
+        loadScenePointArrays();
         loadSpawnData();
         loadQuests();
         loadScriptSceneData();
@@ -296,7 +294,7 @@ public class ResourceLoader {
                         });
                     });
                 } catch (IOException e) {
-                    logger.error("Weather area files cannot be found");
+                    logger.error("Weather area files cannot be found in {}", dirPath);
                 }
             });
         } catch (IOException e) {
@@ -746,6 +744,41 @@ public class ResourceLoader {
             logger.debug("Loaded SceneRoutes for {} scenes.", GameData.getGadgetConfigData().size());
         } catch (IOException e) {
             logger.error("Failed to load SceneRoutes folder.");
+        }
+    }
+
+    private static void loadScenePointArrays() {
+        val pattern = Pattern.compile("scene([0-9]+)_point_array\\.json");
+        try (val dirStream = Files.newDirectoryStream(getResourcePath("Scripts/Scene"))) {
+            dirStream.forEach(dirPath -> {
+                try (val stream = Files.newDirectoryStream(dirPath, "scene*_point_array.json")) {
+                    stream.forEach(path -> {
+                        val matcher = pattern.matcher(path.getFileName().toString());
+                        if (!matcher.find()) return;
+                        int sceneId = Integer.parseInt(matcher.group(1));
+
+                        List<ScenePointArrayData> config;
+                        try {
+                            config = JsonUtils.loadToList(path, ScenePointArrayData.class);
+                        } catch (Exception e) {
+                            logger.error("Error loading point array file: {}", path, e);
+                            return;
+                        }
+
+                        if (config == null) return;
+
+                        config.forEach((pointArray) -> {
+                            GameData.getScenePointArrayData().put(sceneId, config);
+                        });
+
+                    });
+                } catch (IOException e) {
+                    logger.error("Point array files cannot be found in {}", dirPath);
+                }
+
+            });
+        } catch (IOException e) {
+            logger.error("Point array files cannot be found");
         }
     }
 
