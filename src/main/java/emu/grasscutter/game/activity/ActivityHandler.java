@@ -2,11 +2,9 @@ package emu.grasscutter.game.activity;
 
 import com.esotericsoftware.reflectasm.ConstructorAccess;
 import emu.grasscutter.data.GameData;
-import emu.grasscutter.data.excels.ActivityData;
 import emu.grasscutter.data.server.ActivityCondGroup;
 import emu.grasscutter.game.activity.condition.ActivityConditionExecutor;
 import emu.grasscutter.game.player.Player;
-import emu.grasscutter.game.props.WatcherTriggerType;
 import emu.grasscutter.game.quest.enums.QuestCond;
 import emu.grasscutter.utils.DateHelper;
 import lombok.AccessLevel;
@@ -15,6 +13,8 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.anime_game_servers.multi_proto.gi.messages.activity.general.ActivityInfo;
+import org.anime_game_servers.game_data_models.data.activity.ActivityData;
+import org.anime_game_servers.game_data_models.data.watcher.WatcherTriggerType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,6 +30,7 @@ public abstract class ActivityHandler {
     @Getter ActivityData activityData;
     Map<WatcherTriggerType, List<ActivityWatcher>> watchersMap = new HashMap<>();
 
+
     abstract public void onProtoBuild(PlayerActivityData playerActivityData, ActivityInfo activityInfo);
     abstract public void onInitPlayerActivityData(PlayerActivityData playerActivityData);
 
@@ -37,8 +38,14 @@ public abstract class ActivityHandler {
         activityData = GameData.getActivityDataMap().get(activityConfigItem.getActivityId());
 
         // add watcher to map by id
-        activityData.getWatcherDataList().forEach(watcherData -> {
-            var watcherType = activityWatcherTypeMap.get(watcherData.getTriggerConfig().getWatcherTriggerType());
+        activityData.getWatcherIds().forEach(watcherId -> {
+            val watcherData = GameData.getActivityWatcherDataMap().get(watcherId.intValue());
+            if(watcherData == null || watcherData.getTriggerConfig() == null || watcherData.getTriggerConfig().getTriggerType() == null){
+                // todo log
+                return;
+            }
+            val triggerType = watcherData.getTriggerConfig().getTriggerType();
+            var watcherType = activityWatcherTypeMap.get(triggerType);
             ActivityWatcher watcher;
             if(watcherType != null){
                 watcher = (ActivityWatcher) watcherType.newInstance();
@@ -49,8 +56,8 @@ public abstract class ActivityHandler {
             watcher.setWatcherId(watcherData.getId());
             watcher.setActivityHandler(this);
             watcher.setActivityWatcherData(watcherData);
-            watchersMap.computeIfAbsent(watcherData.getTriggerConfig().getWatcherTriggerType(), k -> new ArrayList<>());
-            watchersMap.get(watcherData.getTriggerConfig().getWatcherTriggerType()).add(watcher);
+            watchersMap.computeIfAbsent(triggerType, k -> new ArrayList<>());
+            watchersMap.get(triggerType).add(watcher);
         });
     }
 
@@ -59,7 +66,7 @@ public abstract class ActivityHandler {
             return;
         }
         val questManager = player.getQuestManager();
-        activityData.getCondGroupId().forEach(condGroupId -> {
+        activityData.getCondGroupIds().forEach(condGroupId -> {
             val condGroup = GameData.getActivityCondGroupMap().get((int)condGroupId);
             if(condGroup != null)
                 condGroup.getCondIds().forEach(condID -> questManager.queueEvent(QuestCond.QUEST_COND_ACTIVITY_COND, condID));
@@ -70,7 +77,7 @@ public abstract class ActivityHandler {
         if(activityData == null){
             return new ArrayList<>();
         }
-        return activityData.getCondGroupId().stream().map(condGroupId -> GameData.getActivityCondGroupMap().get((int)condGroupId))
+        return activityData.getCondGroupIds().stream().map(condGroupId -> GameData.getActivityCondGroupMap().get((int)condGroupId))
             .filter(Objects::nonNull)
             .map(ActivityCondGroup::getCondIds)
             .flatMap(Collection::stream)

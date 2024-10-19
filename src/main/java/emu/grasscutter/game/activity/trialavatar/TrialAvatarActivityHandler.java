@@ -10,11 +10,9 @@ import emu.grasscutter.game.activity.DefaultWatcher;
 import emu.grasscutter.game.dungeons.settle_listeners.TrialAvatarDungeonSettleListener;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
-import emu.grasscutter.game.props.WatcherTriggerType;
 import emu.grasscutter.game.activity.ActivityHandler;
 import emu.grasscutter.game.activity.GameActivity;
 import emu.grasscutter.game.activity.PlayerActivityData;
-import emu.grasscutter.game.props.ActivityType;
 import emu.grasscutter.server.packet.send.PacketActivityInfoNotify;
 import emu.grasscutter.server.packet.send.PacketScenePlayerLocationNotify;
 import emu.grasscutter.utils.JsonUtils;
@@ -22,6 +20,8 @@ import emu.grasscutter.utils.JsonUtils;
 import java.util.*;
 import lombok.*;
 import org.anime_game_servers.multi_proto.gi.messages.activity.general.ActivityInfo;
+import org.anime_game_servers.game_data_models.data.activity.ActivityType;
+import org.anime_game_servers.game_data_models.data.watcher.WatcherTriggerType;
 
 @GameActivity(ActivityType.NEW_ACTIVITY_TRIAL_AVATAR)
 public class TrialAvatarActivityHandler extends ActivityHandler {
@@ -108,7 +108,7 @@ public class TrialAvatarActivityHandler extends ActivityHandler {
         val rewardParam = GameData.getRewardDataMap().get(rewardInfo.getRewardId());
         if (rewardParam == null) return false;
 
-        player.getInventory().addItemParamDatas(rewardParam.getRewardItemList(), ActionReason.TrialAvatarActivityFirstPassReward);
+        player.getInventory().addRewardData(rewardParam, ActionReason.TrialAvatarActivityFirstPassReward);
         rewardInfo.setReceivedReward(true);
         playerActivityData.get().setDetail(trialAvatarPlayerData);
         playerActivityData.get().save();

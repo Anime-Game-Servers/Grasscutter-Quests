@@ -1,12 +1,12 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.game.activity.trialavatar.TrialAvatarActivityHandler;
-import emu.grasscutter.game.props.ActivityType;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketReceivedTrialAvatarActivityRewardRsp;
 import lombok.val;
 import org.anime_game_servers.multi_proto.gi.messages.activity.trial.ReceivedTrialAvatarActivityRewardReq;
+import org.anime_game_servers.game_data_models.data.activity.ActivityType;
 
 public class HandlerReceivedTrialAvatarActivityRewardReq extends TypedPacketHandler<ReceivedTrialAvatarActivityRewardReq> {
 	@Override

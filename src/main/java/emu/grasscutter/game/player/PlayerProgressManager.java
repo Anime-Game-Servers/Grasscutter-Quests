@@ -1,7 +1,6 @@
 package emu.grasscutter.game.player;
 
 import emu.grasscutter.data.GameData;
-import emu.grasscutter.data.binout.ScenePointEntry;
 import emu.grasscutter.data.excels.OpenStateData;
 import emu.grasscutter.data.excels.OpenStateData.OpenStateCondType;
 import emu.grasscutter.game.props.ActionReason;
@@ -17,6 +16,7 @@ import lombok.val;
 import org.anime_game_servers.core.gi.enums.QuestState;
 import org.anime_game_servers.gi_lua.models.ScriptArgs;
 import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
+import org.anime_game_servers.game_data_models.data.rewards.TransPointRewardData;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -237,9 +237,10 @@ public class PlayerProgressManager extends BasePlayerDataManager {
         }
     }
 
-    public boolean unlockTransPoint(int sceneId, int pointId, boolean isStatue) {
+    public boolean unlockTransPoint(int sceneId, int pointId) {
         // Check whether the unlocked point exists and whether it is still locked.
-        ScenePointEntry scenePointEntry = GameData.getScenePointEntryById(sceneId, pointId);
+        val scenePointEntry = GameData.getScenePointEntryById(sceneId, pointId);
+        val scenePointRewardData = GameData.getTransPointRewardData().get(TransPointRewardData.getKey(sceneId, pointId));
 
         if (scenePointEntry == null || this.player.getUnlockedScenePoints(sceneId).contains(pointId)) {
             return false;
@@ -248,10 +249,15 @@ public class PlayerProgressManager extends BasePlayerDataManager {
         // Add the point to the list of unlocked points for its scene.
         this.player.getUnlockedScenePoints(sceneId).add(pointId);
 
-        // Give primogems  and Adventure EXP for unlocking.
-        this.player.getInventory().addItem(201, 5, ActionReason.UnlockPointReward);
-        this.player.getInventory().addItem(102, isStatue ? 50 : 10, ActionReason.UnlockPointReward);
-        // TODO use TransPointREwardConfigData
+        if(scenePointRewardData != null){
+            val rewards = GameData.getRewardDataMap().get(scenePointRewardData.getRewardId());
+            if(rewards != null){
+                this.player.getInventory().addRewardData(rewards, ActionReason.UnlockPointReward);
+            }
+            if(scenePointRewardData.getUnlockAreaId() != null && !scenePointRewardData.getUnlockAreaId().isEmpty()){
+                scenePointRewardData.getUnlockAreaId().forEach(areaId -> unlockSceneArea(sceneId, areaId));
+            }
+        }
 
         // this.player.sendPacket(new PacketPlayerPropChangeReasonNotify(this.player.getProperty(PlayerProperty.PROP_PLAYER_EXP), PlayerProperty.PROP_PLAYER_EXP, PropChangeReason.PROP_CHANGE_REASON_PLAYER_ADD_EXP));
 

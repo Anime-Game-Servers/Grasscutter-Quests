@@ -1,9 +1,9 @@
 package emu.grasscutter.game.activity;
 
-import emu.grasscutter.game.props.ActivityType;
 import org.anime_game_servers.multi_proto.gi.messages.activity.general.ActivityInfo;
+import org.anime_game_servers.game_data_models.data.activity.ActivityType;
 
-@GameActivity(ActivityType.NONE)
+@GameActivity(ActivityType.NEW_ACTIVITY_GENERAL)
 public class DefaultActivityHandler extends ActivityHandler{
     @Override
     public void onProtoBuild(PlayerActivityData playerActivityData, ActivityInfo activityInfo) {

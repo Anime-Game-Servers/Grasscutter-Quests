@@ -1,11 +1,11 @@
 package emu.grasscutter.game.activity.condition;
 
 import emu.grasscutter.data.GameData;
-import emu.grasscutter.data.excels.ActivityCondExcelConfigData;
 import emu.grasscutter.game.activity.PlayerActivityData;
 import it.unimi.dsi.fastutil.ints.AbstractInt2ObjectMap.BasicEntry;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
+import org.anime_game_servers.game_data_models.data.activity.ActivityCondData;
 
 import java.util.Map;
 
@@ -17,12 +17,12 @@ public class PlayerActivityDataMappingBuilder {
 
     private final Map<Integer, PlayerActivityData> playerActivityDataMap;
 
-    private final Int2ObjectMap<ActivityCondExcelConfigData> activityCondMap;
+    private final Int2ObjectMap<ActivityCondData> activityCondMap;
 
     /**
      * Build mapping for PlayerActivityData.
      *
-     * @return mapping for activity data. Key is condId from NewActivityCondExcelConfigData.json ({@link ActivityCondExcelConfigData}) resource,
+     * @return mapping for activity data. Key is condId from NewActivityCondExcelConfigData.json ({@link ActivityCondData}) resource,
      * value is {@link PlayerActivityData} class for related activity.
      */
     public static Int2ObjectMap<PlayerActivityData> buildPlayerActivityDataByActivityCondId(Map<Integer, PlayerActivityData> activities) {
@@ -53,7 +53,7 @@ public class PlayerActivityDataMappingBuilder {
 
     /**
      * Detect activity data id by cond id. Cond id comes from condId field from NewActivityCondExcelConfigData.json.
-     * See {@link ActivityCondExcelConfigData} for condId.
+     * See {@link ActivityCondData} for condId.
      * <p>
      * Generally, there are 3 cases:
      * <ol>

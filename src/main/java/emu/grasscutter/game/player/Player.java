@@ -8,7 +8,6 @@ import emu.grasscutter.data.binout.config.ConfigLevelEntity;
 import emu.grasscutter.data.binout.config.fields.ConfigAbilityData;
 import emu.grasscutter.data.excels.AvatarData;
 import emu.grasscutter.data.excels.PlayerLevelData;
-import emu.grasscutter.data.excels.SceneTagData;
 import emu.grasscutter.data.excels.WeatherData;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.Account;
@@ -93,6 +92,7 @@ import org.anime_game_servers.multi_proto.gi.messages.scene.PlayerLocationInfo;
 import org.anime_game_servers.multi_proto.gi.messages.scene.PlayerWorldLocationInfo;
 import org.anime_game_servers.multi_proto.gi.messages.scene.entity.MpSettingType;
 import org.anime_game_servers.multi_proto.gi.messages.scene.entity.OnlinePlayerInfo;
+import org.anime_game_servers.game_data_models.data.scene.SceneTagConfigData;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.DayOfWeek;
@@ -407,11 +407,11 @@ public class Player {
     }
 
     public void visitScene(int sceneId) {
-        val sceneTagData = GameData.getSceneTagDataMap().values();
+        val sceneTagData = GameData.getSceneTagConfigDataMap().values();
         val tags = this.sceneTags.computeIfAbsent(sceneId, k -> new HashMap<>());
         sceneTagData.stream()
                 .filter(tagData -> tagData.getSceneId() == sceneId && tagData.isDefaultValid())
-                .map(SceneTagData::getId)
+                .map(SceneTagConfigData::getId)
                 .forEach(k -> tags.putIfAbsent(k, true));
     }
 

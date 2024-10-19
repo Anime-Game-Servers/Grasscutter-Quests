@@ -1,16 +1,16 @@
 package emu.grasscutter.game.activity.condition;
 
 import emu.grasscutter.Grasscutter;
-import emu.grasscutter.data.excels.ActivityCondExcelConfigData;
-import org.reflections.Reflections;
+import org.anime_game_servers.game_data_models.data.activity.ActivityCondData;
+import org.anime_game_servers.game_data_models.data.activity.ActivityCondition;
 
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Class that used for scanning classpath, picking up all activity conditions (for NewActivityCondExcelConfigData.json {@link ActivityCondExcelConfigData})
- * and saving them to map. Check for more info {@link ActivityCondition}
+ * Class that used for scanning classpath, picking up all activity conditions (for NewActivityCondExcelConfigData.json {@link ActivityCondData})
+ * and saving them to map. Check for more info {@link ActivityConditionHandler}
  */
 public class AllActivityConditionBuilder {
 
@@ -19,20 +19,19 @@ public class AllActivityConditionBuilder {
      *
      * @return map containing all condition handlers for NewActivityCondExcelConfigData.json
      */
-    static public Map<ActivityConditions, ActivityConditionBaseHandler> buildActivityConditions() {
+    static public Map<ActivityCondition, ActivityConditionBaseHandler> buildActivityConditions() {
         return new AllActivityConditionBuilder().initActivityConditions();
     }
 
-    private Map<ActivityConditions, ActivityConditionBaseHandler> initActivityConditions() {
-        Reflections reflector = Grasscutter.reflector;
-        return reflector.getTypesAnnotatedWith(ActivityCondition.class).stream()
+    private Map<ActivityCondition, ActivityConditionBaseHandler> initActivityConditions() {
+        return Grasscutter.reflector.getTypesAnnotatedWith(ActivityConditionHandler.class).stream()
             .map(this::newInstance)
             .map(h -> new AbstractMap.SimpleEntry<>(extractActionType(h), h))
             .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
-    private ActivityConditions extractActionType(ActivityConditionBaseHandler e) {
-        ActivityCondition condition = e.getClass().getAnnotation(ActivityCondition.class);
+    private ActivityCondition extractActionType(ActivityConditionBaseHandler e) {
+        ActivityConditionHandler condition = e.getClass().getAnnotation(ActivityConditionHandler.class);
         if (condition == null) {
             Grasscutter.getLogger().error("Failed to read command type for class {}", e.getClass().getName());
             return null;

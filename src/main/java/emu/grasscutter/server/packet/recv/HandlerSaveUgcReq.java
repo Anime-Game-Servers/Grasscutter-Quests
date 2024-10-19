@@ -4,7 +4,6 @@ import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.activity.musicgame.MusicGameActivityHandler;
 import emu.grasscutter.game.activity.musicgame.MusicGameBeatmap;
 import emu.grasscutter.game.activity.musicgame.MusicGamePlayerData;
-import emu.grasscutter.game.props.ActivityType;
 import emu.grasscutter.net.packet.TypedPacketHandler;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketActivityInfoNotify;
@@ -18,6 +17,7 @@ import org.anime_game_servers.multi_proto.gi.messages.activity.user_generated_co
 import org.anime_game_servers.multi_proto.gi.messages.general.Retcode;
 
 import java.util.Objects;
+import org.anime_game_servers.game_data_models.data.activity.ActivityType;
 
 public class HandlerSaveUgcReq extends TypedPacketHandler<SaveUgcReq> {
 

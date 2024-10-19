@@ -3,12 +3,13 @@ package emu.grasscutter.game.activity.trialavatar;
 import emu.grasscutter.game.activity.ActivityWatcher;
 import emu.grasscutter.game.activity.ActivityWatcherType;
 import emu.grasscutter.game.activity.PlayerActivityData;
-import emu.grasscutter.game.props.WatcherTriggerType;
 
 import lombok.val;
 import java.util.stream.Stream;
 
-@ActivityWatcherType(WatcherTriggerType.TRIGGER_FINISH_CHALLENGE)
+import static org.anime_game_servers.game_data_models.data.watcher.WatcherTriggerType.TRIGGER_FINISH_CHALLENGE;
+
+@ActivityWatcherType(TRIGGER_FINISH_CHALLENGE)
 public class TrialAvatarActivityChallengeTrigger extends ActivityWatcher {
     @Override
     protected boolean isMeet(String... param) {

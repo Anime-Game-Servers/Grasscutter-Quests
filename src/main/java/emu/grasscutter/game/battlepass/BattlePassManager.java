@@ -15,6 +15,7 @@ import org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassCycl
 import org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassRewardTakeOption;
 import org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassSchedule;
 import org.anime_game_servers.multi_proto.gi.messages.battle_pass.BattlePassUnlockStatus;
+import org.anime_game_servers.game_data_models.data.quest.GainItem;
 import org.bson.types.ObjectId;
 
 import dev.morphia.annotations.Entity;
@@ -23,10 +24,8 @@ import dev.morphia.annotations.Indexed;
 import emu.grasscutter.GameConstants;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.GameData;
-import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.data.excels.BattlePassRewardData;
 import emu.grasscutter.data.excels.ItemData;
-import emu.grasscutter.data.excels.RewardData;
 import emu.grasscutter.database.DatabaseHelper;
 import emu.grasscutter.game.inventory.GameItem;
 import emu.grasscutter.game.inventory.MaterialType;
@@ -191,7 +190,7 @@ public class BattlePassManager extends BasePlayerDataManager {
         }
     }
 
-    private void takeRewardsFromSelectChest(ItemData rewardItemData, int index, ItemParamData entry, List<GameItem> rewardItems) {
+    private void takeRewardsFromSelectChest(ItemData rewardItemData, int index, GainItem entry, List<GameItem> rewardItems) {
         // Sanity checks.
         if (rewardItemData.getItemUse().size() < 1) {
             return;
@@ -209,15 +208,15 @@ public class BattlePassManager extends BasePlayerDataManager {
 
         // For ITEM_USE_ADD_SELECT_ITEM chests, we can directly add the item specified in the chest's data.
         if (rewardItemData.getItemUse().get(0).getUseOp() == ItemUseOp.ITEM_USE_ADD_SELECT_ITEM) {
-            GameItem rewardItem = new GameItem(GameData.getItemDataMap().get(chosenId), entry.getItemCount());
+            GameItem rewardItem = new GameItem(GameData.getItemDataMap().get(chosenId), entry.getCount());
             rewardItems.add(rewardItem);
         }
         // For ITEM_USE_GRANT_SELECT_REWARD chests, we have to again look up reward data.
         else if (rewardItemData.getItemUse().get(0).getUseOp() == ItemUseOp.ITEM_USE_GRANT_SELECT_REWARD) {
-            RewardData selectedReward = GameData.getRewardDataMap().get(chosenId);
+            val selectedReward = GameData.getRewardDataMap().get(chosenId);
 
             for (var r : selectedReward.getRewardItemList()) {
-                GameItem rewardItem = new GameItem(GameData.getItemDataMap().get(r.getItemId()), r.getItemCount());
+                GameItem rewardItem = new GameItem(GameData.getItemDataMap().get(r.getItemId()), r.getCount());
                 rewardItems.add(rewardItem);
             }
         }
@@ -265,7 +264,7 @@ public class BattlePassManager extends BasePlayerDataManager {
                 int index = option.getOptionIdx();
 
                 // Make sure we have reward data.
-                RewardData reward = GameData.getRewardDataMap().get(tag.getRewardId());
+                val reward = GameData.getRewardDataMap().get(tag.getRewardId());
                 if (reward == null) {
                     continue;
                 }
@@ -280,7 +279,7 @@ public class BattlePassManager extends BasePlayerDataManager {
                     }
                     // All other rewards directly give us the right item.
                     else {
-                        GameItem rewardItem = new GameItem(rewardItemData, entry.getItemCount());
+                        GameItem rewardItem = new GameItem(rewardItemData, entry.getCount());
                         rewardItems.add(rewardItem);
                     }
                 }

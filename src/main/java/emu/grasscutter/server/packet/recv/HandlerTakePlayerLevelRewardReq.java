@@ -1,7 +1,6 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.data.GameData;
-import emu.grasscutter.data.common.ItemParamData;
 import emu.grasscutter.game.player.Player;
 import emu.grasscutter.game.props.ActionReason;
 import emu.grasscutter.net.packet.TypedPacketHandler;
@@ -9,8 +8,9 @@ import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.server.packet.send.PacketTakePlayerLevelRewardRsp;
 import org.anime_game_servers.multi_proto.gi.messages.player.TakePlayerLevelRewardReq;
 
-import java.util.List;
 import java.util.Set;
+
+import lombok.val;
 
 public class HandlerTakePlayerLevelRewardReq extends TypedPacketHandler<TakePlayerLevelRewardReq> {
     @Override
@@ -21,9 +21,9 @@ public class HandlerTakePlayerLevelRewardReq extends TypedPacketHandler<TakePlay
             Set<Integer> rewardedLevels = session.getPlayer().getRewardedLevels();
             if (!rewardedLevels.contains(level)) {// No duplicated reward
                 int rewardId = GameData.getPlayerLevelDataMap().get(level).getRewardId();
-                if (rewardId != 0) {
-                    List<ItemParamData> rewardItems = GameData.getRewardDataMap().get(rewardId).getRewardItemList();
-                    pl.getInventory().addItemParamDatas(rewardItems, ActionReason.PlayerUpgradeReward);
+                val rewardData = GameData.getRewardDataMap().get(rewardId);
+                if (rewardData != null) {
+                    pl.getInventory().addRewardData(rewardData, ActionReason.PlayerUpgradeReward);
                     rewardedLevels.add(level);
                     pl.setRewardedLevels(rewardedLevels);
                     pl.save();

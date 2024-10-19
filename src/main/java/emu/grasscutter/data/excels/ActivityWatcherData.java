@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
+@Deprecated
 @ResourceType(name = "NewActivityWatcherConfigData.json", loadPriority = ResourceType.LoadPriority.HIGH)
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)

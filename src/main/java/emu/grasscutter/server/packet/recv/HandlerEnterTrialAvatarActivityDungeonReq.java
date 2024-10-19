@@ -1,8 +1,8 @@
 package emu.grasscutter.server.packet.recv;
 
 import emu.grasscutter.game.activity.trialavatar.TrialAvatarActivityHandler;
-import emu.grasscutter.game.props.ActivityType;
 import emu.grasscutter.net.packet.TypedPacketHandler;
+import org.anime_game_servers.game_data_models.data.activity.ActivityType;
 import emu.grasscutter.server.packet.send.PacketEnterTrialAvatarActivityDungeonRsp;
 import org.anime_game_servers.multi_proto.gi.messages.activity.trial.EnterTrialAvatarActivityDungeonReq;
 import emu.grasscutter.server.game.GameSession;
