@@ -833,6 +833,16 @@ public class Player {
                     // If space in team, add
                     this.getTeamManager().addAvatarToCurrentTeam(avatar);
                 }
+
+                if (Grasscutter.getConfig().server.game.gameOptions.isShowAvatarAddNotify) {
+                    // Show splash card with the new avatar
+                    sendPacket(new PacketAddNoGachaAvatarCardNotify(
+                        avatar,
+                        ActionReason.AddAvatar,
+                        // -9999000 works great in both cases: /give 10000069, /give 1069 (Tighnari avatar)
+                        new GameItem(GameData.getItemDataMap().get(avatar.getAvatarId() - 9999000))
+                    ));
+                }
             }
         } else {
             // Failed adding avatar
