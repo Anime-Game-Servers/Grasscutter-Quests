@@ -1,6 +1,5 @@
 package emu.grasscutter.game.managers.energy;
 
-import com.google.protobuf.InvalidProtocolBufferException;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.data.DataLoader;
 import emu.grasscutter.data.GameData;
@@ -121,7 +120,7 @@ public class EnergyManager extends BasePlayerManager {
         };
     }
 
-    public void handleGenerateElemBall(AbilityInvokeEntry invoke) throws InvalidProtocolBufferException {
+    public void handleGenerateElemBall(AbilityInvokeEntry invoke) {
         // ToDo:
         // This is also called when a weapon like Favonius Warbow etc. creates energy through its passive.
         // We are not handling this correctly at the moment.

@@ -1,7 +1,5 @@
 package emu.grasscutter.game.ability.mixins;
 
-import com.google.protobuf.ByteString;
-
 import emu.grasscutter.data.binout.AbilityMixinData;
 import emu.grasscutter.game.ability.Ability;
 

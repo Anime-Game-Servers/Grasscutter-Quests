@@ -11,8 +11,6 @@ import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Loggers;
 import emu.grasscutter.game.props.ElementReactionType;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import emu.grasscutter.data.GameData;
 import emu.grasscutter.data.binout.AbilityData;
 import emu.grasscutter.data.binout.AbilityMixinData;
@@ -414,11 +412,11 @@ public final class AbilityManager extends BasePlayerManager {
         }
     }
 
-    private void handleMixinCostStamina(AbilityInvokeEntry invoke) throws InvalidProtocolBufferException {
+    private void handleMixinCostStamina(AbilityInvokeEntry invoke) {
 
     }
 
-    private void handleGenerateElemBall(AbilityInvokeEntry invoke) throws InvalidProtocolBufferException {
+    private void handleGenerateElemBall(AbilityInvokeEntry invoke) {
 
     }
 
@@ -432,7 +430,7 @@ public final class AbilityManager extends BasePlayerManager {
         return null;
     }
 
-    private void handleGlobalFloatValue(AbilityInvokeEntry invoke) throws InvalidProtocolBufferException {
+    private void handleGlobalFloatValue(AbilityInvokeEntry invoke) {
         var entity = this.player.getScene().getEntityById(invoke.getEntityId());
         if(entity == null) return;
 
@@ -465,11 +463,11 @@ public final class AbilityManager extends BasePlayerManager {
 
     }
 
-    private void handleModifierDurabilityChange(AbilityInvokeEntry invoke) throws InvalidProtocolBufferException {
+    private void handleModifierDurabilityChange(AbilityInvokeEntry invoke) {
 
     }
 
-    private void handleAddNewAbility(AbilityInvokeEntry invoke) throws InvalidProtocolBufferException {
+    private void handleAddNewAbility(AbilityInvokeEntry invoke) {
         var entity = this.player.getScene().getEntityById(invoke.getEntityId());
 
         if(entity == null) {
@@ -496,7 +494,7 @@ public final class AbilityManager extends BasePlayerManager {
      * Invoked when an entity triggered an elemental reaction.
      * @param invoke Holds information of elemental reaction, attacker and target.
      */
-    private void handleTriggerElementReaction(AbilityInvokeEntry invoke) throws InvalidProtocolBufferException {
+    private void handleTriggerElementReaction(AbilityInvokeEntry invoke) {
         if (getPlayer().getScene() == null) return;
 
         AbilityMetaTriggerElementReaction data = AbilityMetaTriggerElementReaction.parseBy(invoke.getAbilityData(), player.getSession().getVersion());

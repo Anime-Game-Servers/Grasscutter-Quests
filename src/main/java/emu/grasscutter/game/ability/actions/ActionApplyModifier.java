@@ -1,12 +1,8 @@
 package emu.grasscutter.game.ability.actions;
 
-import com.google.protobuf.ByteString;
-
-import emu.grasscutter.Grasscutter;
 
 import emu.grasscutter.data.binout.AbilityModifier.AbilityModifierAction;
 import emu.grasscutter.game.ability.Ability;
-import emu.grasscutter.game.ability.AbilityModifierController;
 import emu.grasscutter.game.entity.GameEntity;
 
 @AbilityAction(AbilityModifierAction.Type.ApplyModifier)

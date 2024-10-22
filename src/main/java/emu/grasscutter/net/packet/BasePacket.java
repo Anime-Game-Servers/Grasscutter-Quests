@@ -3,7 +3,6 @@ package emu.grasscutter.net.packet;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import com.google.protobuf.GeneratedMessageV3;
 import emu.grasscutter.server.game.GameSession;
 import emu.grasscutter.utils.Crypto;
 import lombok.val;
@@ -74,15 +73,6 @@ public class BasePacket {
 
     public void setData(byte[] data) {
         this.data = data;
-    }
-
-    public void setData(GeneratedMessageV3 proto) {
-        this.data = proto.toByteArray();
-    }
-
-    @SuppressWarnings("rawtypes")
-    public void setData(GeneratedMessageV3.Builder proto) {
-        this.data = proto.build().toByteArray();
     }
 
     public BasePacket buildHeader(int clientSequence) {

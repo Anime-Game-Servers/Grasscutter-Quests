@@ -1,6 +1,5 @@
 package emu.grasscutter.server.http.dispatch;
 
-import com.google.protobuf.ByteString;
 import emu.grasscutter.Grasscutter;
 import emu.grasscutter.Grasscutter.ServerRunMode;
 import emu.grasscutter.server.event.dispatch.QueryAllRegionsEvent;

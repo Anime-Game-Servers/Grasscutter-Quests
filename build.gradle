@@ -12,9 +12,6 @@ buildscript {
     repositories {
         maven { url "https://plugins.gradle.org/m2/" }
     }
-    dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.18'
-    }
 }
 
 plugins {
@@ -25,15 +22,6 @@ plugins {
     id 'java'
 
     id 'com.github.johnrengelman.shadow' version '8.1.1'
-
-    // Apply the protobuf auto generator
-    id 'com.google.protobuf' version "0.8.18"
-
-    // Eclipse Support
-    id 'eclipse'
-
-    // IntelliJ Support
-    id 'idea'
 
     // Maven
     id 'maven-publish'
@@ -85,7 +73,6 @@ dependencies {
     implementation group: 'io.netty', name: 'netty-transport-native-kqueue', version: '4.1.79.Final'
 
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
-    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.18.2'
 
     implementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
 
@@ -114,12 +101,10 @@ dependencies {
     implementation group: 'io.javalin', name: 'javalin', version: '4.6.4'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
 
-    protobuf files('proto/')
-
-    compileOnly 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor 'org.projectlombok:lombok:1.18.24'
-    testCompileOnly 'org.projectlombok:lombok:1.18.24'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 }
 
 configurations.all {
@@ -132,7 +117,6 @@ application {
 }
 
 shadowJar {
-    exclude("*.proto")
     zip64 = true
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     mergeServiceFiles()
@@ -146,8 +130,6 @@ shadowJar {
 }
 
 jar {
-    exclude '*.proto'
-
     manifest {
         attributes 'Main-Class': 'emu.grasscutter.Grasscutter'
     }
@@ -232,44 +214,10 @@ publishing {
     }
 }
 
-clean {
-    delete protobuf.generatedFilesBaseDir
-}
-
-protobuf {
-    protoc {
-        // The artifact spec for the Protobuf Compiler
-        artifact = 'com.google.protobuf:protoc:3.18.1'
-    }
-//    generatedFilesBaseDir = "$projectDir/src/main/java/emu/grasscutter/net/proto/"
-    generatedFilesBaseDir = "$projectDir/src/generated/"
-}
-
 sourceSets {
     main {
-        proto {
-            // In addition to the default 'src/main/proto'
-            srcDir 'src/generated'
-        }
         java {
             srcDir 'src/java'
-        }
-    }
-}
-
-idea {
-    module {
-        // proto files and generated Java files are automatically added as
-        // source dirs.
-        // If you have additional sources, add them here:
-        sourceDirs += file("/proto/");
-    }
-}
-
-eclipse {
-    classpath {
-        file.whenMerged { cp ->
-            cp.entries.add( new org.gradle.plugins.ide.eclipse.model.SourceFolder('src/generated/main/java', null) )
         }
     }
 }
@@ -304,10 +252,6 @@ public final class BuildConfig {
     public static final String GIT_HASH = \"${gitCommitHash()}\";
 }"""
 
-}
-
-processResources {
-    dependsOn "generateProto"
 }
 
 task generateActivityConditions(type: GenerateActivityConditions)
