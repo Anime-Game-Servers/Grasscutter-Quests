@@ -103,6 +103,7 @@ public class GameQuest {
         getQuestData().getBeginExec().forEach(e -> getOwner().getServer().getQuestSystem().triggerExec(this, e, e.getParam()));
         getOwner().getQuestManager().checkQuestAlreadyFulfilled(this, true);
         getOwner().getDungeonEntryManager().checkQuestForDungeonEntryUpdate(this);
+        getOwner().getCoopHandler().checkNextCoopPointAccept(this.getSubQuestId());
 
         Grasscutter.getLogger().debug("Quest {} is started", subQuestId);
         save();
@@ -204,6 +205,7 @@ public class GameQuest {
             });
         }
         getOwner().getDungeonEntryManager().checkQuestForDungeonEntryUpdate(this);
+        getOwner().getCoopHandler().conditionMetChapterUpdateNotify(this.getSubQuestId(), "COOP_COND_FINISH_QUEST");
 
         save();
 

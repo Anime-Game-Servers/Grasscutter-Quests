@@ -63,8 +63,8 @@ public enum QuestExec implements QuestTrigger {
     QUEST_EXEC_RELOAD_SCENE_TAG (53), // missing
     QUEST_EXEC_REGISTER_DYNAMIC_GROUP_ONLY (54), // missing
     QUEST_EXEC_CHANGE_SKILL_DEPOT (55), // missing
-    QUEST_EXEC_ADD_SCENE_TAG (56), // missing
-    QUEST_EXEC_DEL_SCENE_TAG (57), // missing
+    QUEST_EXEC_ADD_SCENE_TAG (56),
+    QUEST_EXEC_DEL_SCENE_TAG (57),
     QUEST_EXEC_INIT_TIME_VAR (58),
     QUEST_EXEC_CLEAR_TIME_VAR (59),
     QUEST_EXEC_MODIFY_CLIMATE_AREA (60), // missing

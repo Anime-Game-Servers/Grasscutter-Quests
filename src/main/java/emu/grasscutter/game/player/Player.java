@@ -150,6 +150,7 @@ public class Player {
     @Getter private Map<Integer, Integer> questGlobalVariables;
     @Getter private Map<Integer, Integer> openStates;
     @Getter private Map<Integer, Map<Integer, Boolean>> sceneTags;
+    @Getter private CoopHandler coopHandler;
     @Getter @Setter private Map<Integer, Set<Integer>> unlockedSceneAreas;
     @Getter @Setter private Map<Integer, Set<Integer>> unlockedScenePoints;
     @Getter @Setter private List<Integer> chatEmojiIdList;
@@ -310,6 +311,7 @@ public class Player {
         this.cookingCompoundManager=new CookingCompoundManager(this);
         this.blossomManager = new BlossomManager(this);
         this.dungeonEntryManager = new DungeonEntryManager(this);
+        this.coopHandler = new CoopHandler(this);
     }
 
     // On player creation
@@ -499,6 +501,7 @@ public class Player {
             this.getProgressManager().tryUnlockOpenStates();
             this.getQuestManager().queueEvent(QuestContent.QUEST_CONTENT_PLAYER_LEVEL_UP, level);
             this.getQuestManager().queueEvent(QuestCond.QUEST_COND_PLAYER_LEVEL_EQUAL_GREATER, level);
+            this.getCoopHandler().conditionMetChapterUpdateNotify(level, "COOP_COND_PLAYER_LEVEL");
 
             return true;
         }
@@ -1306,6 +1309,7 @@ public class Player {
         this.getProgressManager().setPlayer(this);
         this.getTeamManager().setPlayer(this);
         this.getBlossomManager().setPlayer(this);
+        this.getCoopHandler().setPlayer(this);
     }
 
     public void save() {
@@ -1366,6 +1370,7 @@ public class Player {
         getDungeonEntryManager().onLogin();
 
         // Packets
+        session.send(new PacketMainCoopUpdateNotify(this.getCoopHandler().getCoopCards().values().stream().map(e -> e.getMainCoop().toProto()).toList()));
         session.send(new PacketPlayerDataNotify(this)); // Player data
         session.send(new PacketStoreWeightLimitNotify());
         session.send(new PacketPlayerStoreNotify(this));
@@ -1381,6 +1386,8 @@ public class Player {
         session.send(new PacketCodexDataFullNotify(this));
         session.send(new PacketAllWidgetDataNotify(this));
         session.send(new PacketWidgetGadgetAllDataNotify());
+        session.send(new PacketCoopDataNotify(this));
+        session.send(new PacketMainCoopUpdateNotify(this.getCoopHandler().getCoopCards().values().stream().map(e -> e.getMainCoop().toProto()).toList())); //send it a second time
         session.send(new PacketCombineDataNotify(this.unlockedCombines));
         session.send(new PacketGetChatEmojiCollectionRsp(this.getChatEmojiIdList()));
 
@@ -1573,4 +1580,5 @@ public class Player {
                 .map(Map.Entry::getKey)
                 .toList();
     }
+
 }
