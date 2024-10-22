@@ -150,6 +150,7 @@ public class Player {
     @Getter private Map<Integer, Integer> questGlobalVariables;
     @Getter private Map<Integer, Integer> openStates;
     @Getter private Map<Integer, Map<Integer, Boolean>> sceneTags;
+    @Getter private Map<Integer, Boolean> levelTags;
     @Getter @Setter private Map<Integer, Set<Integer>> unlockedSceneAreas;
     @Getter @Setter private Map<Integer, Set<Integer>> unlockedScenePoints;
     @Getter @Setter private List<Integer> chatEmojiIdList;
@@ -276,6 +277,7 @@ public class Player {
         this.questGlobalVariables = new HashMap<>();
         this.openStates = new HashMap<>();
         this.sceneTags = new HashMap<>();
+        this.levelTags = new HashMap<>();
         this.unlockedSceneAreas = new HashMap<>();
         this.unlockedScenePoints = new HashMap<>();
         this.chatEmojiIdList = new ArrayList<>();
@@ -406,13 +408,18 @@ public class Player {
         this.scene = scene;
     }
 
-    public void visitScene(int sceneId) {
-        val sceneTagData = GameData.getSceneTagDataMap().values();
-        val tags = this.sceneTags.computeIfAbsent(sceneId, k -> new HashMap<>());
-        sceneTagData.stream()
-                .filter(tagData -> tagData.getSceneId() == sceneId && tagData.isDefaultValid())
+    public void visitScene(int visitSceneId) {
+        val tags = this.sceneTags.computeIfAbsent(visitSceneId, k -> new HashMap<>());
+        GameData.getSceneTagDataMap().values().stream()
+            .filter(tagData -> tagData.getSceneId() == visitSceneId && tagData.isDefaultValid())
                 .map(SceneTagData::getId)
                 .forEach(k -> tags.putIfAbsent(k, true));
+    }
+
+    public void initializeLevelTags() {
+        GameData.getLevelTagGroupsDataMap().values()
+            .forEach(group -> Arrays.stream(group.getInitialLevelTagIdList()).boxed()
+                .forEach(tagId -> this.levelTags.put(tagId, true)));
     }
 
     synchronized public void setClimate(ClimateType climate) {
@@ -1356,6 +1363,11 @@ public class Player {
         // Execute daily reset logic if this is a new day.
         this.doDailyReset();
 
+        //set LevelTags if they have not been set before
+        if (this.levelTags.isEmpty()) {
+            this.initializeLevelTags();
+        }
+
         // Activity needed for some quests
         activityManager = new ActivityManager(this);
 
@@ -1367,6 +1379,7 @@ public class Player {
 
         // Packets
         session.send(new PacketPlayerDataNotify(this)); // Player data
+        session.send(new PacketLevelTagDataNotify(this));
         session.send(new PacketStoreWeightLimitNotify());
         session.send(new PacketPlayerStoreNotify(this));
         session.send(new PacketAvatarDataNotify(this));
@@ -1572,5 +1585,59 @@ public class Player {
                 .filter(Map.Entry::getValue)
                 .map(Map.Entry::getKey)
                 .toList();
+    }
+
+    public void setLevelTag(int levelTag) {
+        //set all other levelTags in the levelTag groups to false
+        GameData.getLevelTagGroupsDataMap().values()
+            .forEach(group -> Arrays.stream(group.getLevelTagGroupList())
+                .forEach(subgroup -> {
+                    val tagList = Arrays.stream(subgroup.getLevelTagIdList()).boxed().toList();
+                    if (tagList.contains(levelTag)) {
+                        tagList.forEach(tag -> {
+                            if (tag != levelTag) {
+                                this.levelTags.put(tag, false);
+                            }
+                        });
+                    }
+                })
+            );
+
+        val levelTagData = GameData.getLevelTagDataMap().get(levelTag);
+
+        //add sceneTags
+        Arrays.stream(levelTagData.getAddSceneTagIdList()).forEach(sceneTagId -> {
+            val sceneTag = GameData.getSceneTagDataMap().get(sceneTagId);
+            if (sceneTag == null) {
+                Grasscutter.getLogger().warn("trying to load unknown scene tag {} in level tag {}", sceneTagId, levelTag);
+            }
+            val sceneTagSceneId = sceneTag != null ? sceneTag.getSceneId() : levelTagData.getSceneId();
+            this.sceneTags.computeIfAbsent(sceneTagSceneId, k -> new HashMap<>())
+                .put(sceneTagId, true);
+        });
+
+        //remove sceneTags
+        Arrays.stream(levelTagData.getRemoveSceneTagIdList()).forEach(sceneTagId -> {
+            val sceneTag = GameData.getSceneTagDataMap().get(sceneTagId);
+            if (sceneTag == null) {
+                Grasscutter.getLogger().warn("trying to unload unknown scene tag {} in level tag {}", sceneTagId, levelTag);
+            }
+            val sceneTagSceneId = sceneTag != null ? sceneTag.getSceneId() : levelTagData.getSceneId();
+            this.sceneTags.computeIfAbsent(sceneTagSceneId, k -> new HashMap<>())
+                .put(sceneTagId, false);
+        });
+
+        //load dynamic groups
+        Arrays.stream(levelTagData.getLoadDynamicGroupList()).forEach(groupId -> this.scene.loadDynamicGroup(groupId));
+
+        this.levelTags.put(levelTag, true);
+
+        this.sendPacket(new PacketSceneDataNotify(this));
+        this.sendPacket(new PacketPlayerWorldSceneInfoListNotify(this));
+        this.sendPacket(new PacketLevelTagDataNotify(this));
+
+        //trigger quest content/conditions
+        questManager.queueEvent(QuestContent.QUEST_CONTENT_SCENE_LEVEL_TAG_EQ, levelTag, 0);
+        questManager.queueEvent(QuestCond.QUEST_COND_SCENE_LEVEL_TAG_EQ, levelTag, 0);
     }
 }

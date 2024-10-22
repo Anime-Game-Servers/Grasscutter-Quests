@@ -1172,8 +1172,9 @@ public class ScriptLibHandler extends BaseHandler implements org.anime_game_serv
     }
 
     @Override
-    public int ChangeToTargetLevelTag(GroupEventLuaContext context, int var1) {
-        return handleUnimplemented(var1);
+    public int ChangeToTargetLevelTag(GroupEventLuaContext context, int levelTag) {
+        context.getSceneScriptManager().getScene().getPlayers().forEach(player -> player.setLevelTag(levelTag));
+        return 0;
     }
 
     @Override
